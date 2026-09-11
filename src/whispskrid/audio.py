@@ -55,6 +55,29 @@ def close_stream(p: pyaudio.PyAudio, stream: pyaudio.Stream) -> None:
     p.terminate()
 
 
+def _drain_stale_backlog(stream: pyaudio.Stream) -> None:
+    """Purge l'audio bufférisé par PortAudio pendant l'inactivité.
+
+    Le flux reste ouvert en continu entre les dictées (voir docstring de
+    module) mais n'est lu par personne tant qu'aucune capture n'est en
+    cours : le tampon interne continue de se remplir en silence. Défaut
+    trouvé en session de validation le 11/09/2026 : jusqu'à ~0,77 s d'audio
+    périmé (mesuré empiriquement, capacité fixe du tampon PortAudio, quelle
+    que soit la durée d'inactivité) se retrouvait en tête de chaque nouvelle
+    capture — assez pour faire dériver un petit modèle Whisper vers une
+    hallucination complète, avec une dégradation qui s'aggrave à mesure que
+    les cycles s'enchaînent dans une même session résidente. Sans effet sur
+    une capture qui démarre juste après l'ouverture du flux (rien à purger).
+    """
+    try:
+        avail = stream.get_read_available()
+        while avail > 0:
+            stream.read(avail, exception_on_overflow=False)
+            avail = stream.get_read_available()
+    except OSError:
+        pass
+
+
 def capture_episode(
     stream: pyaudio.Stream,
     cfg: dict,
@@ -73,6 +96,8 @@ def capture_episode(
     frames_per_buffer = audio_cfg.get("frames_per_buffer", 4096)
     max_seconds = cfg.get("capture", {}).get("max_seconds", 300)
     max_frames = int(max_seconds * sample_rate)
+
+    _drain_stale_backlog(stream)
 
     chunks: list[bytes] = []
     total_frames = 0
