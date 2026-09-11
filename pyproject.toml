@@ -16,6 +16,7 @@ dependencies = [
     "pyaudio",
     "pyperclip",
     "numpy",
+    "pynput",
 ]
 
 [project.scripts]
