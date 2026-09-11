@@ -43,8 +43,37 @@ two kinds of tool are needed: a keystroke simulator and a clipboard tool.
 Under Wayland this is **ydotool** (needs the `ydotoold` daemon and access to
 `/dev/uinput`) plus **wl-clipboard**; under X11 it is **xdotool** plus
 **xclip**. Without either backend, injection falls back to a degraded mode.
-**whispskrid \--diagnose** reports which tools, audio device and clipboard
-access are present, then exits.
+The choice between the two is made once, at startup, by probing which
+binary and daemon actually respond — not by checking the session type
+directly. **whispskrid \--diagnose** reports which tools, audio device and
+clipboard access are present, then exits.
+
+# INSTALLATION
+
+Install the Debian package:
+
+```
+sudo dpkg -i whispskrid_<version>_all.deb
+```
+
+The postinst step installs **faster-whisper** via pip and reports its own
+progress; the package's `Recommends` cover the injection backend for your
+session type (**ydotool** + **wl-clipboard** under Wayland, **xdotool** +
+**xclip** under X11) — none of them is a hard dependency, so an incomplete
+environment still installs, at the cost of a degraded injection mode (see
+**\--diagnose** below).
+
+No Whisper model ships with the package. Download one before first use:
+
+```
+whispskrid --download-model
+```
+
+Then verify the environment:
+
+```
+whispskrid --diagnose
+```
 
 Global hotkeys via `pynput` watch the X server: under Wayland they reach only
 windows running through XWayland, never a focused native-Wayland window.
@@ -111,7 +140,9 @@ meant to be bound to desktop keyboard shortcuts.
 # HOTKEYS
 
 `pynput` global hotkeys are started whenever `hotkeys.pynput_enabled` is
-true in the configuration file. The listener does not consume the key
+true in the configuration file and a display server is reachable
+(`DISPLAY` set) — on any session type, Wayland included, since `pynput`
+itself watches the X server. The listener does not consume the key
 event: the keystroke also reaches the focused window. The factory
 configuration binds push-to-talk to:
 
@@ -124,6 +155,15 @@ configuration binds push-to-talk to:
 The bound key(s) are configurable under `hotkeys.push_to_talk` in the
 configuration file (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
 `shift_l`, `cmd`).
+
+To change the bound key(s), edit `hotkeys.push_to_talk` in the
+configuration file (see CONFIGURATION below for its exact path), then
+restart the resident session for the change to take effect:
+
+```
+whispskrid --stop
+whispskrid
+```
 
 # CONFIGURATION
 
@@ -154,6 +194,25 @@ automatic detection by the recognition backend.
 
 See **configuration.md** in the project documentation for the full reference
 of every configuration key.
+
+# TROUBLESHOOTING
+
+**Model not found.** Run **\--diagnose** and read its final summary line,
+which names the first blocking check by itself — do not guess from the raw
+output above it:
+
+```
+whispskrid --diagnose
+```
+
+If the summary line names the model check, download one:
+
+```
+whispskrid --download-model
+```
+
+Then re-run **\--diagnose**; it exits `0` once every blocking check passes
+(see EXIT STATUS).
 
 # FILES
 

@@ -37,8 +37,37 @@ beginnt sie eine residente Sitzung: sie lädt das Modell, öffnet eine private U
 
 Text wird injiziert, indem er in die Zwischenablage kopiert und dann eingefügt wird, sodass
 zwei Arten von Tools benötigt werden: ein Tastenfolge-Simulator und ein Zwischenablage-Tool.
-Unter Wayland sind dies **ydotool** (benötigt den `ydotoold` Daemon und Zugriff auf `/dev/uinput`) sowie **wl-clipboard**; unter X11 sind es **xdotool** sowie **xclip**. Ohne eines dieser Backends greift die Injektion auf einen eingeschränkten Modus zurück.
+Unter Wayland sind dies **ydotool** (benötigt den `ydotoold` Daemon und Zugriff auf `/dev/uinput`) sowie **wl-clipboard**; unter X11 sind es **xdotool** sowie **xclip**. Ohne eines dieser Backends greift die Injektion auf einen eingeschränkten Modus zurück. Die Wahl zwischen beiden erfolgt einmalig beim Start durch direktes Prüfen, welches der beiden Programme und sein Dienst tatsächlich antwortet – nicht durch eine direkte Prüfung der Sitzungsart.
 **whispskrid \--diagnose** zeigt, welche Tools, Audiogeräte und Zwischenablagezugriffe verfügbar sind, und beendet dann das Programm.
+
+# INSTALLATION
+
+Installieren Sie das Debian-Paket:
+
+```
+sudo dpkg -i whispskrid_<version>_all.deb
+```
+
+Der postinst-Schritt installiert **faster-whisper** per pip und meldet
+dabei seinen eigenen Fortschritt; die `Recommends` des Pakets decken das
+zur Sitzungsart passende Injection-Backend ab (**ydotool** +
+**wl-clipboard** unter Wayland, **xdotool** + **xclip** unter X11) – keines
+davon ist eine feste Abhängigkeit, eine unvollständige Umgebung wird also
+trotzdem installiert, allerdings mit eingeschränktem Injection-Modus
+(siehe **\--diagnose** unten).
+
+Das Paket enthält kein Whisper-Modell. Laden Sie vor der ersten Nutzung
+eines herunter:
+
+```
+whispskrid --download-model
+```
+
+Überprüfen Sie anschließend die Umgebung:
+
+```
+whispskrid --diagnose
+```
 
 Globale Hotkeys über `pynput` durch Beobachtung des X-Servers: Unter Wayland erreichen sie nur
 Fenster, die über XWayland laufen, niemals ein direkt unter Wayland ausgeführtes Fenster.
@@ -101,7 +130,9 @@ an Desktop-Tastenkombinationen gebunden werden.
 ## HOTKEYS
 
 `pynput` Globale Hotkeys werden aktiviert, wenn `hotkeys.pynput_enabled` in der Konfigurationsdatei
-auf "true" steht. Der Listener verbraucht das Tastaturereignis nicht: der Tastendruck
+auf "true" steht und ein Anzeigeserver erreichbar ist (`DISPLAY` gesetzt) –
+unabhängig von der Sitzungsart, Wayland eingeschlossen, da `pynput` selbst
+den X-Server beobachtet. Der Listener verbraucht das Tastaturereignis nicht: der Tastendruck
 erreicht auch das aktive Fenster. Die Factory-Konfiguration bindet "Push-to-Talk" an:
 
 **Rechte Strg-Taste**
@@ -113,6 +144,16 @@ erreicht auch das aktive Fenster. Die Factory-Konfiguration bindet "Push-to-Talk
 Die gebundenen Schlüssel können unter `hotkeys.push_to_talk` in der
 Konfigurationsdatei (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
 `shift_l`, `cmd`) konfiguriert werden.
+
+Um die gebundene(n) Taste(n) zu ändern, bearbeiten Sie `hotkeys.push_to_talk`
+in der Konfigurationsdatei (siehe KONFIGURATION unten für den genauen
+Pfad) und starten Sie die residente Sitzung neu, damit die Änderung wirksam
+wird:
+
+```
+whispskrid --stop
+whispskrid
+```
 
 # KONFIGURATION
 
@@ -138,6 +179,27 @@ automatische Erkennung durch das Erkennungsmodul.
 
 Siehe **configuration.md** in der Projektdokumentation für die vollständige Referenz
 aller Konfigurationsschlüssel.
+
+# FEHLERBEHEBUNG
+
+**Modell nicht gefunden.** Führen Sie **\--diagnose** aus und lesen Sie die
+abschließende Zusammenfassungszeile, die selbst die erste blockierende
+Prüfung benennt – raten Sie nicht anhand der rohen Ausgabe darüber:
+
+```
+whispskrid --diagnose
+```
+
+Wenn die Zusammenfassungszeile die Modellprüfung benennt, laden Sie ein
+Modell herunter:
+
+```
+whispskrid --download-model
+```
+
+Führen Sie anschließend **\--diagnose** erneut aus; es beendet sich mit
+Status `0`, sobald alle blockierenden Prüfungen erfolgreich sind (siehe
+BEENDIGUNGSSTATUS).
 
 # DATEIEN
 

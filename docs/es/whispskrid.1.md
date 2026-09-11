@@ -26,7 +26,36 @@ Todo el reconocimiento de voz se realiza localmente: ni el audio ni el texto tra
 
 Solo una sesión se ejecuta por usuario a la vez. Cuando se inicia sin una bandera de control, se crea una sesión residente: se carga el modelo, se abre un socket de control Unix privado en `$XDG_RUNTIME_DIR/whispskrid.sock` (modo `0600`), y se inicia un listener de teclas de acceso rápido `pynput` si está habilitado. El mismo comando invocado con una bandera de control (ver CONTROLANDO UNA SESIÓN EN EJECUCIÓN) se conecta a ese socket en lugar de iniciar una nueva sesión.
 
-Se inyecta el texto colocándolo en el portapapeles y simulando un pegado, por lo que se necesitan dos tipos de herramientas: un simulador de pulsaciones de teclas y una herramienta de portapapeles. Bajo Wayland, esto es **ydotool** (necesita el demonio `ydotoold` y acceso a `/dev/uinput`) más **wl-clipboard**; bajo X11, es **xdotool** más **xclip**. Sin ninguno de estos backends, la inyección recurre a un modo degradado. **whispskrid \--diagnose** informa qué herramientas, dispositivo de audio y acceso al portapapeles están disponibles, y luego finaliza.
+Se inyecta el texto colocándolo en el portapapeles y simulando un pegado, por lo que se necesitan dos tipos de herramientas: un simulador de pulsaciones de teclas y una herramienta de portapapeles. Bajo Wayland, esto es **ydotool** (necesita el demonio `ydotoold` y acceso a `/dev/uinput`) más **wl-clipboard**; bajo X11, es **xdotool** más **xclip**. Sin ninguno de estos backends, la inyección recurre a un modo degradado. La elección entre ambos se hace una sola vez, al iniciar, comprobando directamente cuál de los dos binarios y su demonio responde realmente — no verificando el tipo de sesión de forma directa. **whispskrid \--diagnose** informa qué herramientas, dispositivo de audio y acceso al portapapeles están disponibles, y luego finaliza.
+
+# INSTALACIÓN
+
+Instale el paquete Debian:
+
+```
+sudo dpkg -i whispskrid_<version>_all.deb
+```
+
+El paso postinst instala **faster-whisper** mediante pip e informa de su
+propio progreso; los `Recommends` del paquete cubren el backend de
+inyección adecuado para su tipo de sesión (**ydotool** + **wl-clipboard**
+en Wayland, **xdotool** + **xclip** en X11) — ninguno es una dependencia
+estricta, por lo que un entorno incompleto se instala igualmente, al
+precio de un modo de inyección degradado (véase **\--diagnose** más
+abajo).
+
+El paquete no incluye ningún modelo Whisper. Descargue uno antes del
+primer uso:
+
+```
+whispskrid --download-model
+```
+
+Luego verifique el entorno:
+
+```
+whispskrid --diagnose
+```
 
 Atajos globales a través de `pynput` observando el servidor X: bajo Wayland, solo alcanzan las
 ventanas que se ejecutan a través de XWayland, nunca una ventana nativa de Wayland que tenga el foco.
@@ -87,7 +116,9 @@ diseñadas para ser asignadas a atajos de teclado del escritorio.
 # TECLAS DE ACCESO RÁPIDO
 
 `pynput` Los atajos de teclado globales se activan siempre que `hotkeys.pynput_enabled` es
-verdadero en el archivo de configuración. El listener no consume el evento de tecla: el golpe de tecla también llega a la ventana enfocada. La configuración de la fábrica asigna la función de "push-to-talk" a:
+verdadero en el archivo de configuración y un servidor de visualización
+sea alcanzable (`DISPLAY` definido) — sea cual sea el tipo de sesión,
+Wayland incluido, ya que `pynput` observa por sí mismo el servidor X. El listener no consume el evento de tecla: el golpe de tecla también llega a la ventana enfocada. La configuración de la fábrica asigna la función de "push-to-talk" a:
 
 **Ctrl derecho**
 :   Mantener para grabar, soltar para detener; transcribe e inyecta: la semántica nativa de presionar/soltar de `pynput` implementa el sistema de "hablar al presionar" directamente en esta ruta (a diferencia de la ruta del socket de control, que solo ve comandos discretos y, por lo tanto, debe exponer **--toggle** en su lugar).
@@ -95,6 +126,15 @@ verdadero en el archivo de configuración. El listener no consume el evento de t
 Las claves restringidas se pueden configurar en `hotkeys.push_to_talk` en el
 archivo de configuración (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
 `shift_l`, `cmd`).
+
+Para cambiar la tecla o teclas asignadas, edite `hotkeys.push_to_talk` en
+el archivo de configuración (véase CONFIGURACIÓN más abajo para su ruta
+exacta) y reinicie la sesión residente para que el cambio surta efecto:
+
+```
+whispskrid --stop
+whispskrid
+```
 
 # CONFIGURACIÓN
 
@@ -118,6 +158,26 @@ El idioma activo se elige, en el siguiente orden: la opción **\--lang**, si se 
 
 Consulte **configuration.md** en la documentación del proyecto para obtener la referencia completa
 de cada clave de configuración.
+
+# SOLUCIÓN DE PROBLEMAS
+
+**Modelo no encontrado.** Ejecute **\--diagnose** y lea su línea de
+resumen final, que nombra por sí misma la primera verificación
+bloqueante — no adivine a partir de la salida en bruto anterior:
+
+```
+whispskrid --diagnose
+```
+
+Si la línea de resumen nombra la verificación del modelo, descargue uno:
+
+```
+whispskrid --download-model
+```
+
+Luego vuelva a ejecutar **\--diagnose**; finaliza con el código `0` en
+cuanto todas las verificaciones bloqueantes se aprueban (véase ESTADO DE
+SALIDA).
 
 # ARCHIVOS
 

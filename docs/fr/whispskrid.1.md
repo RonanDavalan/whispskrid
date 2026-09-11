@@ -27,8 +27,36 @@ Toute la reconnaissance vocale s'effectue localement : aucun audio ni aucun text
 Une seule session s'exécute par utilisateur à la fois. Lancée sans indicateur de contrôle, elle démarre une session persistante : elle charge le modèle, ouvre une socket de contrôle Unix privée à `$XDG_RUNTIME_DIR/whispskrid.sock` (mode `0600`), et démarre un écouteur de raccourcis clavier `pynput` si celui-ci est activé. La même commande, invoquée avec un indicateur de contrôle (voir GÉRER UNE SESSION EN COURS), se connecte à cette socket au lieu de démarrer une nouvelle session.
 
 Le texte est injecté en le plaçant dans le presse-papiers et en simulant un collage, de sorte que deux types d'outils sont nécessaires : un simulateur de frappe et un outil de presse-papiers.
-Sous Wayland, il s'agit de **ydotool** (nécessite le démon `ydotoold` et un accès à `/dev/uinput`) ainsi que de **wl-clipboard** ; sous X11, il s'agit de **xdotool** ainsi que de **xclip**. Sans l'un ou l'autre de ces environnements, l'injection revient à un mode dégradé.
+Sous Wayland, il s'agit de **ydotool** (nécessite le démon `ydotoold` et un accès à `/dev/uinput`) ainsi que de **wl-clipboard** ; sous X11, il s'agit de **xdotool** ainsi que de **xclip**. Sans l'un ou l'autre de ces environnements, l'injection revient à un mode dégradé. Le choix entre les deux se fait une seule fois, au démarrage, en sondant lequel des deux binaires et de son démon répond réellement — pas en vérifiant directement le type de session.
 **whispskrid \--diagnose** indique quels outils, quel périphérique audio et quel accès au presse-papiers sont disponibles, puis se termine.
+
+# INSTALLATION
+
+Installez le paquet Debian :
+
+```
+sudo dpkg -i whispskrid_<version>_all.deb
+```
+
+L'étape postinst installe **faster-whisper** via pip et signale sa propre
+progression ; les `Recommends` du paquet couvrent le backend d'injection
+adapté à votre type de session (**ydotool** + **wl-clipboard** sous
+Wayland, **xdotool** + **xclip** sous X11) — aucun n'est une dépendance
+stricte, donc un environnement incomplet s'installe quand même, au prix
+d'un mode d'injection dégradé (voir **\--diagnose** ci-dessous).
+
+Aucun modèle Whisper n'est fourni avec le paquet. Téléchargez-en un avant
+la première utilisation :
+
+```
+whispskrid --download-model
+```
+
+Puis vérifiez l'environnement :
+
+```
+whispskrid --diagnose
+```
 
 Raccourcis globaux via `pynput` en surveillant le serveur X : sous Wayland, ils n'atteignent que les fenêtres exécutées via XWayland, et jamais une fenêtre Wayland native active.  Associez les sous-commandes de contrôle aux propres paramètres de raccourcis de votre environnement de bureau pour un contrôle qui fonctionne partout.
 
@@ -87,7 +115,9 @@ sont destinés à être associés à des raccourcis clavier du bureau.
 # TOUCHES DE RACCOURCI
 
 `pynput` Les touches de raccourci globales sont activées chaque fois que `hotkeys.pynput_enabled` est
-vrai dans le fichier de configuration. Le service d'écoute ne consomme pas
+vrai dans le fichier de configuration et qu'un serveur d'affichage est
+joignable (`DISPLAY` défini) — quel que soit le type de session, Wayland
+compris, puisque `pynput` surveille lui-même le serveur X. Le service d'écoute ne consomme pas
 l'événement de touche : la frappe atteint également la fenêtre active. La
 configuration de l'usine associe la fonction "push-to-talk" à :
 
@@ -97,6 +127,16 @@ configuration de l'usine associe la fonction "push-to-talk" à :
 Les clés liées sont configurables sous `hotkeys.push_to_talk` dans le
 fichier de configuration (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
 `shift_l`, `cmd`).
+
+Pour changer la ou les touches associées, modifiez `hotkeys.push_to_talk`
+dans le fichier de configuration (voir CONFIGURATION ci-dessous pour son
+chemin exact), puis redémarrez la session persistante pour que le
+changement prenne effet :
+
+```
+whispskrid --stop
+whispskrid
+```
 
 # CONFIGURATION
 
@@ -119,6 +159,26 @@ Le fichier résolu peut être partiel : toute clé qui lui manque reprend la val
 La langue active est choisie, dans l'ordre suivant : l'**\--lang** option, si elle est spécifiée ; sinon, `default_language` depuis le fichier de configuration ; sinon, détection automatique par le moteur de reconnaissance.
 
 Consultez **configuration.md** dans la documentation du projet pour obtenir la référence complète de chaque clé de configuration.
+
+# DÉPANNAGE
+
+**Modèle introuvable.** Lancez **\--diagnose** et lisez sa ligne de
+synthèse finale, qui nomme d'elle-même la première vérification
+bloquante — ne devinez pas à partir de la sortie brute au-dessus :
+
+```
+whispskrid --diagnose
+```
+
+Si la ligne de synthèse nomme la vérification du modèle, téléchargez-en
+un :
+
+```
+whispskrid --download-model
+```
+
+Puis relancez **\--diagnose** ; il se termine avec le code `0` dès que
+toutes les vérifications bloquantes réussissent (voir CODE DE SORTIE).
 
 # FICHIERS
 
