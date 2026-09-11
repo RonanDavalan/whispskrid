@@ -1,0 +1,78 @@
+# Langue forcée pour l'interface et la reconnaissance. Vide => interface dans la
+# langue du système, reconnaissance en autodétection Whisper.
+default_language: ""
+
+backend:
+  name: "faster-whisper"      # seule valeur acceptée en v0.1.0
+  beam_size: 5
+
+models:
+  # Modèle par défaut. Nom court résolu dans models.dir, ou chemin absolu.
+  default: "base"
+  # Dossier géré des modèles. Vide => emplacements standard selon le mode
+  # d'installation (paquet : /usr/share + ~/.local/share ; sources : ./whisper-models).
+  dir: ""
+  device: "auto"              # cpu | cuda | auto
+  compute_type: "auto"        # int8 | int8_float16 | float16 | auto
+
+capture:
+  # Garde-fou : au-delà, la capture s'arrête seule, transcrit ce qui est pris,
+  # journalise un avertissement. Protection contre une touche bloquée.
+  max_seconds: 300
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  frames_per_buffer: 4096
+
+vad:
+  # Réservé. Non implémenté en v0.1.0 : true émet un avertissement et poursuit
+  # en appui-pour-parler strict.
+  enabled: false
+  silence_ms: 800
+
+post_processing:
+  # Rogner les blancs de bord du texte transcrit.
+  trim: true
+  # Mettre une capitale à la première lettre du texte injecté.
+  capitalize_sentence_start: true
+
+hotkeys:
+  # Écouteur pynput local (best-effort ; sous Wayland, fenêtres XWayland
+  # seulement). false pour ne jamais le démarrer et piloter par les
+  # sous-commandes CLI liées aux raccourcis du bureau.
+  pynput_enabled: true
+  # Touche d'appui-pour-parler. Maintien = capture ; relâche = transcription.
+  push_to_talk: ["ctrl_r"]
+
+control_socket: true
+
+clipboard:
+  restore: true
+  restore_delay_ms: 400
+  defer_restore: false
+  confirm_timeout_ms: 500
+
+injection:
+  paste_combo: "ctrl+v"
+  terminal_paste_combo: "ctrl+shift+v"
+  terminal_window_classes:
+    - "konsole"
+    - "gnome-terminal-server"
+    - "xterm"
+    - "st"
+    - "alacritty"
+    - "kitty"
+    - "foot"
+  ydotool_keycodes: {}
+
+sound_file: "/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"
+
+theme:
+  ready_message: "GREEN"
+  help_text: "RESET"
+  help_title: "CYAN"
+  info: "RESET"
+  success: "GREEN"
+  warning: "YELLOW"
+  error: "RED"

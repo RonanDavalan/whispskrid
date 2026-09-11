@@ -12,6 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "Ronan Davalan" }]
 dependencies = [
     "faster-whisper",
+    "pyyaml",
 ]
 
 [project.scripts]
