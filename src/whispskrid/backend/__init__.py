@@ -12,8 +12,66 @@ processus partage le même état.
 
 from __future__ import annotations
 
+import sys
+
 _model = None
 _state: dict = {}
+
+_CUBLAS_SONAME = "libcublas.so.12"
+_CUBLAS_REMEDY = "apt install libcublas12 libcublaslt12"
+
+
+def _gpu_detected() -> bool:
+    try:
+        import ctranslate2
+
+        return ctranslate2.get_cuda_device_count() > 0
+    except Exception:
+        return False
+
+
+def _cublas_loadable() -> bool:
+    """Sonde directe de `libcublas.so.12`, indépendante de la résolution
+    interne de CTranslate2 (§4.4 CONCEPTION_WHISPSKRID.md) : CTranslate2 ne
+    vérifie que la présence d'un GPU pour `device="auto"`, pas le chargement
+    réel de cette lib, qui n'est fait par `dlopen` qu'au premier
+    `transcribe()` — d'où un échec tardif si elle manque."""
+    import ctypes
+
+    try:
+        ctypes.CDLL(_CUBLAS_SONAME)
+        return True
+    except OSError:
+        return False
+
+
+def _resolve_device(requested: str) -> str:
+    """Résout `device` avant l'appel à `WhisperModel` — voir §4.4. Ne
+    transmet jamais `"auto"` tel quel à CTranslate2."""
+    if requested == "cpu":
+        return "cpu"
+
+    gpu_present = _gpu_detected()
+
+    if requested == "cuda":
+        if gpu_present and _cublas_loadable():
+            return "cuda"
+        raise RuntimeError(
+            f"device: cuda demandé explicitement, mais {_CUBLAS_SONAME} est "
+            f"introuvable ({'GPU détecté' if gpu_present else 'aucun GPU détecté'}) "
+            f"— installer la bibliothèque CUDA requise ({_CUBLAS_REMEDY} sur "
+            "Debian/Ubuntu) ou passer device: cpu."
+        )
+
+    # requested == "auto"
+    if gpu_present and not _cublas_loadable():
+        print(
+            f"whispskrid : GPU détecté mais {_CUBLAS_SONAME} introuvable — "
+            f"repli sur device: cpu ({_CUBLAS_REMEDY} pour activer le GPU).",
+            file=sys.stderr,
+        )
+        return "cpu"
+    return "cuda" if gpu_present else "cpu"
 
 
 def load(
@@ -23,8 +81,9 @@ def load(
     beam_size: int = 5,
 ) -> None:
     """Charge le modèle en mémoire. Appelé une fois au démarrage de la
-    session résidente. Lève une exception claire si le modèle est absent ou
-    si l'import CTranslate2 échoue (§4.1)."""
+    session résidente. Lève une exception claire si le modèle est absent, si
+    l'import CTranslate2 échoue, ou si `device: cuda` est demandé
+    explicitement sans que CUDA soit réellement utilisable (§4.1, §4.4)."""
     global _model, _state
 
     from whispskrid.models import resolve_models_dir
@@ -37,11 +96,13 @@ def load(
             "Python courant — vérifier l'installation (pip install faster-whisper)."
         ) from exc
 
+    resolved_device = _resolve_device(device)
+
     models_dir = resolve_models_dir()
     try:
         _model = WhisperModel(
             model_name,
-            device=device,
+            device=resolved_device,
             compute_type=compute_type,
             download_root=str(models_dir),
         )
@@ -55,7 +116,7 @@ def load(
         "backend": "faster-whisper",
         "model_size_or_path": model_name,
         "models_dir": str(models_dir),
-        "device": device,
+        "device": resolved_device,
         "compute_type": compute_type,
         "beam_size": beam_size,
     }
@@ -79,15 +140,15 @@ def transcribe(audio, language: str | None) -> str:
 
 def info() -> dict:
     """Dictionnaire lisible par --diagnose : nom du backend, chemin du
-    modèle, device, compute_type, CUDA disponible ou non (§8)."""
+    modèle, device, compute_type, GPU détecté et `libcublas.so.12`
+    chargeable ou non (§4.4, §8)."""
     if _model is None:
         return {"backend": "faster-whisper", "loaded": False}
 
-    try:
-        import ctranslate2
-
-        cuda_available = ctranslate2.get_cuda_device_count() > 0
-    except Exception:
-        cuda_available = None
-
-    return {**_state, "loaded": True, "cuda_available": cuda_available}
+    gpu_detected = _gpu_detected()
+    return {
+        **_state,
+        "loaded": True,
+        "cuda_available": gpu_detected,
+        "cublas_loadable": _cublas_loadable() if gpu_detected else None,
+    }

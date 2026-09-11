@@ -36,6 +36,7 @@ class Session:
         self._capture_thread: threading.Thread | None = None
         self._last_text = ""
         self._last_cancelled = False
+        self._last_error: str | None = None
 
         self._pa = None
         self._stream = None
@@ -76,6 +77,7 @@ class Session:
             self._cancel_flag = False
             self._last_text = ""
             self._last_cancelled = False
+            self._last_error = None
             self._active_event.set()
             self._finished_event = threading.Event()
             self._capture_thread = threading.Thread(target=self._run_capture, daemon=True)
@@ -91,9 +93,12 @@ class Session:
         self._finished_event.wait()
         with self._lock:
             cancelled = self._last_cancelled
+            error = self._last_error
             text = self._last_text
         if cancelled:
             return True, "OK cancelled"
+        if error:
+            return False, f"ERR {error}"
         return True, (f"OK {text}" if text else "OK")
 
     def cancel(self) -> tuple[bool, str]:
@@ -134,6 +139,7 @@ class Session:
             cancelled = self._cancel_flag
 
         text = ""
+        error: str | None = None
         try:
             if not cancelled:
                 text = self._transcribe_and_inject(result)
@@ -141,12 +147,16 @@ class Session:
             # Une transcription ou une injection qui lève ne doit jamais bloquer
             # indéfiniment stop_capture_and_inject()/cancel() (qui attendent
             # _finished_event) : l'épisode est perdu, journalisé, l'état revient
-            # à idle comme pour une capture vide.
+            # à idle comme pour une capture vide. L'échec remonte au client par
+            # ERR (§3.3 CONCEPTION_WHISPSKRID.md) — jamais un OK sans texte qui
+            # masquerait la différence avec une capture simplement vide.
+            error = str(exc)
             print(f"whispskrid : échec de la transcription ou de l'injection : {exc}", file=sys.stderr)
 
         with self._lock:
             self._last_text = text
             self._last_cancelled = cancelled
+            self._last_error = error
             self._state = "idle"
             self._capture_thread = None
         self._finished_event.set()
