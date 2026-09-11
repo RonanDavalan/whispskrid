@@ -13,7 +13,7 @@ import argparse
 import sys
 import textwrap
 
-from whispskrid import __version__, control
+from whispskrid import __version__, control, version_debian
 from whispskrid.config import load_config
 from whispskrid.i18n import installer
 from whispskrid.session import Session
@@ -200,7 +200,13 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.version:
-        print(f"whispskrid {__version__}")
+        # __version__ (PEP 440, ex. "0.1.0a0") est la forme technique du
+        # paquet Python ; le paquet Debian porte "0.1.0~alpha" (invariant
+        # GOUVERNANCE/PROTOCOLE_PUBLICATION.md n°1). Les deux désignent la
+        # même version : les afficher ensemble évite qu'un utilisateur
+        # comparant `dpkg -l whispskrid` et `whispskrid --version` ne les
+        # lise comme deux versions différentes (relevé testeur, 12/09/2026).
+        print(f"whispskrid {__version__} (paquet Debian {version_debian()})")
         return 0
 
     if args.download_model is not None:

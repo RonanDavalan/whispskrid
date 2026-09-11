@@ -14,10 +14,36 @@ lit dessus le temps d'un seul épisode d'appui.
 
 from __future__ import annotations
 
+import contextlib
+import os
 from typing import Callable
 
 import numpy as np
 import pyaudio
+
+
+@contextlib.contextmanager
+def _sans_bruit_alsa_jack():
+    """Coupe le fd 2 pendant l'initialisation PyAudio.
+
+    `PyAudio()` charge PortAudio, qui sonde tous les backends disponibles
+    (ALSA, JACK...) et leurs bibliothèques C écrivent directement sur le
+    descripteur de fichier stderr (pas sur `sys.stderr` : un `redirect_stderr`
+    Python ne les intercepte pas). Ce sondage produit un bruit non pertinent
+    (« ALSA lib pcm.c:... », « Cannot connect to server socket » JACK) sur une
+    machine sans ces serveurs actifs, sans rapport avec un échec réel (relevé
+    testeur `ada`, 12/09/2026) : le flux s'ouvre correctement malgré ce bruit.
+    """
+    stderr_fd = 2
+    saved_fd = os.dup(stderr_fd)
+    devnull_fd = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(devnull_fd, stderr_fd)
+        yield
+    finally:
+        os.dup2(saved_fd, stderr_fd)
+        os.close(devnull_fd)
+        os.close(saved_fd)
 
 
 def open_stream(cfg: dict) -> tuple[pyaudio.PyAudio, pyaudio.Stream]:
@@ -28,18 +54,19 @@ def open_stream(cfg: dict) -> tuple[pyaudio.PyAudio, pyaudio.Stream]:
     traduire en message clair.
     """
     audio_cfg = cfg.get("audio", {})
-    p = pyaudio.PyAudio()
-    try:
-        stream = p.open(
-            format=pyaudio.paInt16,
-            channels=audio_cfg.get("channels", 1),
-            rate=audio_cfg.get("sample_rate", 16000),
-            input=True,
-            frames_per_buffer=audio_cfg.get("frames_per_buffer", 4096),
-        )
-    except Exception:
-        p.terminate()
-        raise
+    with _sans_bruit_alsa_jack():
+        p = pyaudio.PyAudio()
+        try:
+            stream = p.open(
+                format=pyaudio.paInt16,
+                channels=audio_cfg.get("channels", 1),
+                rate=audio_cfg.get("sample_rate", 16000),
+                input=True,
+                frames_per_buffer=audio_cfg.get("frames_per_buffer", 4096),
+            )
+        except Exception:
+            p.terminate()
+            raise
     return p, stream
 
 
