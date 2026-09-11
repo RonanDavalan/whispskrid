@@ -267,8 +267,24 @@ def _active_window_class_x11() -> str:
 def _paste_combo_for_target() -> str:
     """Combo de collage : Ctrl+Shift+V si la fenêtre active est un terminal.
 
-    Résolution de fenêtre disponible seulement côté xdotool — ydotool n'a
-    aucune notion de fenêtre ciblée (COMPATIBILITE_WAYLAND.md §1).
+    Résolution de fenêtre disponible seulement côté xdotool/xprop (paquet
+    x11-utils) — ydotool n'a aucune notion de fenêtre ciblée
+    (COMPATIBILITE_WAYLAND.md §1). Mais cette disponibilité est indépendante
+    du backend *retenu pour l'envoi des touches* : `key_backend` favorise
+    ydotool dès qu'il est présent (COMPATIBILITE_WAYLAND.md §2), y compris sur
+    une machine X11/XWayland où xdotool/xprop fonctionnent très bien pour la
+    seule détection de fenêtre.
+
+    Défaut trouvé et corrigé le 11/09/2026 (validation sur machine de test ARM) : la
+    condition testait `key_backend == "xdotool"`, donc se désactivait
+    silencieusement sur toute machine où `ydotool`/`ydotoold` sont présents et
+    prioritaires — le cas le plus courant sur une machine WhispSkrid pensée
+    Wayland-first. Le combo générique (`ctrl+v`) partait alors systématiquement
+    dans un terminal, sans effet visible (`ctrl+v` y est lié à l'insertion
+    verbatim par `readline`) : capture réelle 4 langues sans aucun texte
+    collé, presse-papiers pourtant correct. Condition changée pour tester la
+    présence de l'outillage de détection (`caps["xdotool"]`), plus le choix du
+    backend d'envoi.
     """
     default = _get("injection", "paste_combo", "ctrl+v")
     term = _get("injection", "terminal_paste_combo", "ctrl+shift+v")
@@ -277,7 +293,7 @@ def _paste_combo_for_target() -> str:
         ["konsole", "gnome-terminal-server", "xterm", "st",
          "alacritty", "kitty", "foot"],
     )
-    if _detect_caps()["key_backend"] == "xdotool":
+    if _detect_caps()["xdotool"]:
         cls = _active_window_class_x11().lower()
         if cls and any(c.lower() in cls for c in classes):
             return term
