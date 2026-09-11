@@ -9,9 +9,14 @@ from __future__ import annotations
 
 from whispskrid import diagnose
 
+# Identité : ces tests exercent l'agrégation ok/bloquant -> code de sortie,
+# pas la traduction (déjà couverte par test_i18n.py) — _() n'a rien à faire
+# ici que renvoyer sa chaîne telle quelle.
+_NOOP = lambda s: s  # noqa: E731
+
 
 def test_all_ok_returns_zero(monkeypatch, capsys):
-    monkeypatch.setattr(diagnose, "_check_environnement", lambda: [diagnose.Check("x", True, "ok")])
+    monkeypatch.setattr(diagnose, "_check_environnement", lambda _: [diagnose.Check("x", True, "ok")])
     for name in (
         "_check_outils", "_check_backend", "_check_modeles",
         "_check_entree_audio", "_check_presse_papiers",
@@ -19,27 +24,27 @@ def test_all_ok_returns_zero(monkeypatch, capsys):
     ):
         monkeypatch.setattr(diagnose, name, lambda *a, **k: [diagnose.Check("x", True, "ok")])
 
-    assert diagnose.run({}) == 0
+    assert diagnose.run({}, _NOOP) == 0
 
 
 def test_blocking_failure_returns_nonzero(monkeypatch):
-    monkeypatch.setattr(diagnose, "_check_environnement", lambda: [diagnose.Check("x", True, "ok")])
-    monkeypatch.setattr(diagnose, "_check_outils", lambda: [diagnose.Check("uinput", False, "refusé")])
+    monkeypatch.setattr(diagnose, "_check_environnement", lambda _: [diagnose.Check("x", True, "ok")])
+    monkeypatch.setattr(diagnose, "_check_outils", lambda _: [diagnose.Check("uinput", False, "refusé")])
     for name in (
         "_check_backend", "_check_modeles", "_check_entree_audio",
         "_check_presse_papiers", "_check_socket_controle", "_check_configuration",
     ):
         monkeypatch.setattr(diagnose, name, lambda *a, **k: [diagnose.Check("x", True, "ok")])
 
-    assert diagnose.run({}) == 1
+    assert diagnose.run({}, _NOOP) == 1
 
 
 def test_non_blocking_failure_still_returns_zero(monkeypatch):
     # Cas explicite de la spec : GPU détecté mais cublas introuvable.
-    monkeypatch.setattr(diagnose, "_check_environnement", lambda: [diagnose.Check("x", True, "ok")])
+    monkeypatch.setattr(diagnose, "_check_environnement", lambda _: [diagnose.Check("x", True, "ok")])
     monkeypatch.setattr(
         diagnose, "_check_backend",
-        lambda cfg: [diagnose.Check("libcublas.so.12 chargeable", False, "non", blocking=False)],
+        lambda cfg, _: [diagnose.Check("libcublas.so.12 chargeable", False, "non", blocking=False)],
     )
     for name in (
         "_check_outils", "_check_modeles", "_check_entree_audio",
@@ -47,7 +52,7 @@ def test_non_blocking_failure_still_returns_zero(monkeypatch):
     ):
         monkeypatch.setattr(diagnose, name, lambda *a, **k: [diagnose.Check("x", True, "ok")])
 
-    assert diagnose.run({}) == 0
+    assert diagnose.run({}, _NOOP) == 0
 
 
 def test_render_marks_ok_and_failure():
@@ -69,7 +74,7 @@ def test_ydotool_absent_with_xdotool_present_is_not_blocking(monkeypatch):
     })
     monkeypatch.setattr(diagnose.os.path, "exists", lambda p: False if p == "/dev/uinput" else True)
 
-    checks = diagnose._check_outils()
+    checks = diagnose._check_outils(_NOOP)
 
     blocking_failures = [c for c in checks if c.blocking and not c.ok]
     assert blocking_failures == []

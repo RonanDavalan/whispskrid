@@ -101,3 +101,215 @@ msgid ""
 msgstr ""
 "whispskrid: --download-model is not implemented yet (upcoming slice, "
 "§5.2)."
+
+#: diagnose.py
+msgid "type de session"
+msgstr "session type"
+
+#: diagnose.py
+msgid "inconnu"
+msgstr "unknown"
+
+#: diagnose.py
+msgid "backend d'injection retenu"
+msgstr "injection backend selected"
+
+#: diagnose.py
+msgid "aucun (ni ydotool ni xdotool) — mode dégradé"
+msgstr "none (neither ydotool nor xdotool) — degraded mode"
+
+#: diagnose.py
+msgid "ydotool (présence)"
+msgstr "ydotool (present)"
+
+#: diagnose.py
+msgid "absent"
+msgstr "absent"
+
+#: diagnose.py
+msgid "présent"
+msgstr "present"
+
+#: diagnose.py
+msgid "ydotoold (démon joignable)"
+msgstr "ydotoold (daemon reachable)"
+
+#: diagnose.py
+msgid "absent ou injoignable"
+msgstr "absent or unreachable"
+
+#: diagnose.py
+msgid "joignable"
+msgstr "reachable"
+
+#: diagnose.py
+msgid "xdotool (présence)"
+msgstr "xdotool (present)"
+
+#: diagnose.py
+msgid "presse-papiers ligne de commande (wl-clipboard ou xclip)"
+msgstr "command-line clipboard (wl-clipboard or xclip)"
+
+#: diagnose.py
+msgid "aucun — repli pyperclip"
+msgstr "none — falling back to pyperclip"
+
+#: diagnose.py
+msgid "paplay (présence)"
+msgstr "paplay (present)"
+
+#: diagnose.py
+msgid "absent — signal sonore désactivé"
+msgstr "absent — sound cue disabled"
+
+#: diagnose.py
+msgid "accès /dev/uinput (groupe input)"
+msgstr "access to /dev/uinput (input group)"
+
+#: diagnose.py
+msgid "lecture-écriture ok"
+msgstr "read-write ok"
+
+#: diagnose.py
+msgid "refusé — ajouter l'utilisateur au groupe input"
+msgstr "denied — add the user to the input group"
+
+#: diagnose.py
+msgid "périphérique absent (module uinput non chargé ?)"
+msgstr "device absent (uinput module not loaded?)"
+
+#: diagnose.py
+msgid "faster-whisper et ctranslate2 importés"
+msgstr "faster-whisper and ctranslate2 imported"
+
+#: diagnose.py
+#, python-brace-format
+msgid "échec d'import : {erreur}"
+msgstr "import failed: {erreur}"
+
+#: diagnose.py
+msgid "import faster-whisper / ctranslate2"
+msgstr "faster-whisper / ctranslate2 import"
+
+#: diagnose.py
+msgid "GPU détecté"
+msgstr "GPU detected"
+
+#: diagnose.py
+msgid "non"
+msgstr "no"
+
+#: diagnose.py
+msgid "oui"
+msgstr "yes"
+
+#: diagnose.py
+#, python-brace-format
+msgid "{soname} chargeable"
+msgstr "{soname} loadable"
+
+#: diagnose.py
+#, python-brace-format
+msgid "non — {remede}"
+msgstr "no — {remede}"
+
+#: diagnose.py
+msgid "device effectif"
+msgstr "effective device"
+
+#: diagnose.py
+msgid "compute_type configuré"
+msgstr "configured compute_type"
+
+#: diagnose.py
+msgid "models.dir résolu"
+msgstr "resolved models.dir"
+
+#: diagnose.py
+#, python-brace-format
+msgid "modèle « {nom} » présent"
+msgstr "model \"{nom}\" present"
+
+#: diagnose.py
+msgid "trouvé dans models.dir"
+msgstr "found in models.dir"
+
+#: diagnose.py
+msgid "absent — lancer --download-model (à défaut, téléchargement à la volée non testé ici)"
+msgstr "absent — run --download-model (on-the-fly download not tested here)"
+
+#: diagnose.py
+msgid "chargement d'essai du modèle"
+msgstr "trial model load"
+
+#: diagnose.py
+msgid "chargé puis libéré sans erreur"
+msgstr "loaded then freed without error"
+
+#: diagnose.py
+msgid "ouvert puis fermé sans erreur"
+msgstr "opened then closed without error"
+
+#: diagnose.py
+msgid "ouverture du flux de capture audio"
+msgstr "opening the audio capture stream"
+
+#: diagnose.py
+msgid "presse-papiers (aller-retour)"
+msgstr "clipboard (round trip)"
+
+#: diagnose.py
+msgid "le contenu relu ne correspond pas"
+msgstr "the content read back does not match"
+
+#: diagnose.py
+msgid "lecture/écriture ok"
+msgstr "read/write ok"
+
+#: diagnose.py
+msgid "socket de contrôle — répertoire accessible en écriture"
+msgstr "control socket — directory writable"
+
+#: diagnose.py
+msgid "session résidente en cours"
+msgstr "resident session running"
+
+#: diagnose.py
+msgid "non (--diagnose peut être lancé sans session active)"
+msgstr "no (--diagnose can run without an active session)"
+
+#: diagnose.py
+msgid "config.yaml effectif"
+msgstr "effective config.yaml"
+
+#: diagnose.py
+msgid "Environnement"
+msgstr "Environment"
+
+#: diagnose.py
+msgid "Outils"
+msgstr "Tools"
+
+#: diagnose.py
+msgid "Backend"
+msgstr "Backend"
+
+#: diagnose.py
+msgid "Modèles"
+msgstr "Models"
+
+#: diagnose.py
+msgid "Entrée audio"
+msgstr "Audio input"
+
+#: diagnose.py
+msgid "Presse-papiers"
+msgstr "Clipboard"
+
+#: diagnose.py
+msgid "Socket de contrôle"
+msgstr "Control socket"
+
+#: diagnose.py
+msgid "Configuration"
+msgstr "Configuration"

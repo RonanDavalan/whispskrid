@@ -194,7 +194,7 @@ def main() -> int:
         except RuntimeError as exc:
             print(_("whispskrid : {erreur}").format(erreur=exc), file=sys.stderr)
             return 1
-        return diagnose.run(cfg)
+        return diagnose.run(cfg, _)
 
     if any(getattr(args, attr) for attr in _CLIENT_COMMANDS):
         return _run_client(args)
