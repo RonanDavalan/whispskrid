@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import textwrap
 
 from whispskrid import __version__, control
 from whispskrid.config import load_config
@@ -39,17 +40,37 @@ def _build_parser(_) -> argparse.ArgumentParser:
                          help=_("surcharge models.default pour cette session"))
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--dictate", action="store_true", help=_("démarre la capture (session en cours)"))
-    group.add_argument("--dictate-stop", action="store_true", help=_("arrête la capture, transcrit, injecte"))
-    group.add_argument("--toggle", action="store_true", help=_("dictate ou dictate-stop selon l'état"))
-    group.add_argument("--cancel", action="store_true", help=_("jette la capture en cours sans injecter"))
-    group.add_argument("--status", action="store_true", help=_("imprime l'état de la session en cours"))
-    group.add_argument("--stop", action="store_true", help=_("arrête la session résidente en cours"))
-    group.add_argument("--diagnose", action="store_true", help=_("vérifie l'environnement et quitte"))
-    group.add_argument("--download-model", nargs="?", const="base", default=None, metavar="NOM",
-                        help=_("télécharge un modèle et quitte"))
+    group_actions = [
+        group.add_argument("--dictate", action="store_true", help=_("démarre la capture (session en cours)")),
+        group.add_argument("--dictate-stop", action="store_true", help=_("arrête la capture, transcrit, injecte")),
+        group.add_argument("--toggle", action="store_true", help=_("dictate ou dictate-stop selon l'état")),
+        group.add_argument("--cancel", action="store_true", help=_("jette la capture en cours sans injecter")),
+        group.add_argument("--status", action="store_true", help=_("imprime l'état de la session en cours")),
+        group.add_argument("--stop", action="store_true", help=_("arrête la session résidente en cours")),
+        group.add_argument("--diagnose", action="store_true", help=_("vérifie l'environnement et quitte")),
+        group.add_argument("--download-model", nargs="?", const="base", default=None, metavar="NOM",
+                            help=_("télécharge un modèle et quitte")),
+    ]
+    parser.usage = _build_usage(parser.prog, group_actions)
 
     return parser
+
+
+def _build_usage(prog: str, group_actions: list[argparse.Action]) -> str:
+    """Usage manuel replié à 80 colonnes (`CHARTE_SORTIE_CLI.md`) : le
+    formateur `argparse` par défaut traite un groupe mutuellement exclusif
+    comme un bloc indivisible et ne le replie jamais, quelle que soit la
+    largeur de terminal détectée."""
+    tokens = []
+    for action in group_actions:
+        flag = action.option_strings[-1]
+        tokens.append(f"{flag} [{action.metavar}]" if action.nargs == "?" else flag)
+    body = "[" + " | ".join(tokens) + "]"
+
+    first_line = f"{prog} [-h] [--version] [-l LANG] [--model NOM]"
+    indent = " " * (len("usage: ") + len(prog) + 1)
+    wrapped = textwrap.wrap(body, width=80 - len(indent), break_long_words=False, break_on_hyphens=False)
+    return "\n".join([first_line] + [indent + line for line in wrapped])
 
 
 # Association attribut argparse -> commande socket (§3.3).
