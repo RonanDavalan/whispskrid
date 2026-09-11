@@ -13,6 +13,9 @@ authors = [{ name = "Ronan Davalan" }]
 dependencies = [
     "faster-whisper",
     "pyyaml",
+    "pyaudio",
+    "pyperclip",
+    "numpy",
 ]
 
 [project.scripts]
