@@ -316,13 +316,16 @@ def run(cfg: dict, _) -> int:
         (_("Configuration"), _check_configuration(_)),
     ]
 
-    all_blocking_ok = True
+    failures: list[str] = []
     for title, checks in sections:
         print(f"-- {title}")
         for check in checks:
             print(_render(check))
             if check.blocking and not check.ok:
-                all_blocking_ok = False
+                failures.append(f"{title} / {check.label}")
         print()
 
-    return 0 if all_blocking_ok else 1
+    if failures:
+        print(_("!! échec bloquant : {liste}").format(liste=", ".join(failures)))
+        return 1
+    return 0

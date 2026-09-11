@@ -84,7 +84,7 @@ sont destinés à être associés à des raccourcis clavier du bureau.
 **\--stop**
 :   Fermez proprement la session active en cours.
 
-# TOUCHE DE RACCORTEMENT
+# TOUCHES DE RACCOURCI
 
 `pynput` Les touches de raccourci globales sont activées chaque fois que `hotkeys.pynput_enabled` est
 vrai dans le fichier de configuration. Le service d'écoute ne consomme pas

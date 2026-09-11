@@ -317,3 +317,8 @@ msgstr "Socket de control"
 #: diagnose.py
 msgid "Configuration"
 msgstr "Configuración"
+
+#: diagnose.py
+#, python-brace-format
+msgid "!! échec bloquant : {liste}"
+msgstr "!! fallo bloqueante: {liste}"

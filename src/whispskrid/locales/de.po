@@ -317,3 +317,8 @@ msgstr "Steuerungs-Socket"
 #: diagnose.py
 msgid "Configuration"
 msgstr "Konfiguration"
+
+#: diagnose.py
+#, python-brace-format
+msgid "!! échec bloquant : {liste}"
+msgstr "!! blockierender Fehler: {liste}"
