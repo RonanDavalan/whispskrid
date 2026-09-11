@@ -32,7 +32,7 @@ def _sans_bruit_alsa_jack():
     Python ne les intercepte pas). Ce sondage produit un bruit non pertinent
     (« ALSA lib pcm.c:... », « Cannot connect to server socket » JACK) sur une
     machine sans ces serveurs actifs, sans rapport avec un échec réel (relevé
-    testeur `ada`, 12/09/2026) : le flux s'ouvre correctement malgré ce bruit.
+    testeur, 12/09/2026) : le flux s'ouvre correctement malgré ce bruit.
     """
     stderr_fd = 2
     saved_fd = os.dup(stderr_fd)
