@@ -14,27 +14,40 @@ import sys
 
 from whispskrid import __version__, control
 from whispskrid.config import load_config
+from whispskrid.i18n import installer
 from whispskrid.session import Session
 
 
-def _build_parser() -> argparse.ArgumentParser:
+def _peek_lang(argv: list[str]) -> str | None:
+    """Lit `-l`/`--lang` dans `argv` sans dépendre d'`argparse` — la langue
+    doit être connue avant de construire le parseur, pour que l'aide
+    (`--help`) elle-même s'affiche dans la bonne langue (§7 conception)."""
+    for i, arg in enumerate(argv):
+        if arg in ("-l", "--lang") and i + 1 < len(argv):
+            return argv[i + 1]
+        if arg.startswith("--lang="):
+            return arg.split("=", 1)[1]
+    return None
+
+
+def _build_parser(_) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="whispskrid")
-    parser.add_argument("--version", action="store_true", help="affiche la version et quitte")
+    parser.add_argument("--version", action="store_true", help=_("affiche la version et quitte"))
     parser.add_argument("-l", "--lang", metavar="LANG", default=None,
-                         help="force la langue de l'interface et de la reconnaissance")
+                         help=_("force la langue de l'interface et de la reconnaissance"))
     parser.add_argument("--model", metavar="NOM", default=None,
-                         help="surcharge models.default pour cette session")
+                         help=_("surcharge models.default pour cette session"))
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--dictate", action="store_true", help="démarre la capture (session en cours)")
-    group.add_argument("--dictate-stop", action="store_true", help="arrête la capture, transcrit, injecte")
-    group.add_argument("--toggle", action="store_true", help="dictate ou dictate-stop selon l'état")
-    group.add_argument("--cancel", action="store_true", help="jette la capture en cours sans injecter")
-    group.add_argument("--status", action="store_true", help="imprime l'état de la session en cours")
-    group.add_argument("--stop", action="store_true", help="arrête la session résidente en cours")
-    group.add_argument("--diagnose", action="store_true", help="vérifie l'environnement et quitte")
+    group.add_argument("--dictate", action="store_true", help=_("démarre la capture (session en cours)"))
+    group.add_argument("--dictate-stop", action="store_true", help=_("arrête la capture, transcrit, injecte"))
+    group.add_argument("--toggle", action="store_true", help=_("dictate ou dictate-stop selon l'état"))
+    group.add_argument("--cancel", action="store_true", help=_("jette la capture en cours sans injecter"))
+    group.add_argument("--status", action="store_true", help=_("imprime l'état de la session en cours"))
+    group.add_argument("--stop", action="store_true", help=_("arrête la session résidente en cours"))
+    group.add_argument("--diagnose", action="store_true", help=_("vérifie l'environnement et quitte"))
     group.add_argument("--download-model", nargs="?", const="base", default=None, metavar="NOM",
-                        help="télécharge un modèle et quitte")
+                        help=_("télécharge un modèle et quitte"))
 
     return parser
 
@@ -83,11 +96,11 @@ def _run_client(args: argparse.Namespace) -> int:
     return 1  # inatteignable : main() n'appelle _run_client que si un attribut est vrai
 
 
-def _run_resident(args: argparse.Namespace) -> int:
+def _run_resident(args: argparse.Namespace, _) -> int:
     if control.session_running():
         print(
-            "whispskrid : une session résidente tourne déjà — "
-            "arrêtez-la (--stop) avant d'en ouvrir une seconde (§3.2).",
+            _("whispskrid : une session résidente tourne déjà — "
+              "arrêtez-la (--stop) avant d'en ouvrir une seconde (§3.2)."),
             file=sys.stderr,
         )
         return 1
@@ -95,7 +108,7 @@ def _run_resident(args: argparse.Namespace) -> int:
     try:
         cfg = load_config()
     except RuntimeError as exc:
-        print(f"whispskrid : {exc}", file=sys.stderr)
+        print(_("whispskrid : {erreur}").format(erreur=exc), file=sys.stderr)
         return 1
 
     models_cfg = cfg.get("models", {})
@@ -104,8 +117,8 @@ def _run_resident(args: argparse.Namespace) -> int:
 
     if cfg.get("vad", {}).get("enabled", False):
         print(
-            "whispskrid : vad.enabled=true non encore implémenté — "
-            "poursuite en appui-pour-parler strict (§2.3).",
+            _("whispskrid : vad.enabled=true non encore implémenté — "
+              "poursuite en appui-pour-parler strict (§2.3)."),
             file=sys.stderr,
         )
 
@@ -119,14 +132,14 @@ def _run_resident(args: argparse.Namespace) -> int:
             beam_size=cfg.get("backend", {}).get("beam_size", 5),
         )
     except RuntimeError as exc:
-        print(f"whispskrid : {exc}", file=sys.stderr)
+        print(_("whispskrid : {erreur}").format(erreur=exc), file=sys.stderr)
         return 1
 
     session = Session(cfg, model_name, language)
     try:
         session.open()
     except Exception as exc:
-        print(f"whispskrid : impossible d'ouvrir l'entrée audio : {exc}", file=sys.stderr)
+        print(_("whispskrid : impossible d'ouvrir l'entrée audio : {erreur}").format(erreur=exc), file=sys.stderr)
         return 1
 
     server = None
@@ -142,8 +155,9 @@ def _run_resident(args: argparse.Namespace) -> int:
             )
 
         print(
-            f"whispskrid {__version__} — prêt "
-            f"(modèle {model_name}, langue {language or 'auto'})."
+            _("whispskrid {version} — prêt (modèle {modele}, langue {langue}).").format(
+                version=__version__, modele=model_name, langue=language or _("auto")
+            )
         )
         session.stop_requested.wait()
     except KeyboardInterrupt:
@@ -159,7 +173,9 @@ def _run_resident(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    parser = _build_parser()
+    _ = installer(_peek_lang(sys.argv[1:]))
+
+    parser = _build_parser(_)
     args = parser.parse_args()
 
     if args.version:
@@ -167,7 +183,7 @@ def main() -> int:
         return 0
 
     if args.download_model is not None:
-        print("whispskrid : --download-model n'est pas encore implémenté (tranche suivante, §5.2).", file=sys.stderr)
+        print(_("whispskrid : --download-model n'est pas encore implémenté (tranche suivante, §5.2)."), file=sys.stderr)
         return 1
 
     if args.diagnose:
@@ -176,14 +192,14 @@ def main() -> int:
         try:
             cfg = load_config()
         except RuntimeError as exc:
-            print(f"whispskrid : {exc}", file=sys.stderr)
+            print(_("whispskrid : {erreur}").format(erreur=exc), file=sys.stderr)
             return 1
         return diagnose.run(cfg)
 
     if any(getattr(args, attr) for attr in _CLIENT_COMMANDS):
         return _run_client(args)
 
-    return _run_resident(args)
+    return _run_resident(args, _)
 
 
 if __name__ == "__main__":

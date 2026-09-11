@@ -1,0 +1,103 @@
+# Catalogue allemand — interface whispskrid.
+# Copyright (C) 2026 Ronan Davalan
+# This file is distributed under the same license as the whispskrid package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: whispskrid\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-11 13:00+0200\n"
+"PO-Revision-Date: 2026-09-11 13:00+0200\n"
+"Last-Translator: Ronan Davalan\n"
+"Language-Team: Deutsch\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cli.py:35
+msgid "affiche la version et quitte"
+msgstr "Version anzeigen und beenden"
+
+#: cli.py:37
+msgid "force la langue de l'interface et de la reconnaissance"
+msgstr "Sprache der Oberfläche und Erkennung erzwingen"
+
+#: cli.py:39
+msgid "surcharge models.default pour cette session"
+msgstr "models.default für diese Sitzung überschreiben"
+
+#: cli.py:42
+msgid "démarre la capture (session en cours)"
+msgstr "Aufnahme starten (Sitzung muss laufen)"
+
+#: cli.py:43
+msgid "arrête la capture, transcrit, injecte"
+msgstr "Aufnahme beenden, transkribieren, einfügen"
+
+#: cli.py:44
+msgid "dictate ou dictate-stop selon l'état"
+msgstr "dictate oder dictate-stop je nach Status"
+
+#: cli.py:45
+msgid "jette la capture en cours sans injecter"
+msgstr "laufende Aufnahme verwerfen, ohne einzufügen"
+
+#: cli.py:46
+msgid "imprime l'état de la session en cours"
+msgstr "Status der laufenden Sitzung anzeigen"
+
+#: cli.py:47
+msgid "arrête la session résidente en cours"
+msgstr "laufende residente Sitzung beenden"
+
+#: cli.py:48
+msgid "vérifie l'environnement et quitte"
+msgstr "Umgebung prüfen und beenden"
+
+#: cli.py:50
+msgid "télécharge un modèle et quitte"
+msgstr "Modell herunterladen und beenden"
+
+#: cli.py:102
+msgid ""
+"whispskrid : une session résidente tourne déjà — arrêtez-la (--stop) avant "
+"d'en ouvrir une seconde (§3.2)."
+msgstr ""
+"whispskrid: Es läuft bereits eine residente Sitzung — beenden Sie sie "
+"(--stop), bevor Sie eine zweite öffnen (§3.2)."
+
+#: cli.py:111 cli.py:135 cli.py:195
+#, python-brace-format
+msgid "whispskrid : {erreur}"
+msgstr "whispskrid: {erreur}"
+
+#: cli.py:120
+msgid ""
+"whispskrid : vad.enabled=true non encore implémenté — poursuite en appui-"
+"pour-parler strict (§2.3)."
+msgstr ""
+"whispskrid: vad.enabled=true ist noch nicht implementiert — weiter im "
+"strikten Push-to-Talk-Modus (§2.3)."
+
+#: cli.py:142
+#, python-brace-format
+msgid "whispskrid : impossible d'ouvrir l'entrée audio : {erreur}"
+msgstr "whispskrid: Audioeingang konnte nicht geöffnet werden: {erreur}"
+
+#: cli.py:158
+#, python-brace-format
+msgid "whispskrid {version} — prêt (modèle {modele}, langue {langue})."
+msgstr "whispskrid {version} — bereit (Modell {modele}, Sprache {langue})."
+
+#: cli.py:159
+msgid "auto"
+msgstr "automatisch"
+
+#: cli.py:186
+msgid ""
+"whispskrid : --download-model n'est pas encore implémenté (tranche suivante, "
+"§5.2)."
+msgstr ""
+"whispskrid: --download-model ist noch nicht implementiert (nächster "
+"Abschnitt, §5.2)."
