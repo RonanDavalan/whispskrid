@@ -2,12 +2,9 @@
 
 PHASE_EXECUTION, tranche 6 : assemblage complet de `config.py` + `backend/` +
 `models.py` + `injection.py` + `audio.py` + `session.py` + `control.py` +
-`hotkey.py`. Surface CLI conforme à
-_CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §7, à l'exception de
-`--diagnose` et `--download-model` : le 10_ROADMAP.md les distingue
-explicitement de cette tranche d'assemblage et aucune des deux fonctions
-qu'ils appelleraient n'est encore écrite (points de contrôle diagnose,
-téléchargement de modèle) — stubs explicites ci-dessous, pas un silence.
+`hotkey.py` + `diagnose.py`. Surface CLI conforme à
+_CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §7. `--download-model` reste un
+stub explicite (§5.2, tranche non ouverte) — pas un silence.
 """
 
 from __future__ import annotations
@@ -53,10 +50,34 @@ _CLIENT_COMMANDS = {
 }
 
 
+# Commandes qui peuvent déclencher une transcription (dictate-stop toujours,
+# toggle si la session est en train de capturer) : le délai de réception par
+# défaut de control.py (30 s) est calibré pour un aller-retour de commande,
+# pas pour le temps de transcription réel — insuffisant sur matériel lent
+# (ARM) ou modèle lourd. On l'aligne sur capture.max_seconds (le plafond que
+# la configuration se donne elle-même), plus une marge fixe.
+_TRANSCRIBING_COMMANDS = {"dictate-stop", "toggle"}
+_TIMEOUT_MARGIN_S = 60.0
+
+
+def _client_timeout(command: str) -> float | None:
+    """None => délai par défaut de control.send_control_command()."""
+    if command not in _TRANSCRIBING_COMMANDS:
+        return None
+    try:
+        cfg = load_config()
+    except RuntimeError:
+        return None
+    max_seconds = cfg.get("capture", {}).get("max_seconds", 300)
+    return float(max_seconds) + _TIMEOUT_MARGIN_S
+
+
 def _run_client(args: argparse.Namespace) -> int:
     for attr, command in _CLIENT_COMMANDS.items():
         if getattr(args, attr):
-            ok, reply = control.send_control_command(command)
+            timeout = _client_timeout(command)
+            kwargs = {} if timeout is None else {"timeout": timeout}
+            ok, reply = control.send_control_command(command, **kwargs)
             print(reply)
             return 0 if ok else 1
     return 1  # inatteignable : main() n'appelle _run_client que si un attribut est vrai
@@ -150,8 +171,14 @@ def main() -> int:
         return 1
 
     if args.diagnose:
-        print("whispskrid : --diagnose n'est pas encore implémenté (tranche suivante, §8).", file=sys.stderr)
-        return 1
+        from whispskrid import diagnose
+
+        try:
+            cfg = load_config()
+        except RuntimeError as exc:
+            print(f"whispskrid : {exc}", file=sys.stderr)
+            return 1
+        return diagnose.run(cfg)
 
     if any(getattr(args, attr) for attr in _CLIENT_COMMANDS):
         return _run_client(args)

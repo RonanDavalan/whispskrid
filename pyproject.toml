@@ -19,6 +19,9 @@ dependencies = [
     "pynput",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
 [project.scripts]
 whispskrid = "whispskrid.cli:main"
 

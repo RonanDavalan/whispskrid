@@ -117,6 +117,13 @@ def injection_backend_available() -> bool:
     return _detect_caps()["key_backend"] is not None
 
 
+def detect_capabilities() -> dict:
+    """Point d'entrée public de `_detect_caps()`, pour `--diagnose` (§8) : ne
+    nécessite pas `configure()` au préalable, aucune de ces sondes ne lit
+    `_cfg`."""
+    return _detect_caps()
+
+
 # --------------------------------------------------------------------------- #
 # Utilitaires                                                                 #
 # --------------------------------------------------------------------------- #
