@@ -161,7 +161,8 @@ aller Konfigurationsschlüssel.
 
 # BEENDIGUNGSSTATUS
 
-Das Programm wurde sauber beendet, oder ein Steuerbefehl wurde empfangen `OK`.
+**0**
+:   Das Programm wurde sauber beendet, oder ein Steuerbefehl wurde empfangen `OK`.
 
 Nicht Null
 :   Startvorgang fehlgeschlagen (kein Injektions-Backend, Modell oder Audio-Gerät verfügbar),

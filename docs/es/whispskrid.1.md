@@ -142,7 +142,8 @@ de cada clave de configuración.
 
 # ESTADO DE SALIDA
 
-El programa finalizó correctamente, o se recibió un comando de control `OK`.
+**0**
+:   El programa finalizó correctamente, o se recibió un comando de control `OK`.
 
 No nulo
 :   El inicio falló (no hay un backend de inyección, modelo o dispositivo de audio disponible),

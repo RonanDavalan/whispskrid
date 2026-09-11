@@ -142,6 +142,7 @@ Consultez **configuration.md** dans la documentation du projet pour obtenir la r
 
 # CODE DE SORTIE
 
+**0**
 :   Le programme s'est terminé correctement, ou une commande de contrôle a été reçue `OK`.
 
 Non nul
