@@ -244,10 +244,24 @@ def get_active_window_id() -> str | None:
 
 
 def _active_window_class_x11() -> str:
-    ok, out = _run(
-        ["xdotool", "getactivewindow", "getwindowclassname"], _KEY_TIMEOUT
-    )
-    return out.strip() if ok else ""
+    """Classe WM de la fenêtre active, via `xprop` (`WM_CLASS`).
+
+    `xdotool getwindowclassname` n'existe pas dans la version packagée Debian
+    (3.20160805.1, sans sous-commande de classe) — défaut trouvé en session de
+    validation le 11/09/2026 : la détection de terminal échouait toujours
+    silencieusement, et le combo de collage générique (`ctrl+v`) partait à la
+    place du combo terminal (`ctrl+shift+v`), invisible dans un shell (`ctrl+v`
+    y est lié à l'insertion verbatim). `xprop` fait partie du même paquet
+    `x11-utils` que `xdotool` sur une machine X11.
+    """
+    wid = get_active_window_id()
+    if not wid:
+        return ""
+    ok, out = _run(["xprop", "-id", wid, "WM_CLASS"], _KEY_TIMEOUT)
+    if not ok:
+        return ""
+    _, _, value = out.partition("=")
+    return value.replace('"', "").strip()
 
 
 def _paste_combo_for_target() -> str:
