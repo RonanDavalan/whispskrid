@@ -1,9 +1,10 @@
 # diagnose.run() (§8 CONCEPTION_WHISPSKRID.md) : code de sortie 0 si tout ce
-# qui est bloquant passe, non nul sinon — une seule exception explicite dans
-# la spec, le GPU détecté mais libcublas.so.12 introuvable, qui reste
-# informative (device: cpu utilisable). Les sections réelles touchent le
-# matériel (audio, presse-papiers, sockets) : ces tests doublent les
-# sections pour exercer uniquement l'agrégation ok/bloquant -> code de sortie.
+# qui est bloquant passe, non nul sinon — trois exceptions explicites dans la
+# spec (GPU détecté mais libcublas.so.12 introuvable ; ydotool/xdotool absent
+# isolément ; presse-papiers en échec sans session graphique), toutes
+# informatives. Les sections réelles touchent le matériel (audio,
+# presse-papiers, sockets) : ces tests doublent les sections pour exercer
+# uniquement l'agrégation ok/bloquant -> code de sortie.
 
 from __future__ import annotations
 
@@ -58,6 +59,50 @@ def test_non_blocking_failure_still_returns_zero(monkeypatch):
 def test_render_marks_ok_and_failure():
     assert diagnose._render(diagnose.Check("x", True, "détail")) == "ok  x — détail"
     assert diagnose._render(diagnose.Check("x", False, "détail")) == "!!  x — détail"
+
+
+def test_clipboard_failure_headless_is_not_blocking(monkeypatch):
+    # Défaut trouvé sur ada (SSH/tty pur, ni DISPLAY ni WAYLAND_DISPLAY) :
+    # pyperclip échoue faute de compositeur, --diagnose sortait en code 1
+    # sans expliquer la cause. L'échec doit rester visible (!!) mais
+    # informatif, jamais bloquant, dans ce cas précis.
+    import pyperclip
+
+    # pyperclip.copy() non mocké réexécute determine_clipboard() en interne
+    # (lazy_load_stub_copy/paste partagent leur résolution) et écraserait le
+    # mock de paste() : il faut aussi neutraliser copy() pour isoler le test.
+    monkeypatch.delenv("DISPLAY", raising=False)
+    monkeypatch.delenv("WAYLAND_DISPLAY", raising=False)
+    monkeypatch.setattr(pyperclip, "copy", lambda text: None)
+    monkeypatch.setattr(pyperclip, "paste", lambda: (_ for _ in ()).throw(
+        pyperclip.PyperclipException("no mechanism")
+    ))
+
+    checks = diagnose._check_presse_papiers(_NOOP)
+
+    assert len(checks) == 1
+    assert checks[0].ok is False
+    assert checks[0].blocking is False
+    assert "session graphique" in checks[0].detail
+
+
+def test_clipboard_failure_with_display_stays_blocking(monkeypatch):
+    # Même échec, mais dans une vraie session graphique (DISPLAY présent) :
+    # ce n'est plus une limitation d'environnement, l'échec reste bloquant.
+    import pyperclip
+
+    monkeypatch.setenv("DISPLAY", ":0")
+    monkeypatch.delenv("WAYLAND_DISPLAY", raising=False)
+    monkeypatch.setattr(pyperclip, "copy", lambda text: None)
+    monkeypatch.setattr(pyperclip, "paste", lambda: (_ for _ in ()).throw(
+        pyperclip.PyperclipException("no mechanism")
+    ))
+
+    checks = diagnose._check_presse_papiers(_NOOP)
+
+    assert len(checks) == 1
+    assert checks[0].ok is False
+    assert checks[0].blocking is True
 
 
 def test_ydotool_absent_with_xdotool_present_is_not_blocking(monkeypatch):

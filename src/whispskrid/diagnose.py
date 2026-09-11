@@ -6,9 +6,13 @@ points de contrôle et leur statut bloquant/informatif. Reprend la structure
 du moule (`diagnose.py`), adaptée au backend Whisper.
 
 Chaque point de contrôle est rendu en une ligne `ok` / `!!`. Code de sortie
-0 si tout passe, non nul sinon — à une seule exception explicite (§8) : la
-ligne GPU détecté mais `libcublas.so.12` introuvable est informative,
-jamais bloquante, puisque `device: cpu` reste utilisable.
+0 si tout passe, non nul sinon — trois exceptions explicites (§8), toutes
+`blocking=False` : GPU détecté mais `libcublas.so.12` introuvable
+(`device: cpu` reste utilisable) ; `ydotool`/`xdotool` absent isolément (seul
+le backend d'injection retenu compte) ; presse-papiers en échec dans une
+session sans affichage graphique (`DISPLAY`/`WAYLAND_DISPLAY` absents — un
+presse-papiers ne peut structurellement pas fonctionner sans compositeur
+X11/Wayland en cours d'exécution, cas courant d'une connexion SSH/tty pure).
 
 Catalogue gettext (§`ADDENDUM_2026-09-11_diagnose-i18n.md`) : seuls les
 libellés et détails statiques passent par `_()` — chemins de fichiers,
@@ -233,6 +237,8 @@ def _check_entree_audio(cfg: dict, _) -> list[Check]:
 def _check_presse_papiers(_) -> list[Check]:
     import pyperclip
 
+    headless = not os.environ.get("DISPLAY") and not os.environ.get("WAYLAND_DISPLAY")
+
     probe = "whispskrid-diagnose-probe"
     try:
         original = pyperclip.paste()
@@ -243,6 +249,15 @@ def _check_presse_papiers(_) -> list[Check]:
         pyperclip.copy(probe)
         roundtrip_ok = pyperclip.paste() == probe
     except Exception as exc:
+        if headless:
+            return [Check(
+                _("presse-papiers (aller-retour)"), False,
+                _("aucune session graphique détectée (DISPLAY et WAYLAND_DISPLAY "
+                  "absents) — le presse-papiers ne peut pas fonctionner sans "
+                  "compositeur X11/Wayland en cours d'exécution ; normal en "
+                  "connexion SSH/tty pure, sans conséquence en session graphique réelle"),
+                blocking=False,
+            )]
         return [Check(_("presse-papiers (aller-retour)"), False, str(exc))]
     finally:
         if original is not None:

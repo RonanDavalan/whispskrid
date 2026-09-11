@@ -259,6 +259,10 @@ msgid "presse-papiers (aller-retour)"
 msgstr "Zwischenablage (Rundlauf)"
 
 #: diagnose.py
+msgid "aucune session graphique détectée (DISPLAY et WAYLAND_DISPLAY absents) — le presse-papiers ne peut pas fonctionner sans compositeur X11/Wayland en cours d'exécution ; normal en connexion SSH/tty pure, sans conséquence en session graphique réelle"
+msgstr "keine grafische Sitzung erkannt (DISPLAY und WAYLAND_DISPLAY beide nicht gesetzt) — die Zwischenablage kann ohne laufenden X11/Wayland-Compositor nicht funktionieren; normal bei einer reinen SSH/tty-Verbindung, ohne Auswirkung in einer echten grafischen Sitzung"
+
+#: diagnose.py
 msgid "le contenu relu ne correspond pas"
 msgstr "der zurückgelesene Inhalt stimmt nicht überein"
 
