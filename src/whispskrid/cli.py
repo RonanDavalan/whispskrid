@@ -170,10 +170,23 @@ def _run_resident(args: argparse.Namespace, _) -> int:
             server = control.run_server(session)
 
         if cfg.get("hotkeys", {}).get("pynput_enabled", True):
-            from whispskrid import hotkey
-            listener = hotkey.start_listener(
-                session, cfg.get("hotkeys", {}).get("push_to_talk", ["ctrl_r"])
-            )
+            # `pynput` est un serveur X (Xlib) : son import lève une ImportError
+            # non rattrapée sur une machine sans serveur X (SSH pur, conteneur,
+            # ARM headless) et faisait planter toute la session résidente, alors
+            # que ce chemin est documenté « best-effort » et que le pilotage par
+            # socket seul (control.py) est une voie complète à part entière —
+            # relevé lors de la validation réelle ARM (`ada`, 12/09/2026).
+            try:
+                from whispskrid import hotkey
+                listener = hotkey.start_listener(
+                    session, cfg.get("hotkeys", {}).get("push_to_talk", ["ctrl_r"])
+                )
+            except Exception as exc:
+                print(
+                    _("whispskrid : écouteur pynput indisponible ({erreur}) — "
+                      "session pilotable par la socket de contrôle seule.").format(erreur=exc),
+                    file=sys.stderr,
+                )
 
         print(
             _("whispskrid {version} — prêt (modèle {modele}, langue {langue}).").format(
