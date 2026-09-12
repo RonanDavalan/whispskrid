@@ -92,8 +92,38 @@ msgstr ""
 msgid "auto"
 msgstr ""
 
-#: cli.py:186
+#: cli.py
+#, python-brace-format
+msgid "whispskrid : modèle « {nom} » inconnu — modèles disponibles : {liste}."
+msgstr ""
+
+#: cli.py
+#, python-brace-format
+msgid "whispskrid : modèle « {nom} » déjà présent dans {chemin}."
+msgstr ""
+
+#: cli.py
+#, python-brace-format
 msgid ""
-"whispskrid : --download-model n'est pas encore implémenté (tranche suivante, "
-"§5.2)."
+"whispskrid : téléchargement du modèle « {nom} » (~{taille} Mo, depuis "
+"huggingface.co/Systran) — aucune barre de progression, patientez jusqu'au "
+"message final..."
+msgstr ""
+
+#: cli.py
+#, python-brace-format
+msgid "whispskrid : échec du téléchargement : {erreur}"
+msgstr ""
+
+#: cli.py
+#, python-brace-format
+msgid "whispskrid : modèle « {nom} » prêt dans {chemin}."
+msgstr ""
+
+#: cli.py
+#, python-brace-format
+msgid ""
+"whispskrid : modèle « {nom} » absent, téléchargement automatique en cours "
+"(~{taille} Mo, depuis huggingface.co/Systran) — aucune barre de "
+"progression, patientez..."
 msgstr ""

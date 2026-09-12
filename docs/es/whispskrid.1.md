@@ -45,11 +45,19 @@ precio de un modo de inyección degradado (véase **\--diagnose** más
 abajo).
 
 El paquete no incluye ningún modelo Whisper. Descargue uno antes del
-primer uso:
+primer uso — los modelos provienen de las conversiones CTranslate2
+oficiales alojadas en Hugging Face (*https://huggingface.co/Systran*),
+obtenidas automáticamente en el directorio de modelos gestionado (véase
+ARCHIVOS más abajo):
 
 ```
 whispskrid --download-model
 ```
+
+Omitir este paso no es grave: la sesión persistente descarga ella misma
+el modelo por defecto en el primer arranque, anunciándolo antes — la
+descarga desde Hugging Face no muestra ninguna barra de progreso, y una
+transferencia de varios cientos de Mo quedaría sin actividad visible.
 
 Luego verifique el entorno:
 
@@ -79,8 +87,13 @@ un control que funcione en todas partes.
     y salga. El estado de salida es `0` cuando todas las verificaciones que pueden bloquear la ejecución se aprueban; algunas
     verificaciones (aceleración de la GPU, presencia de `ydotool`/`xdotool`) son solo informativas y nunca bloquean el estado de salida.
 
-**\--download-model** [*NAME*]
-:   Descargue un modelo de Whisper (`base` cuando *NAME* se omite) en el directorio de modelos gestionado, y luego salga.
+**\--download-model** [*NOMBRE*]
+:   Descargue un modelo de Whisper (`base` cuando *NOMBRE* se omite; uno
+    de `tiny`, `base`, `small`, `medium`, `large-v3`, o sus variantes
+    `.en`) desde Hugging Face al directorio de modelos gestionado
+    (`~/.local/share/whispskrid/whisper-models/` por defecto — véase
+    ARCHIVOS), y luego salga. Un modelo ya descargado se detecta y la
+    operación se omite.
 
 **\--version**
 :   Imprimir el número de versión y salir.
@@ -233,6 +246,8 @@ whispskrid --dictate-stop
 # VEA TAMBIÉN
 
 faster-whisper: *https://github.com/SYSTRAN/faster-whisper*
+
+Catálogo de modelos Whisper: *https://huggingface.co/Systran*
 
 Página de inicio del proyecto: *https://whispskrid.davalan.fr/*
 

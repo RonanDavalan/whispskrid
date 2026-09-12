@@ -57,11 +57,19 @@ trotzdem installiert, allerdings mit eingeschränktem Injection-Modus
 (siehe **\--diagnose** unten).
 
 Das Paket enthält kein Whisper-Modell. Laden Sie vor der ersten Nutzung
-eines herunter:
+eines herunter — die Modelle stammen aus den offiziellen
+CTranslate2-Konvertierungen auf Hugging Face
+(*https://huggingface.co/Systran*) und werden automatisch in das
+verwaltete Modellverzeichnis geladen (siehe DATEIEN unten):
 
 ```
 whispskrid --download-model
 ```
+
+Dieser Schritt ist nicht zwingend: Die residente Sitzung lädt das
+Standardmodell beim ersten Start selbst herunter und kündigt dies vorher
+an — der Download über Hugging Face zeigt keinen Fortschrittsbalken, ein
+Transfer von mehreren hundert MB wäre sonst ohne jede sichtbare Aktivität.
 
 Überprüfen Sie anschließend die Umgebung:
 
@@ -94,8 +102,13 @@ um eine Steuerung zu erhalten, die überall funktioniert.
     Prüfungen (GPU-Beschleunigung, `ydotool`/`xdotool` Vorhandensein, jeweils einzeln) sind nur informativ und beeinflussen den Exit-Status nicht.
 
 **\--download-model** [*NAME*]
-:   Laden Sie ein Whisper-Modell (`base` wenn *NAME* weggelassen wird) in das
-    verwaltete Modellverzeichnis herunter und beenden Sie dann das Programm.
+:   Laden Sie ein Whisper-Modell herunter (`base`, wenn *NAME* weggelassen
+    wird; eines von `tiny`, `base`, `small`, `medium`, `large-v3` oder
+    deren `.en`-Varianten) von Hugging Face in das verwaltete
+    Modellverzeichnis (standardmäßig
+    `~/.local/share/whispskrid/whisper-models/` — siehe DATEIEN) und
+    beenden Sie dann das Programm. Ein bereits vorhandenes Modell wird
+    erkannt und der Vorgang übersprungen.
 
 **\--version**
 :   Die Versionsnummer ausgeben und beenden.
@@ -238,9 +251,7 @@ Starte eine Sitzung für Benutzer mit der Standardeinstellung für die Sprache, 
 whispskrid
 ```
 
-Übersetze ins Deutsche. Gib nur die Übersetzung aus.
-
-Englisch erzwingen für diese Sitzung:
+Englisch für diese Sitzung erzwingen:
 
 ```
 whispskrid --lang en
@@ -256,6 +267,8 @@ whispskrid --dictate-stop
 SIEHE AUCH
 
 faster-whisper: *https://github.com/SYSTRAN/faster-whisper*
+
+Whisper-Modellkatalog: *https://huggingface.co/Systran*
 
 Projekt-Homepage: *https://whispskrid.davalan.fr/*
 

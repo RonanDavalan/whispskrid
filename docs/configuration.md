@@ -89,8 +89,8 @@ Which Whisper model to load, and how.
   (if it already holds a model) → `/usr/share/whispskrid/whisper-models/`
   (package install) → `whisper-models/` at the root of a Git checkout — the
   first of these that exists and holds at least one model wins. If none
-  does, the user directory is created and used as the destination for a
-  future `--download-model`.
+  does, the user directory is created and used as the destination for
+  `--download-model`.
 - **`device`** (string, default `"auto"`): `"cpu"`, `"cuda"`, or `"auto"`
   (let `faster-whisper` decide).
 - **`compute_type`** (string, default `"auto"`): `"int8"`,

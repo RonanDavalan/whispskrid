@@ -3,8 +3,8 @@
 PHASE_EXECUTION, tranche 6 : assemblage complet de `config.py` + `backend/` +
 `models.py` + `injection.py` + `audio.py` + `session.py` + `control.py` +
 `hotkey.py` + `diagnose.py`. Surface CLI conforme à
-_CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §7. `--download-model` reste un
-stub explicite (§5.2, tranche non ouverte) — pas un silence.
+_CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §7. `--download-model` réel
+(§5.2, `whispskrid.models.download_model()`).
 """
 
 from __future__ import annotations
@@ -144,6 +144,21 @@ def _run_resident(args: argparse.Namespace, _) -> int:
         )
 
     from whispskrid import backend
+    from whispskrid.models import MODEL_CATALOG, model_cached, resolve_models_dir
+
+    if model_name in MODEL_CATALOG and not model_cached(model_name, resolve_models_dir()):
+        # `WhisperModel()` télécharge automatiquement un modèle absent (repli
+        # déjà existant, §5.1) mais faster-whisper désactive sa barre de
+        # progression (voir models.download_model()) : sans cette annonce,
+        # un premier lancement sans modèle ressemble à un blocage silencieux
+        # de plusieurs dizaines de secondes à plusieurs minutes (relevé
+        # testeur — friction « pas de service d'installation »).
+        _repo_id, taille_mo = MODEL_CATALOG[model_name]
+        print(
+            _("whispskrid : modèle « {nom} » absent, téléchargement automatique "
+              "en cours (~{taille} Mo, depuis huggingface.co/Systran) — aucune "
+              "barre de progression, patientez...").format(nom=model_name, taille=taille_mo)
+        )
 
     try:
         backend.load(
@@ -206,6 +221,41 @@ def _run_resident(args: argparse.Namespace, _) -> int:
     return 0
 
 
+def _run_download_model(name: str, _) -> int:
+    from whispskrid.models import MODEL_CATALOG, download_model, model_cached, resolve_models_dir
+
+    if name not in MODEL_CATALOG:
+        print(
+            _("whispskrid : modèle « {nom} » inconnu — modèles disponibles : {liste}.").format(
+                nom=name, liste=", ".join(sorted(MODEL_CATALOG))
+            ),
+            file=sys.stderr,
+        )
+        return 1
+
+    models_dir = resolve_models_dir()
+    if model_cached(name, models_dir):
+        print(_("whispskrid : modèle « {nom} » déjà présent dans {chemin}.").format(
+            nom=name, chemin=models_dir
+        ))
+        return 0
+
+    _repo_id, taille_mo = MODEL_CATALOG[name]
+    print(
+        _("whispskrid : téléchargement du modèle « {nom} » (~{taille} Mo, "
+          "depuis huggingface.co/Systran) — aucune barre de progression, "
+          "patientez jusqu'au message final...").format(nom=name, taille=taille_mo)
+    )
+    try:
+        chemin = download_model(name)
+    except RuntimeError as exc:
+        print(_("whispskrid : échec du téléchargement : {erreur}").format(erreur=exc), file=sys.stderr)
+        return 1
+
+    print(_("whispskrid : modèle « {nom} » prêt dans {chemin}.").format(nom=name, chemin=chemin))
+    return 0
+
+
 def main() -> int:
     _ = installer(_peek_lang(sys.argv[1:]))
 
@@ -223,8 +273,7 @@ def main() -> int:
         return 0
 
     if args.download_model is not None:
-        print(_("whispskrid : --download-model n'est pas encore implémenté (tranche suivante, §5.2)."), file=sys.stderr)
-        return 1
+        return _run_download_model(args.download_model, _)
 
     if args.diagnose:
         from whispskrid import diagnose

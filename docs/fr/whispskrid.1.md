@@ -46,11 +46,20 @@ stricte, donc un environnement incomplet s'installe quand même, au prix
 d'un mode d'injection dégradé (voir **\--diagnose** ci-dessous).
 
 Aucun modèle Whisper n'est fourni avec le paquet. Téléchargez-en un avant
-la première utilisation :
+la première utilisation — les modèles proviennent des conversions
+CTranslate2 officielles hébergées sur Hugging Face
+(*https://huggingface.co/Systran*), récupérées automatiquement dans le
+répertoire de modèles géré (voir FICHIERS ci-dessous) :
 
 ```
 whispskrid --download-model
 ```
+
+Sauter cette étape n'est pas bloquant : la session persistante télécharge
+elle-même le modèle par défaut au premier lancement, en l'annonçant
+d'abord — le téléchargement de Hugging Face n'affiche aucune barre de
+progression, un transfert de plusieurs centaines de Mo resterait sinon
+sans aucune activité visible.
 
 Puis vérifiez l'environnement :
 
@@ -79,8 +88,13 @@ Raccourcis globaux via `pynput` en surveillant le serveur X : sous Wayland, ils 
     vérifications (accélération GPU, présence de `ydotool` et de `xdotool`, considérées
     individuellement) sont purement informatives et n'affectent jamais le code de sortie.
 
-**\--download-model** [*NAME*]
-:   Téléchargez un modèle Whisper (`base` si *NAME* est omis) dans le répertoire de modèles gérés, puis quittez.
+**\--download-model** [*NOM*]
+:   Téléchargez un modèle Whisper (`base` si *NOM* est omis ; l'un de
+    `tiny`, `base`, `small`, `medium`, `large-v3`, ou leurs variantes
+    `.en`) depuis Hugging Face, dans le répertoire de modèles géré
+    (`~/.local/share/whispskrid/whisper-models/` par défaut — voir
+    FICHIERS), puis quittez. Un modèle déjà téléchargé est détecté et
+    l'opération est court-circuitée.
 
 **\--version**
 :   Afficher le numéro de version et quitter.
@@ -233,6 +247,8 @@ whispskrid --dictate-stop
 VOIR ÉGALEMENT
 
 faster-whisper: *https://github.com/SYSTRAN/faster-whisper*
+
+Catalogue des modèles Whisper : *https://huggingface.co/Systran*
 
 Page d'accueil du projet : *https://whispskrid.davalan.fr/*
 

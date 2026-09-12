@@ -63,11 +63,19 @@ session type (**ydotool** + **wl-clipboard** under Wayland, **xdotool** +
 environment still installs, at the cost of a degraded injection mode (see
 **\--diagnose** below).
 
-No Whisper model ships with the package. Download one before first use:
+No Whisper model ships with the package. Download one before first use —
+models come from the official CTranslate2 conversions on Hugging Face
+(*https://huggingface.co/Systran*), fetched automatically into the managed
+model directory (see FILES below):
 
 ```
 whispskrid --download-model
 ```
+
+Skipping this step is not fatal: the resident session downloads the default
+model itself on first launch, announcing it first since Hugging Face's own
+download shows no progress bar (a multi-hundred-MB transfer with no visible
+activity otherwise).
 
 Then verify the environment:
 
@@ -100,8 +108,11 @@ control that works everywhere.
     individually) are informative only and never block the exit status.
 
 **\--download-model** [*NAME*]
-:   Download a Whisper model (`base` when *NAME* is omitted) into the
-    managed model directory, then exit.
+:   Download a Whisper model (`base` when *NAME* is omitted; one of `tiny`,
+    `base`, `small`, `medium`, `large-v3`, or their `.en` variants) from
+    Hugging Face into the managed model directory
+    (`~/.local/share/whispskrid/whisper-models/` by default — see FILES),
+    then exit. Already-downloaded models are detected and skipped.
 
 **\--version**
 :   Print the version number and exit.
@@ -269,6 +280,8 @@ whispskrid --dictate-stop
 # SEE ALSO
 
 faster-whisper: *https://github.com/SYSTRAN/faster-whisper*
+
+Whisper model catalog: *https://huggingface.co/Systran*
 
 Project homepage: *https://whispskrid.davalan.fr/*
 
