@@ -93,7 +93,9 @@ um eine Steuerung zu erhalten, die überall funktioniert.
 
 **\--model** *NAME*
 :   Überschreibt `models.default` aus der Konfigurationsdatei für diese Sitzung –
-    ein kurzer Name des Modells (z. B. `base`) oder ein Pfad im Dateisystem.
+    ein kurzer Modellname (`tiny`, `base`, `small`, `medium`, `large-v3`
+    oder deren `.en`-Varianten — siehe **\--download-model** unten) oder
+    ein Pfad im Dateisystem.
 
 **\--diagnose**
 :   Überprüfen Sie die Umgebung (Sitzungstyp, Injection-Backend, Tools, GPU/CUDA,
@@ -154,19 +156,42 @@ erreicht auch das aktive Fenster. Die Factory-Konfiguration bindet "Push-to-Talk
     auf diesem Pfad (im Gegensatz zum "Control-Socket"-Pfad oben, der nur
     diskrete Befehle empfängt und daher **--toggle** anstelle dessen bereitstellen muss).
 
-Die gebundenen Schlüssel können unter `hotkeys.push_to_talk` in der
-Konfigurationsdatei (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
-`shift_l`, `cmd`) konfiguriert werden.
+Die gebundenen Tasten sind unter `hotkeys.push_to_talk` in der
+Konfigurationsdatei einstellbar. Jeder Name bezeichnet eine einzelne
+physische Taste — niemals eine Tastenkombination — und nur eine einzige
+physische Taste kann für Push-to-Talk gebunden werden: `ctrl_r` (rechte
+Strg-Taste), `ctrl_l` (linke Strg-Taste), `alt_r` (rechte Alt-Taste),
+`alt_l` (linke Alt-Taste), `shift_r` (rechte Umschalttaste), `shift_l`
+(linke Umschalttaste), `cmd`.
 
-Um die gebundene(n) Taste(n) zu ändern, bearbeiten Sie `hotkeys.push_to_talk`
-in der Konfigurationsdatei (siehe KONFIGURATION unten für den genauen
-Pfad) und starten Sie die residente Sitzung neu, damit die Änderung wirksam
-wird:
+`hotkeys.mode` (`hold`, Standardwert, oder `toggle`) legt fest, was ein
+Druck auf die gebundene Taste bewirkt. `hold` entspricht dem oben
+beschriebenen Verhalten: gedrückt halten = Aufnahme, loslassen = Stopp,
+Transkription und Injektion. `toggle` startet die Aufnahme beim ersten
+Tastendruck und stoppt, transkribiert und injiziert beim nächsten Druck
+derselben Taste; das Loslassen bewirkt in diesem Modus nichts — nützlich,
+um bei einem langen Diktat nicht dauerhaft eine Taste gedrückt halten zu
+müssen.
+
+Um die gebundene(n) Taste(n) oder den Modus zu ändern, bearbeiten Sie
+`hotkeys.push_to_talk` / `hotkeys.mode` in der Konfigurationsdatei (siehe
+KONFIGURATION unten für den genauen Pfad) und starten Sie die residente
+Sitzung neu, damit die Änderung wirksam wird:
 
 ```
 whispskrid --stop
 whispskrid
 ```
+
+Um **\--toggle** stattdessen an eine Desktop-Tastenkombination zu binden
+— unter Wayland die einzige Möglichkeit für Fenster, die nicht über
+XWayland laufen und die `pynput` deshalb nicht erreichen kann — bieten
+die meisten Desktop-Umgebungen eine Einstellung für benutzerdefinierte
+Tastenkombinationen. Unter GNOME: *Einstellungen → Tastatur →
+Tastenkombinationen anzeigen und anpassen → Eigene Tastenkombinationen →
+Tastenkombination hinzufügen*, mit `whispskrid --toggle` als Befehl und
+der gewünschten Tastenkombination. KDE Plasma bietet das Äquivalent unter
+*Systemeinstellungen → Kurzbefehle → Eigene Kurzbefehle*.
 
 # KONFIGURATION
 

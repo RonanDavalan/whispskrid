@@ -79,7 +79,10 @@ un control que funcione en todas partes.
     de la interfaz de línea de comandos (incluido el texto de ayuda).
 
 **\--model** *NOMBRE*
-:   Sustituye `models.default` del archivo de configuración para esta sesión: un nombre corto del modelo (por ejemplo, `base`) o una ruta en el sistema de archivos.
+:   Sustituye `models.default` del archivo de configuración para esta
+    sesión: un nombre corto del modelo (`tiny`, `base`, `small`, `medium`,
+    `large-v3`, o sus variantes `.en` — véase **\--download-model** más
+    abajo) o una ruta en el sistema de archivos.
 
 **\--diagnose**
 :   Verifique el entorno (tipo de sesión, backend de inyección, herramientas, GPU/CUDA,
@@ -136,18 +139,40 @@ Wayland incluido, ya que `pynput` observa por sí mismo el servidor X. El listen
 **Ctrl derecho**
 :   Mantener para grabar, soltar para detener; transcribe e inyecta: la semántica nativa de presionar/soltar de `pynput` implementa el sistema de "hablar al presionar" directamente en esta ruta (a diferencia de la ruta del socket de control, que solo ve comandos discretos y, por lo tanto, debe exponer **--toggle** en su lugar).
 
-Las claves restringidas se pueden configurar en `hotkeys.push_to_talk` en el
-archivo de configuración (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
-`shift_l`, `cmd`).
+Las teclas asignadas se configuran en `hotkeys.push_to_talk` en el
+archivo de configuración. Cada nombre designa una única tecla física —
+nunca una combinación de teclas — y solo se puede asignar una tecla
+física a push-to-talk: `ctrl_r` (Ctrl derecho), `ctrl_l` (Ctrl izquierdo),
+`alt_r` (Alt derecho), `alt_l` (Alt izquierdo), `shift_r` (Mayús derecha),
+`shift_l` (Mayús izquierda), `cmd`.
 
-Para cambiar la tecla o teclas asignadas, edite `hotkeys.push_to_talk` en
-el archivo de configuración (véase CONFIGURACIÓN más abajo para su ruta
-exacta) y reinicie la sesión residente para que el cambio surta efecto:
+`hotkeys.mode` (`hold`, valor por defecto, o `toggle`) determina qué
+ocurre al presionar la tecla asignada. `hold` corresponde al
+comportamiento descrito arriba: mantener presionada = grabar, soltar =
+detener, transcribir e inyectar. `toggle` inicia la captura en la primera
+pulsación y la detiene, transcribe e inyecta en la siguiente pulsación de
+la misma tecla; soltar la tecla no hace nada en este modo — útil para
+evitar mantener una tecla presionada durante un dictado largo.
+
+Para cambiar la tecla o teclas asignadas, o el modo, edite
+`hotkeys.push_to_talk` / `hotkeys.mode` en el archivo de configuración
+(véase CONFIGURACIÓN más abajo para su ruta exacta) y reinicie la sesión
+residente para que el cambio surta efecto:
 
 ```
 whispskrid --stop
 whispskrid
 ```
+
+Para asignar **\--toggle** a un atajo del escritorio en lugar de la
+tecla `pynput` — bajo Wayland la única opción para ventanas que no pasan
+por XWayland, a las que `pynput` no puede llegar — la mayoría de los
+entornos de escritorio ofrecen un ajuste de atajo personalizado. En
+GNOME: *Configuración → Teclado → Ver y personalizar atajos → Atajos
+personalizados → Añadir atajo*, con `whispskrid --toggle` como comando y
+la combinación de teclas de su elección. KDE Plasma ofrece el
+equivalente en *Preferencias del sistema → Atajos → Atajos
+personalizados*.
 
 # CONFIGURACIÓN
 

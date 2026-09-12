@@ -44,6 +44,11 @@ hotkeys:
   pynput_enabled: true
   # Touche d'appui-pour-parler. Maintien = capture ; relâche = transcription.
   push_to_talk: ["ctrl_r"]
+  # Comportement de la touche ci-dessus. "hold" (défaut) : maintien = capture,
+  # relâche = transcription et injection (comportement historique, inchangé).
+  # "toggle" : un appui bref démarre la capture, un second appui bref
+  # l'arrête et l'injecte ; la relâche ne fait plus rien.
+  mode: "hold"
 
 control_socket: true
 

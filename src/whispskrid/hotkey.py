@@ -42,9 +42,17 @@ def _resolve_keys(names: list[str]) -> set:
     return keys
 
 
-def start_listener(session: Session, push_to_talk: list[str]) -> keyboard.Listener | None:
+def start_listener(
+    session: Session, push_to_talk: list[str], mode: str = "hold"
+) -> keyboard.Listener | None:
     """Démarre l'écouteur en tâche de fond. None si aucune touche valide dans
-    `push_to_talk` — la session résidente reste pilotable par la socket seule."""
+    `push_to_talk` — la session résidente reste pilotable par la socket seule.
+
+    `mode` (D8, CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
+    comportement historique — maintien = capture, relâche = transcription et
+    injection. "toggle" appelle `Session.toggle()` (déjà exposée côté socket,
+    control.py) sur l'appui ; la relâche ne fait plus rien.
+    """
     keys = _resolve_keys(push_to_talk)
     if not keys:
         print(
@@ -56,15 +64,27 @@ def start_listener(session: Session, push_to_talk: list[str]) -> keyboard.Listen
 
     pressed: set = set()
 
-    def on_press(key) -> None:
-        if key in keys and key not in pressed:
-            pressed.add(key)
-            session.start_capture()
+    if mode == "toggle":
 
-    def on_release(key) -> None:
-        if key in keys:
+        def on_press(key) -> None:
+            if key in keys and key not in pressed:
+                pressed.add(key)
+                session.toggle()
+
+        def on_release(key) -> None:
             pressed.discard(key)
-            session.stop_capture_and_inject()
+
+    else:
+
+        def on_press(key) -> None:
+            if key in keys and key not in pressed:
+                pressed.add(key)
+                session.start_capture()
+
+        def on_release(key) -> None:
+            if key in keys:
+                pressed.discard(key)
+                session.stop_capture_and_inject()
 
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.daemon = True

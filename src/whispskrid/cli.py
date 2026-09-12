@@ -194,7 +194,9 @@ def _run_resident(args: argparse.Namespace, _) -> int:
             try:
                 from whispskrid import hotkey
                 listener = hotkey.start_listener(
-                    session, cfg.get("hotkeys", {}).get("push_to_talk", ["ctrl_r"])
+                    session,
+                    cfg.get("hotkeys", {}).get("push_to_talk", ["ctrl_r"]),
+                    cfg.get("hotkeys", {}).get("mode", "hold"),
                 )
             except Exception as exc:
                 print(

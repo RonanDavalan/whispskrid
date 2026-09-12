@@ -79,7 +79,9 @@ Raccourcis globaux via `pynput` en surveillant le serveur X : sous Wayland, ils 
 
 **\--model** *NOM*
 :   Remplace `models.default` du fichier de configuration pour cette session :
-    il s'agit du nom court d'un modèle (par exemple `base`) ou d'un chemin d'accès au système de fichiers.
+    il s'agit du nom court d'un modèle (`tiny`, `base`, `small`, `medium`,
+    `large-v3`, ou leurs variantes `.en` — voir **\--download-model**
+    ci-dessous) ou d'un chemin d'accès au système de fichiers.
 
 **\--diagnose**
 :   Vérifiez l'environnement (type de session, backend d'injection, outils, GPU/CUDA,
@@ -138,19 +140,40 @@ configuration de l'usine associe la fonction "push-to-talk" à :
 **Ctrl droit**
 :   Maintenez la touche pour enregistrer, relâchez-la pour arrêter. La transcription et l'injection utilisent les mécanismes natifs de pression/relâchement de `pynput`.  Cela permet d'implémenter la fonction "talkie-walkie" directement sur ce chemin (contrairement au chemin de la "control-socket" mentionné ci-dessus, qui ne reçoit que des commandes discrètes et doit donc exposer **--toggle** à la place).
 
-Les clés liées sont configurables sous `hotkeys.push_to_talk` dans le
-fichier de configuration (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
-`shift_l`, `cmd`).
+Les touches liées sont configurables sous `hotkeys.push_to_talk` dans le
+fichier de configuration. Chaque nom ci-dessous désigne une touche
+physique unique — jamais une combinaison — et une seule touche physique
+peut être associée à l'appui-pour-parler : `ctrl_r` (Contrôle droit),
+`ctrl_l` (Contrôle gauche), `alt_r` (Alt droit), `alt_l` (Alt gauche),
+`shift_r` (Majuscule droite), `shift_l` (Majuscule gauche), `cmd`.
 
-Pour changer la ou les touches associées, modifiez `hotkeys.push_to_talk`
-dans le fichier de configuration (voir CONFIGURATION ci-dessous pour son
-chemin exact), puis redémarrez la session persistante pour que le
-changement prenne effet :
+`hotkeys.mode` (`hold`, valeur par défaut, ou `toggle`) définit ce que
+fait un appui sur la touche liée. `hold` correspond au comportement
+décrit ci-dessus : maintien = capture, relâche = arrêt, transcription et
+injection. `toggle` démarre la capture au premier appui et l'arrête,
+transcrit et injecte au second appui sur la même touche ; la relâche ne
+fait plus rien dans ce mode — utile pour éviter de maintenir une touche
+enfoncée durant une dictée longue.
+
+Pour changer la ou les touches associées, ou le mode, modifiez
+`hotkeys.push_to_talk` / `hotkeys.mode` dans le fichier de configuration
+(voir CONFIGURATION ci-dessous pour son chemin exact), puis redémarrez la
+session persistante pour que le changement prenne effet :
 
 ```
 whispskrid --stop
 whispskrid
 ```
+
+Pour associer **\--toggle** à un raccourci du bureau plutôt qu'à la
+touche `pynput` — seule option sous Wayland pour les fenêtres qui ne
+passent pas par XWayland, que `pynput` ne peut alors pas atteindre — la
+plupart des environnements de bureau proposent un réglage de raccourci
+personnalisé. Sous GNOME : *Paramètres → Clavier → Afficher et
+personnaliser les raccourcis → Raccourcis personnalisés → Ajouter un
+raccourci*, avec `whispskrid --toggle` comme commande et la combinaison
+de touches de votre choix. KDE Plasma propose l'équivalent sous
+*Paramètres du système → Raccourcis → Raccourcis personnalisés*.
 
 # CONFIGURATION
 

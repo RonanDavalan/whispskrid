@@ -98,7 +98,9 @@ control that works everywhere.
 
 **\--model** *NAME*
 :   Override `models.default` from the configuration file for this session —
-    a model's short name (for example `base`) or a filesystem path.
+    a model's short name (one of `tiny`, `base`, `small`, `medium`,
+    `large-v3`, or their `.en` variants — see **\--download-model** below)
+    or a filesystem path.
 
 **\--diagnose**
 :   Check the environment (session type, injection backend, tools, GPU/CUDA,
@@ -164,17 +166,36 @@ configuration binds push-to-talk to:
     discrete commands and must therefore expose **\--toggle** instead).
 
 The bound key(s) are configurable under `hotkeys.push_to_talk` in the
-configuration file (`ctrl_r`, `ctrl_l`, `alt_r`, `alt_l`, `shift_r`,
-`shift_l`, `cmd`).
+configuration file. Each name below designates one physical key — never a
+key combination — and only a single physical key can be bound to
+push-to-talk: `ctrl_r` (right Control), `ctrl_l` (left Control), `alt_r`
+(right Alt), `alt_l` (left Alt), `shift_r` (right Shift), `shift_l` (left
+Shift), `cmd`.
 
-To change the bound key(s), edit `hotkeys.push_to_talk` in the
-configuration file (see CONFIGURATION below for its exact path), then
-restart the resident session for the change to take effect:
+`hotkeys.mode` (`hold`, the default, or `toggle`) controls what pressing
+the bound key does. `hold` is the behavior described above: hold to
+capture, release to stop, transcribe and inject. `toggle` starts capture
+on the first press and stops, transcribes and injects on the next press
+of the same key; releasing the key does nothing in this mode — useful to
+avoid holding a key down for a long dictation.
+
+To change the bound key(s) or the mode, edit `hotkeys.push_to_talk` /
+`hotkeys.mode` in the configuration file (see CONFIGURATION below for its
+exact path), then restart the resident session for the change to take
+effect:
 
 ```
 whispskrid --stop
 whispskrid
 ```
+
+To bind **\--toggle** to a desktop-level shortcut instead — the only
+option under Wayland for windows that do not go through XWayland, which
+`pynput` cannot reach — most desktop environments offer a custom shortcut
+setting. On GNOME: *Settings → Keyboard → View and Customize Shortcuts →
+Custom Shortcuts → Add Shortcut*, with `whispskrid --toggle` as the
+command and the key combination of your choice. KDE Plasma offers the
+equivalent under *System Settings → Shortcuts → Custom Shortcuts*.
 
 # CONFIGURATION
 

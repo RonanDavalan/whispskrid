@@ -177,16 +177,24 @@ post_processing:
   tool only through the control subcommands bound to your desktop's own
   shortcuts.
 - **`push_to_talk`** (list, default `["ctrl_r"]`): the push-to-talk key.
-  Held down → capture; released → transcribe and inject. `pynput`
-  distinguishes press from release natively, so the hold semantics are
-  exact on this path. The control-socket subcommands (`--dictate`,
-  `--dictate-stop`, `--toggle`) exist for desktops whose shortcut system
-  cannot convey "key held", where they act as a start/stop toggle instead.
+  Held down → capture; released → transcribe and inject (in `mode: hold`,
+  see below). `pynput` distinguishes press from release natively, so the
+  hold semantics are exact on this path. The control-socket subcommands
+  (`--dictate`, `--dictate-stop`, `--toggle`) exist for desktops whose
+  shortcut system cannot convey "key held", where they act as a
+  start/stop toggle instead.
+- **`mode`** (`hold` or `toggle`, default `hold`): what a press of the
+  bound key does. `hold` is the behavior described above. `toggle` starts
+  capture on the first press and stops, transcribes and injects on the
+  next press of the same key; the key release does nothing in this mode.
+  Purely additive: `push_to_talk` and its hold semantics are unchanged
+  when `mode` is absent or set to `hold`.
 
 ```yaml
 hotkeys:
   pynput_enabled: true
   push_to_talk: ["ctrl_r"]
+  mode: "hold"
 ```
 
 ### `control_socket`
