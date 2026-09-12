@@ -62,7 +62,7 @@ def test_render_marks_ok_and_failure():
 
 
 def test_clipboard_failure_headless_is_not_blocking(monkeypatch):
-    # Défaut trouvé sur ada (SSH/tty pur, ni DISPLAY ni WAYLAND_DISPLAY) :
+    # Défaut trouvé sur une machine ARM de test (SSH/tty pur, ni DISPLAY ni WAYLAND_DISPLAY) :
     # pyperclip échoue faute de compositeur, --diagnose sortait en code 1
     # sans expliquer la cause. L'échec doit rester visible (!!) mais
     # informatif, jamais bloquant, dans ce cas précis.
