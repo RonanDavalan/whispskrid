@@ -205,6 +205,26 @@ def _run_resident(args: argparse.Namespace, _) -> int:
                     file=sys.stderr,
                 )
 
+        hotkeys_mode = cfg.get("hotkeys", {}).get("mode", "hold")
+        if hotkeys_mode == "armed":
+            if listener is None:
+                print(
+                    _("whispskrid : hotkeys.mode: armed exige l'écouteur pynput "
+                      "(armement/désarmement exclusivement au clavier, D9) — "
+                      "indisponible ici, le mode armé ne peut pas être utilisé."),
+                    file=sys.stderr,
+                )
+            else:
+                from whispskrid.wakeword import PHRASES_PAR_LANGUE
+
+                phrases = PHRASES_PAR_LANGUE.get(language or "fr", PHRASES_PAR_LANGUE["fr"])
+                print(
+                    _("whispskrid : mode armé — appuyez sur la touche pour armer "
+                      "l'écoute, dites « {ouverture} » pour commencer un segment "
+                      "et « {cloture} » pour le terminer ; un second appui "
+                      "désarme.").format(ouverture=phrases["open"], cloture=phrases["close"])
+                )
+
         print(
             _("whispskrid {version} — prêt (modèle {modele}, langue {langue}).").format(
                 version=__version__, modele=model_name, langue=language or _("auto")

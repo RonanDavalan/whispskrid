@@ -1,12 +1,18 @@
 """Écouteur de raccourci local — voie de déclenchement `pynput`.
 
-PHASE_EXECUTION, tranche 5. Observe le serveur X (`pynput`) : sous Wayland il
-ne capte que les fenêtres passant par XWayland, jamais une fenêtre Wayland
-native — confort best-effort, §2.4 CONCEPTION_WHISPSKRID.md et
-COMPATIBILITE_WAYLAND.md §5. `on_press` déclenche la capture, `on_release`
-l'arrête et l'injecte : `pynput` distingue nativement l'appui de la relâche,
-la sémantique maintien est donc native sur cette voie — contrairement à la
-voie socket (control.py) qui doit basculer faute de transmettre ce geste.
+PHASE_EXECUTION, tranche 5 ; session E (mode `armed`, D9). Observe le serveur
+X (`pynput`) : sous Wayland il ne capte que les fenêtres passant par
+XWayland, jamais une fenêtre Wayland native — confort best-effort, §2.4
+CONCEPTION_WHISPSKRID.md et COMPATIBILITE_WAYLAND.md §5. `on_press` déclenche
+la capture, `on_release` l'arrête et l'injecte : `pynput` distingue
+nativement l'appui de la relâche, la sémantique maintien est donc native sur
+cette voie — contrairement à la voie socket (control.py) qui doit basculer
+faute de transmettre ce geste.
+
+Mode `armed` (D9) : la touche arme/désarme uniquement (`Session.arm()` /
+`Session.disarm()`), jamais de capture directe — le début et la fin de
+chaque segment sont ensuite pilotés par la voix (voir session.py,
+`_run_armed_listener`).
 """
 
 from __future__ import annotations
@@ -48,10 +54,12 @@ def start_listener(
     """Démarre l'écouteur en tâche de fond. None si aucune touche valide dans
     `push_to_talk` — la session résidente reste pilotable par la socket seule.
 
-    `mode` (D8, CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
+    `mode` (D8/D9, CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
     comportement historique — maintien = capture, relâche = transcription et
     injection. "toggle" appelle `Session.toggle()` (déjà exposée côté socket,
-    control.py) sur l'appui ; la relâche ne fait plus rien.
+    control.py) sur l'appui ; la relâche ne fait plus rien. "armed" (D9)
+    arme/désarme l'écoute continue du mot vocal sur l'appui ; la relâche ne
+    fait rien non plus.
     """
     keys = _resolve_keys(push_to_talk)
     if not keys:
@@ -70,6 +78,21 @@ def start_listener(
             if key in keys and key not in pressed:
                 pressed.add(key)
                 session.toggle()
+
+        def on_release(key) -> None:
+            pressed.discard(key)
+
+    elif mode == "armed":
+
+        def on_press(key) -> None:
+            if key in keys and key not in pressed:
+                pressed.add(key)
+                if session.is_armed():
+                    ok, msg = session.disarm()
+                else:
+                    ok, msg = session.arm()
+                if not ok:
+                    print(f"whispskrid : {msg}", file=sys.stderr)
 
         def on_release(key) -> None:
             pressed.discard(key)

@@ -1,108 +1,138 @@
-# Catalogue anglais — interface whispskrid.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Ronan Davalan
+# This file is distributed under the same license as the whispskrid package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: whispskrid\n"
+"Project-Id-Version: whispskrid 0.1.0a0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 13:00+0200\n"
+"POT-Creation-Date: 2026-09-12 23:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cli.py:35
+#: cli.py:36
 msgid "affiche la version et quitte"
 msgstr ""
 
-#: cli.py:37
+#: cli.py:38
 msgid "force la langue de l'interface et de la reconnaissance"
 msgstr ""
 
-#: cli.py:39
+#: cli.py:40
 msgid "surcharge models.default pour cette session"
 msgstr ""
 
-#: cli.py:42
+#: cli.py:44
 msgid "démarre la capture (session en cours)"
 msgstr ""
 
-#: cli.py:43
+#: cli.py:45
 msgid "arrête la capture, transcrit, injecte"
 msgstr ""
 
-#: cli.py:44
+#: cli.py:46
 msgid "dictate ou dictate-stop selon l'état"
 msgstr ""
 
-#: cli.py:45
+#: cli.py:47
 msgid "jette la capture en cours sans injecter"
 msgstr ""
 
-#: cli.py:46
+#: cli.py:48
 msgid "imprime l'état de la session en cours"
 msgstr ""
 
-#: cli.py:47
+#: cli.py:49
 msgid "arrête la session résidente en cours"
 msgstr ""
 
-#: cli.py:48
+#: cli.py:50
 msgid "vérifie l'environnement et quitte"
 msgstr ""
 
-#: cli.py:50
+#: cli.py:52
 msgid "télécharge un modèle et quitte"
 msgstr ""
 
-#: cli.py:102
+#: cli.py:123
 msgid ""
 "whispskrid : une session résidente tourne déjà — arrêtez-la (--stop) avant "
 "d'en ouvrir une seconde (§3.2)."
 msgstr ""
 
-#: cli.py:111 cli.py:135 cli.py:195
+#: cli.py:132 cli.py:171 cli.py:306
 #, python-brace-format
 msgid "whispskrid : {erreur}"
 msgstr ""
 
-#: cli.py:120
+#: cli.py:141
 msgid ""
 "whispskrid : vad.enabled=true non encore implémenté — poursuite en appui-"
 "pour-parler strict (§2.3)."
 msgstr ""
 
-#: cli.py:142
+#: cli.py:158
+#, python-brace-format
+msgid ""
+"whispskrid : modèle « {nom} » absent, téléchargement automatique en cours "
+"(~{taille} Mo, depuis huggingface.co/Systran) — aucune barre de progression, "
+"patientez..."
+msgstr ""
+
+#: cli.py:178
 #, python-brace-format
 msgid "whispskrid : impossible d'ouvrir l'entrée audio : {erreur}"
 msgstr ""
 
-#: cli.py:158
+#: cli.py:203
+#, python-brace-format
+msgid ""
+"whispskrid : écouteur pynput indisponible ({erreur}) — session pilotable par "
+"la socket de contrôle seule."
+msgstr ""
+
+#: cli.py:212
+msgid ""
+"whispskrid : hotkeys.mode: armed exige l'écouteur pynput (armement/"
+"désarmement exclusivement au clavier, D9) — indisponible ici, le mode armé "
+"ne peut pas être utilisé."
+msgstr ""
+
+#: cli.py:222
+#, python-brace-format
+msgid ""
+"whispskrid : mode armé — appuyez sur la touche pour armer l'écoute, dites "
+"« {ouverture} » pour commencer un segment et « {cloture} » pour le "
+"terminer ; un second appui désarme."
+msgstr ""
+
+#: cli.py:229
 #, python-brace-format
 msgid "whispskrid {version} — prêt (modèle {modele}, langue {langue})."
 msgstr ""
 
-#: cli.py:159
+#: cli.py:230
 msgid "auto"
 msgstr ""
 
-#: cli.py
+#: cli.py:251
 #, python-brace-format
 msgid "whispskrid : modèle « {nom} » inconnu — modèles disponibles : {liste}."
 msgstr ""
 
-#: cli.py
+#: cli.py:260
 #, python-brace-format
 msgid "whispskrid : modèle « {nom} » déjà présent dans {chemin}."
 msgstr ""
 
-#: cli.py
+#: cli.py:267
 #, python-brace-format
 msgid ""
 "whispskrid : téléchargement du modèle « {nom} » (~{taille} Mo, depuis "
@@ -110,20 +140,239 @@ msgid ""
 "message final..."
 msgstr ""
 
-#: cli.py
+#: cli.py:274
 #, python-brace-format
 msgid "whispskrid : échec du téléchargement : {erreur}"
 msgstr ""
 
-#: cli.py
+#: cli.py:277
 #, python-brace-format
 msgid "whispskrid : modèle « {nom} » prêt dans {chemin}."
 msgstr ""
 
-#: cli.py
+#: diagnose.py:57
+msgid "type de session"
+msgstr ""
+
+#: diagnose.py:58
+msgid "inconnu"
+msgstr ""
+
+#: diagnose.py:65
+msgid "backend d'injection retenu"
+msgstr ""
+
+#: diagnose.py:67
+msgid "aucun (ni ydotool ni xdotool) — mode dégradé"
+msgstr ""
+
+#: diagnose.py:82
+msgid "ydotool (présence)"
+msgstr ""
+
+#: diagnose.py:83 diagnose.py:88 diagnose.py:104
+msgid "présent"
+msgstr ""
+
+#: diagnose.py:83 diagnose.py:88
+msgid "absent"
+msgstr ""
+
+#: diagnose.py:85
+msgid "ydotoold (démon joignable)"
+msgstr ""
+
+#: diagnose.py:86
+msgid "joignable"
+msgstr ""
+
+#: diagnose.py:86
+msgid "absent ou injoignable"
+msgstr ""
+
+#: diagnose.py:87
+msgid "xdotool (présence)"
+msgstr ""
+
+#: diagnose.py:94
+msgid "presse-papiers ligne de commande (wl-clipboard ou xclip)"
+msgstr ""
+
+#: diagnose.py:98
+msgid "aucun — repli pyperclip"
+msgstr ""
+
+#: diagnose.py:103
+msgid "paplay (présence)"
+msgstr ""
+
+#: diagnose.py:105
+msgid "absent — signal sonore désactivé"
+msgstr ""
+
+#: diagnose.py:114 diagnose.py:119
+msgid "accès /dev/uinput (groupe input)"
+msgstr ""
+
+#: diagnose.py:115
+msgid "lecture-écriture ok"
+msgstr ""
+
+#: diagnose.py:116
+msgid "refusé — ajouter l'utilisateur au groupe input"
+msgstr ""
+
+#: diagnose.py:120
+msgid "périphérique absent (module uinput non chargé ?)"
+msgstr ""
+
+#: diagnose.py:131
+msgid "faster-whisper et ctranslate2 importés"
+msgstr ""
+
+#: diagnose.py:134
 #, python-brace-format
+msgid "échec d'import : {erreur}"
+msgstr ""
+
+#: diagnose.py:135
+msgid "import faster-whisper / ctranslate2"
+msgstr ""
+
+#: diagnose.py:147
+msgid "GPU détecté"
+msgstr ""
+
+#: diagnose.py:148 diagnose.py:156 diagnose.py:285
+msgid "oui"
+msgstr ""
+
+#: diagnose.py:148
+msgid "non"
+msgstr ""
+
+#: diagnose.py:154
+#, python-brace-format
+msgid "{soname} chargeable"
+msgstr ""
+
+#: diagnose.py:157
+#, python-brace-format
+msgid "non — {remede}"
+msgstr ""
+
+#: diagnose.py:169
+msgid "device effectif"
+msgstr ""
+
+#: diagnose.py:170
+msgid "compute_type configuré"
+msgstr ""
+
+#: diagnose.py:180
+msgid "models.dir résolu"
+msgstr ""
+
+#: diagnose.py:188
+#, python-brace-format
+msgid "modèle « {nom} » présent"
+msgstr ""
+
+#: diagnose.py:190
+msgid "trouvé dans models.dir"
+msgstr ""
+
+#: diagnose.py:191
 msgid ""
-"whispskrid : modèle « {nom} » absent, téléchargement automatique en cours "
-"(~{taille} Mo, depuis huggingface.co/Systran) — aucune barre de "
-"progression, patientez..."
+"absent — lancer --download-model (à défaut, téléchargement à la volée non "
+"testé ici)"
+msgstr ""
+
+#: diagnose.py:209 diagnose.py:211
+msgid "chargement d'essai du modèle"
+msgstr ""
+
+#: diagnose.py:209
+msgid "chargé puis libéré sans erreur"
+msgstr ""
+
+#: diagnose.py:232 diagnose.py:234
+msgid "ouverture du flux de capture audio"
+msgstr ""
+
+#: diagnose.py:232
+msgid "ouvert puis fermé sans erreur"
+msgstr ""
+
+#: diagnose.py:254 diagnose.py:261 diagnose.py:269
+msgid "presse-papiers (aller-retour)"
+msgstr ""
+
+#: diagnose.py:255
+msgid ""
+"aucune session graphique détectée (DISPLAY et WAYLAND_DISPLAY absents) — le "
+"presse-papiers ne peut pas fonctionner sans compositeur X11/Wayland en cours "
+"d'exécution ; normal en connexion SSH/tty pure, sans conséquence en session "
+"graphique réelle"
+msgstr ""
+
+#: diagnose.py:270
+msgid "lecture/écriture ok"
+msgstr ""
+
+#: diagnose.py:270
+msgid "le contenu relu ne correspond pas"
+msgstr ""
+
+#: diagnose.py:280
+msgid "socket de contrôle — répertoire accessible en écriture"
+msgstr ""
+
+#: diagnose.py:284
+msgid "session résidente en cours"
+msgstr ""
+
+#: diagnose.py:285
+msgid "non (--diagnose peut être lancé sans session active)"
+msgstr ""
+
+#: diagnose.py:296 diagnose.py:298
+msgid "config.yaml effectif"
+msgstr ""
+
+#: diagnose.py:309
+msgid "Environnement"
+msgstr ""
+
+#: diagnose.py:310
+msgid "Outils"
+msgstr ""
+
+#: diagnose.py:311
+msgid "Backend"
+msgstr ""
+
+#: diagnose.py:312
+msgid "Modèles"
+msgstr ""
+
+#: diagnose.py:313
+msgid "Entrée audio"
+msgstr ""
+
+#: diagnose.py:314
+msgid "Presse-papiers"
+msgstr ""
+
+#: diagnose.py:315
+msgid "Socket de contrôle"
+msgstr ""
+
+#: diagnose.py:316
+msgid "Configuration"
+msgstr ""
+
+#: diagnose.py:329
+#, python-brace-format
+msgid "!! échec bloquant : {liste}"
 msgstr ""

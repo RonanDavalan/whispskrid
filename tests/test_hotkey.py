@@ -97,6 +97,66 @@ def test_default_mode_is_hold(monkeypatch):
     session.start_capture.assert_called_once()
 
 
+def test_armed_mode_arms_on_press_when_disarmed(monkeypatch):
+    session = _fake_session()
+    session.is_armed.return_value = False
+    session.arm.return_value = (True, "OK")
+    on_press, on_release = _get_callbacks(monkeypatch, session, ["ctrl_r"], "armed")
+
+    on_press(keyboard.Key.ctrl_r)
+
+    session.arm.assert_called_once()
+    session.disarm.assert_not_called()
+    session.start_capture.assert_not_called()
+    session.toggle.assert_not_called()
+
+    on_release(keyboard.Key.ctrl_r)
+    session.arm.assert_called_once()  # la relâche ne déclenche rien de plus
+
+
+def test_armed_mode_disarms_on_press_when_armed(monkeypatch):
+    session = _fake_session()
+    session.is_armed.return_value = True
+    session.disarm.return_value = (True, "OK")
+    on_press, _ = _get_callbacks(monkeypatch, session, ["ctrl_r"], "armed")
+
+    on_press(keyboard.Key.ctrl_r)
+
+    session.disarm.assert_called_once()
+    session.arm.assert_not_called()
+
+
+def test_armed_mode_ignores_key_repeat_on_press(monkeypatch):
+    session = _fake_session()
+    session.is_armed.return_value = False
+    session.arm.return_value = (True, "OK")
+    on_press, on_release = _get_callbacks(monkeypatch, session, ["ctrl_r"], "armed")
+
+    on_press(keyboard.Key.ctrl_r)
+    on_press(keyboard.Key.ctrl_r)  # répétition matérielle avant relâche
+
+    session.arm.assert_called_once()
+
+    on_release(keyboard.Key.ctrl_r)
+    session.is_armed.return_value = True
+    session.disarm.return_value = (True, "OK")
+    on_press(keyboard.Key.ctrl_r)  # nouvel appui après relâche : désarme cette fois
+
+    session.disarm.assert_called_once()
+
+
+def test_armed_mode_prints_error_when_arm_fails(monkeypatch, capsys):
+    session = _fake_session()
+    session.is_armed.return_value = False
+    session.arm.return_value = (False, "ERR modèles absents")
+    on_press, _ = _get_callbacks(monkeypatch, session, ["ctrl_r"], "armed")
+
+    on_press(keyboard.Key.ctrl_r)
+
+    captured = capsys.readouterr()
+    assert "ERR modèles absents" in captured.err
+
+
 def test_no_valid_key_returns_none_and_starts_no_listener(monkeypatch, capsys):
     session = _fake_session()
     result = hotkey.start_listener(session, ["touche_inconnue"], "toggle")

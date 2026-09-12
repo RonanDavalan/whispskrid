@@ -38,6 +38,20 @@ _state: dict = {}
 
 _PHRASES = ("open", "close")
 
+# Vocabulaire de déclenchement figé par D9 (CONCEPTION_WHISPSKRID.md) : une
+# phrase à deux mots par langue, jamais un mot isolé (réduit le risque de
+# faux positif face à un mot courant qui apparaîtrait par hasard dans une
+# conversation). Purement déclaratif ici — sert à informer l'utilisateur
+# (cli.py, bannière du mode armé) de la phrase à prononcer pour sa langue ;
+# aucun rapport avec le contenu réel des modèles ONNX (leur entraînement est
+# un chantier séparé, voir docstring de module).
+PHRASES_PAR_LANGUE: dict[str, dict[str, str]] = {
+    "fr": {"open": "active dictée", "close": "stop dictée"},
+    "en": {"open": "start dictation", "close": "stop dictation"},
+    "de": {"open": "diktat starten", "close": "diktat stoppen"},
+    "es": {"open": "iniciar dictado", "close": "terminar dictado"},
+}
+
 
 def resolve_wakeword_models_dir() -> Path:
     """Dossier des modèles ONNX de phrase — même cascade que
