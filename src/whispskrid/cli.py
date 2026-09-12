@@ -175,7 +175,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
             # ARM headless) et faisait planter toute la session résidente, alors
             # que ce chemin est documenté « best-effort » et que le pilotage par
             # socket seul (control.py) est une voie complète à part entière —
-            # relevé lors de la validation réelle ARM (`ada`, 12/09/2026).
+            # relevé lors d'une validation réelle ARM headless (12/09/2026).
             try:
                 from whispskrid import hotkey
                 listener = hotkey.start_listener(
