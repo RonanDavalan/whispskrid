@@ -21,6 +21,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest"]
+# Réservé (D9) — mode armé par mot vocal. Non listé dans `dependencies` :
+# aucune dépendance à openwakeword tant que hotkeys.mode: armed n'est pas
+# câblé (session.py ne l'importe qu'à l'usage, jamais au chargement du
+# paquet), et le paquet doit rester installable sans elle.
+wakeword = ["openwakeword==0.4.0"]
 
 [project.scripts]
 whispskrid = "whispskrid.cli:main"

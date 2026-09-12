@@ -48,7 +48,25 @@ hotkeys:
   # relâche = transcription et injection (comportement historique, inchangé).
   # "toggle" : un appui bref démarre la capture, un second appui bref
   # l'arrête et l'injecte ; la relâche ne fait plus rien.
+  # "armed" (D9, réservé — câblage non encore fait) : un appui arme l'écoute
+  # continue du mot vocal (wakeword.enabled doit être true), un second appui
+  # désarme ; entre les deux, le début et la fin de chaque segment sont
+  # pilotés par la voix (wakeword.py).
   mode: "hold"
+
+wakeword:
+  # Réservé (D9) — mode armé par mot vocal, câblage non encore fait dans
+  # session.py/hotkey.py. false : comportement strictement inchangé, aucune
+  # dépendance à openwakeword chargée.
+  enabled: false
+  # Score minimal (0-1) avant de considérer une phrase franchie (D9 : seuil
+  # usuel openwakeword, 0.5).
+  threshold: 0.5
+  # Dossier des modèles ONNX de phrase (<lang>_open.onnx / <lang>_close.onnx,
+  # un couple par langue). Vide => emplacement standard (paquet : /usr/share
+  # + ~/.local/share ; sources : ./wakeword-models), voir
+  # wakeword.resolve_wakeword_models_dir().
+  models_dir: ""
 
 control_socket: true
 

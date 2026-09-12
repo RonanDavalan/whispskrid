@@ -41,8 +41,12 @@ def _dev_mode_path() -> Path:
     return _project_root() / "config" / "config.yaml"
 
 
+def _system_template_path() -> Path:
+    return Path("/usr/share/whispskrid/config.yaml")
+
+
 def _factory_template_path() -> Path | None:
-    system = Path("/usr/share/whispskrid/config.yaml")
+    system = _system_template_path()
     if system.is_file():
         return system
     embedded = _dev_mode_path()
