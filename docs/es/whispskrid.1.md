@@ -132,11 +132,13 @@ configuration binds push-to-talk to:
 :   Mantener para grabar, soltar para detener; transcribe e inyecta: la semántica nativa de presionar/soltar de `pynput` implementa el "push-to-talk" directamente en esta ruta (a diferencia de la ruta del "control-socket" mencionada anteriormente, que solo ve comandos discretos y, por lo tanto, debe exponer **--toggle** en su lugar).
 
 Las teclas asignadas son configurables en `hotkeys.push_to_talk` en el
-archivo de configuración. Cada nombre a continuación designa una tecla física, nunca una
-combinación de teclas, y solo una tecla física puede estar asignada a
-"push-to-talk": `ctrl_r` (Control derecho), `ctrl_l` (Control izquierdo), `alt_r`
+archivo de configuración. Cada nombre a continuación designa una tecla física:
+`ctrl_r` (Control derecho), `ctrl_l` (Control izquierdo), `alt_r`
 (Alt derecho), `alt_l` (Alt izquierdo), `shift_r` (Shift derecho), `shift_l` (Shift
-izquierdo), `cmd`.
+izquierdo), `cmd`. Indicar varias las convierte en una combinación: todas
+deben mantenerse pulsadas a la vez, en cualquier orden, para activar
+"push-to-talk" (por ejemplo `["alt_l", "shift_r"]`); en `mode: hold`,
+soltar cualquiera de ellas detiene la captura y la inyecta.
 
 `hotkeys.min_hold_ms` (milisegundos, valor predeterminado `250`) se aplica a `mode: hold`
 solo: una pulsación liberada antes de este retardo cancela la captura en lugar de

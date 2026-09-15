@@ -166,11 +166,13 @@ configuration binds push-to-talk to:
     discrete commands and must therefore expose **\--toggle** instead).
 
 The bound key(s) are configurable under `hotkeys.push_to_talk` in the
-configuration file. Each name below designates one physical key — never a
-key combination — and only a single physical key can be bound to
-push-to-talk: `ctrl_r` (right Control), `ctrl_l` (left Control), `alt_r`
-(right Alt), `alt_l` (left Alt), `shift_r` (right Shift), `shift_l` (left
-Shift), `cmd`.
+configuration file. Each name below designates one physical key: `ctrl_r`
+(right Control), `ctrl_l` (left Control), `alt_r` (right Alt), `alt_l`
+(left Alt), `shift_r` (right Shift), `shift_l` (left Shift), `cmd`. Listing
+more than one turns them into a combination: all of them must be held
+together, in any order, to engage push-to-talk (for instance
+`["alt_l", "shift_r"]`); in `mode: hold`, releasing any one of them stops
+and injects.
 
 `hotkeys.min_hold_ms` (milliseconds, default `250`) applies to `mode: hold`
 only: a press released before this delay cancels the capture instead of

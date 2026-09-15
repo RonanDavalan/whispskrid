@@ -202,6 +202,81 @@ def test_armed_mode_prints_error_when_arm_fails(monkeypatch, capsys):
     assert "ERR modèles absents" in captured.err
 
 
+def test_hold_mode_combo_starts_only_when_both_keys_held(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 101.0])  # 1 s tenu, largement au-dessus de min_hold_ms
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(
+        monkeypatch, session, ["alt_l", "shift_r"], "hold"
+    )
+
+    on_press(keyboard.Key.alt_l)
+    session.start_capture.assert_not_called()  # une seule des deux touches
+
+    on_press(keyboard.Key.shift_r)
+    session.start_capture.assert_called_once()  # combinaison complète
+
+    on_release(keyboard.Key.shift_r)
+    session.stop_capture_and_inject.assert_called_once()
+
+    on_release(keyboard.Key.alt_l)  # relâche restante : pas de second arrêt
+    session.stop_capture_and_inject.assert_called_once()
+
+
+def test_hold_mode_combo_order_of_press_does_not_matter(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 100.3])
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(
+        monkeypatch, session, ["alt_l", "shift_r"], "hold"
+    )
+
+    on_press(keyboard.Key.shift_r)
+    on_press(keyboard.Key.alt_l)
+    session.start_capture.assert_called_once()
+
+    on_release(keyboard.Key.alt_l)
+    session.stop_capture_and_inject.assert_called_once()
+    session.cancel.assert_not_called()
+
+
+def test_hold_mode_combo_cancels_if_released_before_min_hold_ms(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 100.1])  # 100 ms < min_hold_ms (250 ms par défaut)
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(
+        monkeypatch, session, ["alt_l", "shift_r"], "hold"
+    )
+
+    on_press(keyboard.Key.alt_l)
+    on_press(keyboard.Key.shift_r)
+    on_release(keyboard.Key.shift_r)
+
+    session.cancel.assert_called_once()
+    session.stop_capture_and_inject.assert_not_called()
+
+
+def test_toggle_mode_combo_fires_once_per_full_press_cycle(monkeypatch):
+    session = _fake_session()
+    on_press, on_release = _get_callbacks(
+        monkeypatch, session, ["alt_l", "shift_r"], "toggle"
+    )
+
+    on_press(keyboard.Key.alt_l)
+    session.toggle.assert_not_called()
+    on_press(keyboard.Key.shift_r)
+    session.toggle.assert_called_once()
+
+    on_press(keyboard.Key.shift_r)  # répétition matérielle, combinaison déjà engagée
+    session.toggle.assert_called_once()
+
+    on_release(keyboard.Key.alt_l)
+    on_release(keyboard.Key.shift_r)
+    on_press(keyboard.Key.alt_l)
+    on_press(keyboard.Key.shift_r)  # nouveau cycle complet : second toggle
+    assert session.toggle.call_count == 2
+
+
 def test_no_valid_key_returns_none_and_starts_no_listener(monkeypatch, capsys):
     session = _fake_session()
     result = hotkey.start_listener(session, ["touche_inconnue"], "toggle")

@@ -182,7 +182,11 @@ post_processing:
   hold semantics are exact on this path. The control-socket subcommands
   (`--dictate`, `--dictate-stop`, `--toggle`) exist for desktops whose
   shortcut system cannot convey "key held", where they act as a
-  start/stop toggle instead.
+  start/stop toggle instead. Listing more than one key turns them into a
+  **combination**: all of them must be held together, in any order, to
+  engage the action; in `mode: hold`, releasing any one of them stops and
+  injects (or cancels, under `min_hold_ms`). A single-key list behaves
+  exactly as before.
 - **`min_hold_ms`** (integer, milliseconds, default `250`): in `mode: hold`
   only, a press released before this delay cancels the capture instead of
   transcribing and injecting it — a guard against a brief, unintended tap
@@ -205,6 +209,13 @@ hotkeys:
   push_to_talk: ["shift_r"]
   min_hold_ms: 250
   mode: "hold"
+```
+
+Example with a two-key combination (`alt_l` + `shift_r` held together):
+
+```yaml
+hotkeys:
+  push_to_talk: ["alt_l", "shift_r"]
 ```
 
 ### `wakeword`

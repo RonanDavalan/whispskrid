@@ -130,7 +130,7 @@ la fonction "push-to-talk" à :
 :   Maintenir pour enregistrer, relâcher pour arrêter, transcrire et injecter : la fonctionnalité native de pression/relâchement de `pynput` implémente la fonction "pousser pour parler" directement sur ce chemin (contrairement au chemin de la socket de contrôle mentionné ci-dessus, qui ne reçoit que des commandes discrètes et doit donc exposer **--toggle** à la place).
 
 Les touches assignées sont configurables dans la section `hotkeys.push_to_talk` du
-fichier de configuration. Chaque nom ci-dessous désigne une seule touche physique – et non une combinaison de touches – et une seule touche physique peut être assignée à la fonction "push-to-talk" : `ctrl_r` (Ctrl droit), `ctrl_l` (Ctrl gauche), `alt_r` (Alt droit), `alt_l` (Alt gauche), `shift_r` (Maj droit), `shift_l` (Maj gauche), `cmd`.
+fichier de configuration. Chaque nom ci-dessous désigne une seule touche physique : `ctrl_r` (Ctrl droit), `ctrl_l` (Ctrl gauche), `alt_r` (Alt droit), `alt_l` (Alt gauche), `shift_r` (Maj droit), `shift_l` (Maj gauche), `cmd`. En lister plusieurs en fait une combinaison : toutes doivent être tenues ensemble, dans n'importe quel ordre, pour engager la fonction "push-to-talk" (par exemple `["alt_l", "shift_r"]`) ; en `mode: hold`, relâcher l'une d'entre elles arrête et injecte.
 
 `hotkeys.min_hold_ms` (millisecondes, par défaut `250`) s'applique à `mode: hold` uniquement : une touche pressée avant ce délai annule l'enregistrement au lieu de transcrire et d'injecter le son, ce qui permet d'éviter qu'une brève pression involontaire sur la touche assignée (par exemple, un raccourci clavier sur un ordinateur) n'enregistre du bruit de fond ou un silence, ce que Whisper pourrait interpréter à tort comme du texte.
 

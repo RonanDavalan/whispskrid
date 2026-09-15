@@ -68,6 +68,14 @@ def start_listener(
     contre un tap bref (touche partagée avec un autre usage du bureau) qui
     ouvrirait une capture sur du bruit ou du quasi-silence, que Whisper
     hallucine.
+
+    Combinaison (D13, CONCEPTION_WHISPSKRID.md) : quand `push_to_talk`
+    contient plusieurs touches, elles forment une combinaison — toutes
+    doivent être tenues simultanément pour engager l'action (peu importe
+    l'ordre d'appui) ; en mode "hold", la relâche de n'importe laquelle
+    d'entre elles arrête et injecte (ou annule, sous `min_hold_ms`). Une
+    liste à une seule touche se comporte exactement comme avant (ensemble à
+    un élément).
     """
     keys = _resolve_keys(push_to_talk)
     if not keys:
@@ -79,22 +87,35 @@ def start_listener(
         return None
 
     pressed: set = set()
+    engaged = False
 
     if mode == "toggle":
 
         def on_press(key) -> None:
-            if key in keys and key not in pressed:
-                pressed.add(key)
+            nonlocal engaged
+            if key not in keys:
+                return
+            pressed.add(key)
+            if pressed >= keys and not engaged:
+                engaged = True
                 session.toggle()
 
         def on_release(key) -> None:
-            pressed.discard(key)
+            nonlocal engaged
+            if key in keys:
+                pressed.discard(key)
+                if not pressed >= keys:
+                    engaged = False
 
     elif mode == "armed":
 
         def on_press(key) -> None:
-            if key in keys and key not in pressed:
-                pressed.add(key)
+            nonlocal engaged
+            if key not in keys:
+                return
+            pressed.add(key)
+            if pressed >= keys and not engaged:
+                engaged = True
                 if session.is_armed():
                     ok, msg = session.disarm()
                 else:
@@ -103,23 +124,37 @@ def start_listener(
                     print(f"whispskrid : {msg}", file=sys.stderr)
 
         def on_release(key) -> None:
-            pressed.discard(key)
+            nonlocal engaged
+            if key in keys:
+                pressed.discard(key)
+                if not pressed >= keys:
+                    engaged = False
 
     else:
-        press_times: dict = {}
+        combo_started_at: float | None = None
 
         def on_press(key) -> None:
-            if key in keys and key not in pressed:
-                pressed.add(key)
-                press_times[key] = time.monotonic()
+            nonlocal engaged, combo_started_at
+            if key not in keys:
+                return
+            pressed.add(key)
+            if pressed >= keys and not engaged:
+                engaged = True
+                combo_started_at = time.monotonic()
                 session.start_capture()
 
         def on_release(key) -> None:
-            if key in keys:
-                pressed.discard(key)
-                pressed_at = press_times.pop(key, None)
+            nonlocal engaged, combo_started_at
+            if key not in keys:
+                return
+            was_engaged = engaged
+            pressed.discard(key)
+            if was_engaged and not pressed >= keys:
+                engaged = False
                 held_ms = (
-                    (time.monotonic() - pressed_at) * 1000 if pressed_at is not None else None
+                    (time.monotonic() - combo_started_at) * 1000
+                    if combo_started_at is not None
+                    else None
                 )
                 if held_ms is not None and held_ms < min_hold_ms:
                     session.cancel()
