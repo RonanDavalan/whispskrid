@@ -43,7 +43,12 @@ hotkeys:
   # sous-commandes CLI liées aux raccourcis du bureau.
   pynput_enabled: true
   # Touche d'appui-pour-parler. Maintien = capture ; relâche = transcription.
-  push_to_talk: ["ctrl_r"]
+  # Shift droit par défaut (D12) : Ctrl droit est partagé avec des raccourcis
+  # de bureau usuels (navigation d'onglets) et déclenchait des captures
+  # parasites sur un tap bref, avant même la garde min_hold_ms ; Alt droit
+  # écarté (AltGr, touche morte pour ~/#/¬ selon la disposition) ; Shift droit
+  # seul n'a par défaut aucun raccourci global sous KDE Plasma.
+  push_to_talk: ["shift_r"]
   # Durée minimale de maintien, en millisecondes, avant qu'un mode "hold" ne
   # transcrive et injecte à la relâche (D10). En dessous, la capture est
   # annulée sans transcription ni injection — garde contre un tap bref

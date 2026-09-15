@@ -159,7 +159,7 @@ itself watches the X server. The listener does not consume the key
 event: the keystroke also reaches the focused window. The factory
 configuration binds push-to-talk to:
 
-**Right Ctrl**
+**Right Shift**
 :   Hold to capture, release to stop, transcribe and inject — the native
     press/release semantics of `pynput` implement push-to-talk directly on
     this path (unlike the control-socket path above, which only sees

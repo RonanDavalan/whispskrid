@@ -195,7 +195,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
                 from whispskrid import hotkey
                 listener = hotkey.start_listener(
                     session,
-                    cfg.get("hotkeys", {}).get("push_to_talk", ["ctrl_r"]),
+                    cfg.get("hotkeys", {}).get("push_to_talk", ["shift_r"]),
                     cfg.get("hotkeys", {}).get("mode", "hold"),
                     cfg.get("hotkeys", {}).get("min_hold_ms", 250),
                 )

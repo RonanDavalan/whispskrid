@@ -155,7 +155,7 @@ post_processing:
 ### `hotkeys`
 
 - **`pynput_enabled`** (boolesch, Standardwert: `true`): Startet den globalen `pynput` Listener. `pynput` überwacht den X-Server, sodass er gestartet wird, sobald einer erreichbar ist (wenn `DISPLAY` gesetzt ist), für jeden Sitzungstyp. Unter Wayland werden nur Tastenereignisse für Fenster angezeigt, die über XWayland laufen, niemals ein fokussiertes natives Wayland-Fenster. Setzen Sie diesen Wert auf `false`, um ihn niemals zu starten und das Tool nur über die Kontroll-Subbefehle zu steuern, die an Ihre Desktop-Shortcuts gebunden sind.
-- **`push_to_talk`** (Liste, Standardwert: `["ctrl_r"]`): Die Taste für "Push-to-Talk".
+- **`push_to_talk`** (Liste, Standardwert: `["shift_r"]`): Die Taste für "Push-to-Talk".
   Gedrückt → Aufnahme; losgelassen → Transkribieren und Einfügen (in `mode: hold`, siehe unten). `pynput` unterscheidet zwischen Druck und Loslassen nativ, sodass die "Gedrückt-Halten"-Semantik auf diesem Pfad genau ist. Die Kontroll-Socket-Subbefehle (`--dictate`, `--dictate-stop`, `--toggle`) existieren für Desktops, deren Shortcutsystem "Taste gedrückt halten" nicht darstellen kann, wo sie als Start/Stopp-Umschalter fungieren.
 - **`min_hold_ms`** (Integer, Millisekunden, Standardwert: `250`): Nur in `mode: hold` gilt: Wenn eine Taste losgelassen wird, bevor diese Verzögerung abgelaufen ist, wird die Aufnahme abgebrochen, anstatt transkribiert und eingefügt zu werden – ein Schutz vor einem kurzen, unbeabsichtigten Druck der gebundenen Taste (z. B. ein Desktop-Shortcut, der dieselbe Taste verwendet), der andernfalls eine Aufnahme von Hintergrundgeräuschen oder fast völliger Stille auslösen würde, was Whisper als Text interpretieren könnte. Hat außerhalb von `mode: hold` keine Auswirkung.
 - **`mode`** (`hold`, `toggle` oder `armed`, Standardwert: `hold`): Was passiert, wenn die gebundene Taste gedrückt wird. `hold` ist das oben beschriebene Verhalten, das durch `min_hold_ms` geschützt wird. `toggle` startet die Aufnahme beim ersten Druck und stoppt sie, transkribiert und fügt sie beim nächsten Druck derselben Taste ein; die Freigabe der Taste bewirkt in diesem Modus nichts. `armed` aktiviert die kontinuierliche Aufnahme einer gesprochenen Phrase beim ersten Druck (siehe `wakeword` unten); ein zweiter Druck deaktiviert sie. Rein additiv: `push_to_talk` und dessen "Gedrückt-Halten"-Semantik bleiben unverändert, wenn `mode` fehlt oder auf `hold` gesetzt ist.
@@ -163,7 +163,7 @@ post_processing:
 ```yaml
 hotkeys:
   pynput_enabled: true
-  push_to_talk: ["ctrl_r"]
+  push_to_talk: ["shift_r"]
   min_hold_ms: 250
   mode: "hold"
 ```

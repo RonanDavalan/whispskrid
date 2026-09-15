@@ -134,7 +134,7 @@ Jede der folgenden Optionen verbindet sich mit dem Socket der laufenden Sitzung,
 `pynput` Globale Hotkeys werden aktiviert, wenn `hotkeys.pynput_enabled` in der Konfigurationsdatei auf "true" gesetzt ist und ein Display-Server erreichbar ist
 (`DISPLAY` Einstellung) – für alle Sitzungstypen, einschließlich Wayland, da `pynput` selbst den X-Server überwacht. Der Listener verbraucht das Tastaturereignis nicht: der Tastendruck erreicht auch das aktive Fenster. Die Werkseinstellung bindet "Push-to-Talk" an:
 
-**Rechte Strg-Taste**
+**Rechte Umschalttaste**
 :   Gedrückt halten zum Aufnehmen, loslassen zum Stoppen. Transkribieren und injizieren – die native
     "drücken/loslassen"-Semantik von `pynput` implementiert Push-to-Talk direkt
     auf diesem Pfad (im Gegensatz zum Control-Socket-Pfad oben, der nur

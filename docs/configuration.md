@@ -176,7 +176,7 @@ post_processing:
   native-Wayland window. Set to `false` to never start it and drive the
   tool only through the control subcommands bound to your desktop's own
   shortcuts.
-- **`push_to_talk`** (list, default `["ctrl_r"]`): the push-to-talk key.
+- **`push_to_talk`** (list, default `["shift_r"]`): the push-to-talk key.
   Held down → capture; released → transcribe and inject (in `mode: hold`,
   see below). `pynput` distinguishes press from release natively, so the
   hold semantics are exact on this path. The control-socket subcommands
@@ -202,7 +202,7 @@ post_processing:
 ```yaml
 hotkeys:
   pynput_enabled: true
-  push_to_talk: ["ctrl_r"]
+  push_to_talk: ["shift_r"]
   min_hold_ms: 250
   mode: "hold"
 ```

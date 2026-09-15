@@ -126,7 +126,7 @@ lui-même surveille le serveur X. Le listener ne consomme pas l'événement de t
 la frappe atteint également la fenêtre active. La configuration par défaut associe
 la fonction "push-to-talk" à :
 
-**Ctrl droit**
+**Maj droit**
 :   Maintenir pour enregistrer, relâcher pour arrêter, transcrire et injecter : la fonctionnalité native de pression/relâchement de `pynput` implémente la fonction "pousser pour parler" directement sur ce chemin (contrairement au chemin de la socket de contrôle mentionné ci-dessus, qui ne reçoit que des commandes discrètes et doit donc exposer **--toggle** à la place).
 
 Les touches assignées sont configurables dans la section `hotkeys.push_to_talk` du

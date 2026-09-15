@@ -153,7 +153,7 @@ post_processing:
 ### `hotkeys`
 
 - **`pynput_enabled`** (booleano, valor predeterminado `true`): inicia el listener global de `pynput`. `pynput` observa el servidor X, por lo que se inicia cada vez que uno está disponible (establecido con `DISPLAY`), en cualquier tipo de sesión; bajo Wayland, solo ve los eventos de teclado para las ventanas que se ejecutan a través de XWayland, nunca una ventana nativa de Wayland con foco. Establece en `false` para que nunca se inicie y controle la herramienta solo a través de los subcomandos de control vinculados a los atajos de tu escritorio.
-- **`push_to_talk`** (lista, valor predeterminado `["ctrl_r"]`): la tecla de "push-to-talk".
+- **`push_to_talk`** (lista, valor predeterminado `["shift_r"]`): la tecla de "push-to-talk".
   Mantener presionada → captura; al soltar → transcribe e inyecta (en `mode: hold`, ver abajo). `pynput` distingue la pulsación de la liberación de forma nativa, por lo que la semántica de "mantener presionado" es exacta en esta ruta. Los subcomandos de socket de control (`--dictate`, `--dictate-stop`, `--toggle`) existen para los escritorios cuyo sistema de atajos no puede transmitir "tecla mantenida", donde actúan como un interruptor de inicio/parada en su lugar.
 - **`min_hold_ms`** (entero, milisegundos, valor predeterminado `250`): en `mode: hold` solo, si se libera una pulsación antes de este retraso, se cancela la captura en lugar de transcribirla e inyectarla; esto evita una pulsación breve e involuntaria de la tecla vinculada (por ejemplo, un atajo de escritorio que comparte la misma tecla) que, de otro modo, abriría una captura en ruido de fondo o silencio, lo que Whisper podría interpretar como texto. No tiene ningún efecto fuera de `mode: hold`.
 - **`mode`** (uno de `hold`, `toggle`, o `armed`, valor predeterminado `hold`): lo que hace una pulsación de la tecla vinculada. `hold` es el comportamiento descrito anteriormente, protegido por `min_hold_ms`. `toggle` inicia la captura en la primera pulsación y se detiene, transcribe e inyecta en la siguiente pulsación de la misma tecla; la liberación de la tecla no hace nada en este modo. `armed` activa la escucha continua de una frase hablada en la primera pulsación (ver `wakeword` a continuación); una segunda pulsación la desactiva. Puramente aditivo: `push_to_talk` y su semántica de "mantener presionado" no cambian cuando `mode` está ausente o establecido en `hold`.
@@ -161,7 +161,7 @@ post_processing:
 ```yaml
 hotkeys:
   pynput_enabled: true
-  push_to_talk: ["ctrl_r"]
+  push_to_talk: ["shift_r"]
   min_hold_ms: 250
   mode: "hold"
 ```

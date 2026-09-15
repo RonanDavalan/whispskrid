@@ -128,7 +128,7 @@ itself watches the X server. The listener does not consume the key
 event: the keystroke also reaches the focused window. The factory
 configuration binds push-to-talk to:
 
-**Ctrl derecho**
+**Mayús derecho**
 :   Mantener para grabar, soltar para detener; transcribe e inyecta: la semántica nativa de presionar/soltar de `pynput` implementa el "push-to-talk" directamente en esta ruta (a diferencia de la ruta del "control-socket" mencionada anteriormente, que solo ve comandos discretos y, por lo tanto, debe exponer **--toggle** en su lugar).
 
 Las teclas asignadas son configurables en `hotkeys.push_to_talk` en el
