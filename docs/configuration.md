@@ -183,18 +183,46 @@ post_processing:
   (`--dictate`, `--dictate-stop`, `--toggle`) exist for desktops whose
   shortcut system cannot convey "key held", where they act as a
   start/stop toggle instead.
-- **`mode`** (`hold` or `toggle`, default `hold`): what a press of the
-  bound key does. `hold` is the behavior described above. `toggle` starts
-  capture on the first press and stops, transcribes and injects on the
-  next press of the same key; the key release does nothing in this mode.
-  Purely additive: `push_to_talk` and its hold semantics are unchanged
-  when `mode` is absent or set to `hold`.
+- **`min_hold_ms`** (integer, milliseconds, default `250`): in `mode: hold`
+  only, a press released before this delay cancels the capture instead of
+  transcribing and injecting it — a guard against a brief, unintended tap
+  of the bound key (for instance a desktop shortcut sharing the same key)
+  that would otherwise open a capture on background noise or near-silence,
+  which Whisper can hallucinate into stray text. Has no effect outside
+  `mode: hold`.
+- **`mode`** (`hold`, `toggle` or `armed`, default `hold`): what a press of
+  the bound key does. `hold` is the behavior described above, guarded by
+  `min_hold_ms`. `toggle` starts capture on the first press and stops,
+  transcribes and injects on the next press of the same key; the key
+  release does nothing in this mode. `armed` arms continuous listening for
+  a spoken phrase on the first press (see `wakeword` below); a second press
+  disarms. Purely additive: `push_to_talk` and its hold semantics are
+  unchanged when `mode` is absent or set to `hold`.
 
 ```yaml
 hotkeys:
   pynput_enabled: true
   push_to_talk: ["ctrl_r"]
+  min_hold_ms: 250
   mode: "hold"
+```
+
+### `wakeword`
+
+Only used when `hotkeys.mode` is `armed`. A press arms continuous listening:
+a short spoken phrase opens a capture segment, another closes it and injects
+it, until a second key press disarms.
+
+- **`threshold`** (float 0-1, default `0.5`): minimum confidence before a
+  phrase is considered matched.
+- **`models_dir`** (string, default empty): directory holding the phrase
+  models (`<lang>_open.onnx` / `<lang>_close.onnx`, one pair per language).
+  Empty resolves to the standard install locations.
+
+```yaml
+wakeword:
+  threshold: 0.5
+  models_dir: ""
 ```
 
 ### `control_socket`

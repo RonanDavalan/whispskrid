@@ -172,12 +172,22 @@ push-to-talk: `ctrl_r` (right Control), `ctrl_l` (left Control), `alt_r`
 (right Alt), `alt_l` (left Alt), `shift_r` (right Shift), `shift_l` (left
 Shift), `cmd`.
 
-`hotkeys.mode` (`hold`, the default, or `toggle`) controls what pressing
-the bound key does. `hold` is the behavior described above: hold to
-capture, release to stop, transcribe and inject. `toggle` starts capture
-on the first press and stops, transcribes and injects on the next press
-of the same key; releasing the key does nothing in this mode — useful to
-avoid holding a key down for a long dictation.
+`hotkeys.min_hold_ms` (milliseconds, default `250`) applies to `mode: hold`
+only: a press released before this delay cancels the capture instead of
+transcribing and injecting it — a guard against a brief, unintended tap of
+the bound key (a desktop shortcut sharing the same key, for instance) that
+would otherwise capture background noise or near-silence, which Whisper can
+hallucinate into stray text.
+
+`hotkeys.mode` (`hold`, the default, `toggle`, or `armed`) controls what
+pressing the bound key does. `hold` is the behavior described above,
+guarded by `hotkeys.min_hold_ms`. `toggle` starts capture on the first
+press and stops, transcribes and injects on the next press of the same
+key; releasing the key does nothing in this mode — useful to avoid holding
+a key down for a long dictation. `armed` arms continuous listening for a
+spoken phrase on the first press — a short phrase opens a capture segment,
+another closes and injects it, until a second press disarms; see the
+`wakeword` key in **configuration.md** (CONFIGURATION below).
 
 To change the bound key(s) or the mode, edit `hotkeys.push_to_talk` /
 `hotkeys.mode` in the configuration file (see CONFIGURATION below for its

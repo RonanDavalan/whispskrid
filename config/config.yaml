@@ -44,6 +44,13 @@ hotkeys:
   pynput_enabled: true
   # Touche d'appui-pour-parler. Maintien = capture ; relâche = transcription.
   push_to_talk: ["ctrl_r"]
+  # Durée minimale de maintien, en millisecondes, avant qu'un mode "hold" ne
+  # transcrive et injecte à la relâche (D10). En dessous, la capture est
+  # annulée sans transcription ni injection — garde contre un tap bref
+  # (touche partagée avec un autre usage du bureau) qui ouvrirait une capture
+  # sur du bruit ou du quasi-silence, que Whisper hallucine. Sans effet hors
+  # mode "hold".
+  min_hold_ms: 250
   # Comportement de la touche ci-dessus. "hold" (défaut) : maintien = capture,
   # relâche = transcription et injection (comportement historique, inchangé).
   # "toggle" : un appui bref démarre la capture, un second appui bref

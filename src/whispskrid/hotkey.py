@@ -18,6 +18,7 @@ chaque segment sont ensuite pilotés par la voix (voir session.py,
 from __future__ import annotations
 
 import sys
+import time
 
 from pynput import keyboard
 
@@ -49,7 +50,7 @@ def _resolve_keys(names: list[str]) -> set:
 
 
 def start_listener(
-    session: Session, push_to_talk: list[str], mode: str = "hold"
+    session: Session, push_to_talk: list[str], mode: str = "hold", min_hold_ms: int = 250
 ) -> keyboard.Listener | None:
     """Démarre l'écouteur en tâche de fond. None si aucune touche valide dans
     `push_to_talk` — la session résidente reste pilotable par la socket seule.
@@ -60,6 +61,13 @@ def start_listener(
     control.py) sur l'appui ; la relâche ne fait plus rien. "armed" (D9)
     arme/désarme l'écoute continue du mot vocal sur l'appui ; la relâche ne
     fait rien non plus.
+
+    `min_hold_ms` (D10, CONCEPTION_WHISPSKRID.md) : en mode "hold" seulement,
+    un appui relâché avant ce délai (en millisecondes) annule la capture
+    (`Session.cancel()`) au lieu de la transcrire et l'injecter — garde
+    contre un tap bref (touche partagée avec un autre usage du bureau) qui
+    ouvrirait une capture sur du bruit ou du quasi-silence, que Whisper
+    hallucine.
     """
     keys = _resolve_keys(push_to_talk)
     if not keys:
@@ -98,16 +106,25 @@ def start_listener(
             pressed.discard(key)
 
     else:
+        press_times: dict = {}
 
         def on_press(key) -> None:
             if key in keys and key not in pressed:
                 pressed.add(key)
+                press_times[key] = time.monotonic()
                 session.start_capture()
 
         def on_release(key) -> None:
             if key in keys:
                 pressed.discard(key)
-                session.stop_capture_and_inject()
+                pressed_at = press_times.pop(key, None)
+                held_ms = (
+                    (time.monotonic() - pressed_at) * 1000 if pressed_at is not None else None
+                )
+                if held_ms is not None and held_ms < min_hold_ms:
+                    session.cancel()
+                else:
+                    session.stop_capture_and_inject()
 
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.daemon = True

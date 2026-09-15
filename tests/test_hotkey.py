@@ -1,10 +1,11 @@
 # Écouteur pynput (hotkey.py) : couvre les deux valeurs de `hotkeys.mode`
 # introduites par la décision D8 (CONCEPTION_WHISPSKRID.md) — "hold" (défaut,
 # comportement historique inchangé) et "toggle" (appui bref démarre, appui
-# bref suivant arrête et injecte). `pynput.keyboard.Listener` n'est jamais
-# démarré ici : on appelle directement les callbacks `on_press`/`on_release`
-# construits par `start_listener`, en doublant `Session` pour ne dépendre ni
-# du matériel audio ni d'un serveur X réel.
+# bref suivant arrête et injecte) — ainsi que la garde de durée minimale D10
+# (`hotkeys.min_hold_ms`) sur le mode "hold". `pynput.keyboard.Listener` n'est
+# jamais démarré ici : on appelle directement les callbacks
+# `on_press`/`on_release` construits par `start_listener`, en doublant
+# `Session` pour ne dépendre ni du matériel audio ni d'un serveur X réel.
 
 from __future__ import annotations
 
@@ -19,7 +20,7 @@ def _fake_session() -> MagicMock:
     return MagicMock()
 
 
-def _get_callbacks(monkeypatch, session, push_to_talk, mode):
+def _get_callbacks(monkeypatch, session, push_to_talk, mode, min_hold_ms=250):
     """Intercepte la construction du `keyboard.Listener` pour récupérer les
     callbacks `on_press`/`on_release` sans démarrer de fil ni de serveur X."""
     captured = {}
@@ -34,12 +35,14 @@ def _get_callbacks(monkeypatch, session, push_to_talk, mode):
             pass
 
     monkeypatch.setattr(keyboard, "Listener", _FakeListener)
-    hotkey.start_listener(session, push_to_talk, mode)
+    hotkey.start_listener(session, push_to_talk, mode, min_hold_ms)
     return captured["on_press"], captured["on_release"]
 
 
 def test_hold_mode_starts_on_press_and_stops_on_release(monkeypatch):
     session = _fake_session()
+    times = iter([100.0, 101.0])  # 1 s tenu, largement au-dessus de min_hold_ms
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
     on_press, on_release = _get_callbacks(monkeypatch, session, ["ctrl_r"], "hold")
 
     on_press(keyboard.Key.ctrl_r)
@@ -58,6 +61,47 @@ def test_hold_mode_ignores_key_repeat_on_press(monkeypatch):
     on_press(keyboard.Key.ctrl_r)  # répétition matérielle avant relâche
 
     session.start_capture.assert_called_once()
+
+
+def test_hold_mode_cancels_press_shorter_than_min_hold_ms(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 100.1])  # 100 ms < min_hold_ms (250 ms par défaut)
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(monkeypatch, session, ["ctrl_r"], "hold")
+
+    on_press(keyboard.Key.ctrl_r)
+    on_release(keyboard.Key.ctrl_r)
+
+    session.cancel.assert_called_once()
+    session.stop_capture_and_inject.assert_not_called()
+
+
+def test_hold_mode_injects_press_at_least_min_hold_ms(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 100.3])  # 300 ms >= min_hold_ms (250 ms par défaut)
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(monkeypatch, session, ["ctrl_r"], "hold")
+
+    on_press(keyboard.Key.ctrl_r)
+    on_release(keyboard.Key.ctrl_r)
+
+    session.stop_capture_and_inject.assert_called_once()
+    session.cancel.assert_not_called()
+
+
+def test_hold_mode_respects_custom_min_hold_ms(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 100.05])  # 50 ms, sous un seuil custom de 30 ms
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(
+        monkeypatch, session, ["ctrl_r"], "hold", min_hold_ms=30
+    )
+
+    on_press(keyboard.Key.ctrl_r)
+    on_release(keyboard.Key.ctrl_r)
+
+    session.stop_capture_and_inject.assert_called_once()
+    session.cancel.assert_not_called()
 
 
 def test_toggle_mode_calls_toggle_on_press_only(monkeypatch):
@@ -89,9 +133,10 @@ def test_toggle_mode_ignores_key_repeat_on_press(monkeypatch):
 def test_default_mode_is_hold(monkeypatch):
     session = _fake_session()
     on_press, _ = _get_callbacks(monkeypatch, session, ["ctrl_r"], mode="hold")
-    # `start_listener(session, push_to_talk)` sans troisième argument doit se
-    # comporter comme "hold" — signature par défaut vérifiée directement.
-    assert hotkey.start_listener.__defaults__ == ("hold",)
+    # `start_listener(session, push_to_talk)` sans troisième/quatrième argument
+    # doit se comporter comme "hold" à 250 ms — signature par défaut vérifiée
+    # directement.
+    assert hotkey.start_listener.__defaults__ == ("hold", 250)
 
     on_press(keyboard.Key.ctrl_r)
     session.start_capture.assert_called_once()
