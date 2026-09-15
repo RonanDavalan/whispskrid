@@ -277,6 +277,19 @@ def test_toggle_mode_combo_fires_once_per_full_press_cycle(monkeypatch):
     assert session.toggle.call_count == 2
 
 
+def test_hold_mode_accepts_function_key(monkeypatch):
+    session = _fake_session()
+    times = iter([100.0, 101.0])
+    monkeypatch.setattr(hotkey.time, "monotonic", lambda: next(times))
+    on_press, on_release = _get_callbacks(monkeypatch, session, ["f4"], "hold")
+
+    on_press(keyboard.Key.f4)
+    session.start_capture.assert_called_once()
+
+    on_release(keyboard.Key.f4)
+    session.stop_capture_and_inject.assert_called_once()
+
+
 def test_no_valid_key_returns_none_and_starts_no_listener(monkeypatch, capsys):
     session = _fake_session()
     result = hotkey.start_listener(session, ["touche_inconnue"], "toggle")

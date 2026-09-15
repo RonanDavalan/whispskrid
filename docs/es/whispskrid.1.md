@@ -135,10 +135,15 @@ Las teclas asignadas son configurables en `hotkeys.push_to_talk` en el
 archivo de configuración. Cada nombre a continuación designa una tecla física:
 `ctrl_r` (Control derecho), `ctrl_l` (Control izquierdo), `alt_r`
 (Alt derecho), `alt_l` (Alt izquierdo), `shift_r` (Shift derecho), `shift_l` (Shift
-izquierdo), `cmd`. Indicar varias las convierte en una combinación: todas
-deben mantenerse pulsadas a la vez, en cualquier orden, para activar
-"push-to-talk" (por ejemplo `["alt_l", "shift_r"]`); en `mode: hold`,
-soltar cualquiera de ellas detiene la captura y la inyecta.
+izquierdo), `cmd`, `f1` a `f12` (teclas de función). Indicar varias las
+convierte en una combinación: todas deben mantenerse pulsadas a la vez, en
+cualquier orden, para activar "push-to-talk" (por ejemplo
+`["alt_l", "shift_r"]`); en `mode: hold`, soltar cualquiera de ellas
+detiene la captura y la inyecta. Una combinación de teclas modificadoras
+puede entrar en conflicto con un atajo del escritorio (por ejemplo,
+Alt+Mayús suele estar asignado al cambio de distribución de teclado en
+KDE Plasma y GNOME) — una tecla de función como `f4` evita ese tipo de
+conflicto.
 
 `hotkeys.min_hold_ms` (milisegundos, valor predeterminado `250`) se aplica a `mode: hold`
 solo: una pulsación liberada antes de este retardo cancela la captura en lugar de

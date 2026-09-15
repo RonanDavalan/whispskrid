@@ -168,11 +168,14 @@ configuration binds push-to-talk to:
 The bound key(s) are configurable under `hotkeys.push_to_talk` in the
 configuration file. Each name below designates one physical key: `ctrl_r`
 (right Control), `ctrl_l` (left Control), `alt_r` (right Alt), `alt_l`
-(left Alt), `shift_r` (right Shift), `shift_l` (left Shift), `cmd`. Listing
-more than one turns them into a combination: all of them must be held
-together, in any order, to engage push-to-talk (for instance
-`["alt_l", "shift_r"]`); in `mode: hold`, releasing any one of them stops
-and injects.
+(left Alt), `shift_r` (right Shift), `shift_l` (left Shift), `cmd`, `f1`
+through `f12` (function keys). Listing more than one turns them into a
+combination: all of them must be held together, in any order, to engage
+push-to-talk (for instance `["alt_l", "shift_r"]`); in `mode: hold`,
+releasing any one of them stops and injects. A modifier-key combination
+can collide with a desktop-level shortcut (for instance, Alt+Shift is
+commonly bound to a keyboard-layout switch on KDE Plasma and GNOME) —
+a function key such as `f4` avoids that class of conflict.
 
 `hotkeys.min_hold_ms` (milliseconds, default `250`) applies to `mode: hold`
 only: a press released before this delay cancels the capture instead of

@@ -144,12 +144,16 @@ Die gebundenen Taste(n) können unter `hotkeys.push_to_talk` in der
 Konfigurationsdatei konfiguriert werden. Jeder Name unten bezeichnet eine
 physische Taste: `ctrl_r` (rechte Strg-Taste), `ctrl_l` (linke Strg-Taste),
 `alt_r` (rechte Alt-Taste), `alt_l` (linke Alt-Taste), `shift_r` (rechte
-Umschalttaste), `shift_l` (linke Umschalttaste), `cmd`. Werden mehrere
-angegeben, bilden sie eine Tastenkombination: alle müssen gleichzeitig
-gedrückt gehalten werden, unabhängig von der Reihenfolge, um
-Push-to-Talk auszulösen (zum Beispiel `["alt_l", "shift_r"]`); im Modus
-`hold` beendet das Loslassen einer beliebigen dieser Tasten die Aufnahme
-und injiziert den Text.
+Umschalttaste), `shift_l` (linke Umschalttaste), `cmd`, `f1` bis `f12`
+(Funktionstasten). Werden mehrere angegeben, bilden sie eine
+Tastenkombination: alle müssen gleichzeitig gedrückt gehalten werden,
+unabhängig von der Reihenfolge, um Push-to-Talk auszulösen (zum Beispiel
+`["alt_l", "shift_r"]`); im Modus `hold` beendet das Loslassen einer
+beliebigen dieser Tasten die Aufnahme und injiziert den Text. Eine
+Kombination aus Modifikatortasten kann mit einem Desktop-Tastenkürzel
+kollidieren (zum Beispiel ist Alt+Umschalt unter KDE Plasma und GNOME
+häufig dem Tastaturlayout-Wechsel zugeordnet) — eine Funktionstaste wie
+`f4` vermeidet diese Art von Konflikt.
 
 `hotkeys.min_hold_ms` (Millisekunden, Standardwert: `250`) gilt nur für `mode: hold`:
 Ein vor dieser Verzögerung veröffentlichtes Protokoll bricht die Aufnahme ab anstelle der
