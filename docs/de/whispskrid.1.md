@@ -1,6 +1,6 @@
 % WHISPSKRID(1) whispskrid | Benutzerbefehle
 % Ronan Davalan
-% 2026-09-11
+% 2026-09-18
 
 # NAME
 

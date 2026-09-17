@@ -1,4 +1,5 @@
 <p align="center">
+  <a href="https://github.com/RonanDavalan/whispskrid/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/version-v1.0.0-brightgreen.svg" alt="Version v1.0.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="#"><img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+"></a>
   <a href="#"><img src="https://img.shields.io/badge/OS-Debian_13-D70A53.svg" alt="Tested on Debian 13"></a>
@@ -18,10 +19,20 @@ source, also in `fr`/`de`/`es`) for the full command reference, and
 
 ## Status
 
-PHASE_EXECUTION of the roadmap: dictation, injection, the control socket,
+First stable release (`v1.0.0`): dictation, injection, the control socket,
 `pynput` push-to-talk, `--diagnose`, and a four-language CLI interface
-(`en`/`fr`/`de`/`es`) are implemented and covered by the test suite. No
-Debian package has been published yet.
+(`en`/`fr`/`de`/`es`) are implemented and covered by the test suite.
+
+## Install the Debian package
+
+```bash
+sudo apt install ./whispskrid_1.0.0_all.deb
+```
+
+Download the package from
+[whispskrid.davalan.fr](https://whispskrid.davalan.fr) or from the
+[Releases page](https://github.com/RonanDavalan/whispskrid/releases). See
+the site for what the package installs and how to verify the download.
 
 ## Run from source
 

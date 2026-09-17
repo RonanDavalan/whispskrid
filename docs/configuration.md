@@ -61,7 +61,7 @@ default_language: ""
 ### `backend`
 
 Selects the speech recognition engine. `faster-whisper` is the only value
-accepted in v0.1.0; the key is reserved for a future second backend
+accepted in v1.0.0; the key is reserved for a future second backend
 (`whisper.cpp`).
 
 - **`name`** (string): `"faster-whisper"`, the only accepted value.
@@ -140,7 +140,7 @@ audio:
 ### `vad`
 
 Reserved for a future silence-based automatic stop. **Not implemented in
-v0.1.0**: `vad.enabled: true` logs a "not yet implemented" warning and the
+v1.0.0**: `vad.enabled: true` logs a "not yet implemented" warning and the
 tool keeps behaving as strict push-to-talk (the key you hold is the only
 thing that starts and stops a capture).
 

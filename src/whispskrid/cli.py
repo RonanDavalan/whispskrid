@@ -285,8 +285,8 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.version:
-        # __version__ (PEP 440, ex. "0.1.0a0") est la forme technique du
-        # paquet Python ; le paquet Debian porte "0.1.0~alpha" (invariant
+        # __version__ (ex. "1.0.0") est la forme technique du paquet Python ;
+        # le paquet Debian porte la même forme (invariant
         # GOUVERNANCE/PROTOCOLE_PUBLICATION.md n°1). Les deux désignent la
         # même version : les afficher ensemble évite qu'un utilisateur
         # comparant `dpkg -l whispskrid` et `whispskrid --version` ne les
