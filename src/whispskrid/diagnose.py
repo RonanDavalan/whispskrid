@@ -280,7 +280,7 @@ def _check_socket_controle(_) -> list[Check]:
     ]
     running = control.session_running()
     checks.append(
-        Check(_("session résidente en cours"), True,
+        Check(_("session persistante en cours"), True,
               _("oui") if running else _("non (--diagnose peut être lancé sans session active)"),
               blocking=False)
     )

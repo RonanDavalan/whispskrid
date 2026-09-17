@@ -1,4 +1,4 @@
-"""État interne de la session résidente — capture, transcription, injection.
+"""État interne de la session persistante — capture, transcription, injection.
 
 Machine à deux états (`idle` / `capturing`), plus une couche armée au-dessus
 (mode armé par mot vocal), pilotée symétriquement par l'écouteur `pynput`

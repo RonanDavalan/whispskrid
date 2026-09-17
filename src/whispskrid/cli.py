@@ -46,7 +46,7 @@ def _build_parser(_) -> argparse.ArgumentParser:
         group.add_argument("--toggle", action="store_true", help=_("dictate ou dictate-stop selon l'état")),
         group.add_argument("--cancel", action="store_true", help=_("jette la capture en cours sans injecter")),
         group.add_argument("--status", action="store_true", help=_("imprime l'état de la session en cours")),
-        group.add_argument("--stop", action="store_true", help=_("arrête la session résidente en cours")),
+        group.add_argument("--stop", action="store_true", help=_("arrête la session persistante en cours")),
         group.add_argument("--diagnose", action="store_true", help=_("vérifie l'environnement et quitte")),
         group.add_argument("--download-model", nargs="?", const="base", default=None, metavar="NOM",
                             help=_("télécharge un modèle et quitte")),
@@ -120,7 +120,7 @@ def _run_client(args: argparse.Namespace) -> int:
 def _run_resident(args: argparse.Namespace, _) -> int:
     if control.session_running():
         print(
-            _("whispskrid : une session résidente tourne déjà — "
+            _("whispskrid : une session persistante tourne déjà — "
               "arrêtez-la (--stop) avant d'en ouvrir une seconde (§3.2)."),
             file=sys.stderr,
         )
@@ -187,7 +187,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
         if cfg.get("hotkeys", {}).get("pynput_enabled", True):
             # `pynput` est un serveur X (Xlib) : son import lève une ImportError
             # non rattrapée sur une machine sans serveur X (SSH pur, conteneur,
-            # ARM headless) et faisait planter toute la session résidente, alors
+            # ARM headless) et faisait planter toute la session persistante, alors
             # que ce chemin est documenté « best-effort » et que le pilotage par
             # socket seul (control.py) est une voie complète à part entière.
             try:

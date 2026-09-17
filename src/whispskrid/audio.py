@@ -8,7 +8,7 @@ de backend — pas de flux ni de VAD, contrairement au moule vosk-cli-dictation
 (cœur d'interaction en continu, hors périmètre ici).
 
 Le périphérique est ouvert une fois par `open_stream()` au démarrage de la
-session résidente (§3.1) et reste ouvert entre les dictées ; `capture_episode()`
+session persistante (§3.1) et reste ouvert entre les dictées ; `capture_episode()`
 lit dessus le temps d'un seul épisode d'appui.
 """
 
@@ -50,7 +50,7 @@ def open_stream(cfg: dict) -> tuple[pyaudio.PyAudio, pyaudio.Stream]:
     """Ouvre le périphérique de capture au format attendu (§6 audio.*).
 
     Lève l'exception PyAudio telle quelle si aucun périphérique d'entrée
-    n'est disponible — à l'appelant (session résidente, --diagnose) de la
+    n'est disponible — à l'appelant (session persistante, --diagnose) de la
     traduire en message clair.
     """
     audio_cfg = cfg.get("audio", {})
@@ -72,7 +72,7 @@ def open_stream(cfg: dict) -> tuple[pyaudio.PyAudio, pyaudio.Stream]:
 
 def close_stream(p: pyaudio.PyAudio, stream: pyaudio.Stream) -> None:
     """Ferme proprement le flux et le périphérique. À appeler une fois, à
-    l'arrêt de la session résidente (`quit`)."""
+    l'arrêt de la session persistante (`quit`)."""
     try:
         if stream.is_active():
             stream.stop_stream()
@@ -93,7 +93,7 @@ def _drain_stale_backlog(stream: pyaudio.Stream) -> None:
     de chaque nouvelle capture — assez pour faire dériver un petit modèle
     Whisper vers une hallucination complète, avec une dégradation qui
     s'aggrave à mesure que les cycles s'enchaînent dans une même session
-    résidente. Sans effet sur une capture qui démarre juste après
+    persistante. Sans effet sur une capture qui démarre juste après
     l'ouverture du flux (rien à purger).
     """
     try:

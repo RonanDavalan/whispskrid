@@ -6,7 +6,7 @@ Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §4. Seule implémentation
 livrée en v0.1.0 : `faster-whisper`.
 
 État chargé (modèle, paramètres effectifs) gardé au niveau du module : une
-session résidente n'appelle `load()` qu'une fois, tout le reste du
+session persistante n'appelle `load()` qu'une fois, tout le reste du
 processus partage le même état.
 """
 
@@ -81,7 +81,7 @@ def load(
     beam_size: int = 5,
 ) -> None:
     """Charge le modèle en mémoire. Appelé une fois au démarrage de la
-    session résidente. Lève une exception claire si le modèle est absent, si
+    session persistante. Lève une exception claire si le modèle est absent, si
     l'import CTranslate2 échoue, ou si `device: cuda` est demandé
     explicitement sans que CUDA soit réellement utilisable (§4.1, §4.4)."""
     global _model, _state

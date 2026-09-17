@@ -244,7 +244,7 @@ No nulo
 
 # EJEMPLOS
 
-Comienza una sesión para residentes utilizando el idioma predeterminado del archivo de configuración:
+Comienza una sesión persistente utilizando el idioma predeterminado del archivo de configuración:
 
 ```
 whispskrid

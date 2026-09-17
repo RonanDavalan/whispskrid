@@ -10,7 +10,7 @@ Interface étroite à quatre fonctions (état de module, comme `backend/`) :
 `load()` charge les deux modèles de phrase (ouverture/clôture) d'une langue,
 `feed()` pousse un bloc d'audio brut et renvoie la phrase détectée ou None,
 `reset()` efface le tampon glissant interne entre deux segments, `unload()`
-libère tout. Un seul guetteur par processus : la session résidente n'arme
+libère tout. Un seul guetteur par processus : la session persistante n'arme
 qu'une langue à la fois (§7, -l/--lang).
 
 Convention de nommage des modèles, un couple par langue supportée

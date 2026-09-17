@@ -65,7 +65,7 @@ def start_listener(
     session: Session, push_to_talk: list[str], mode: str = "hold", min_hold_ms: int = 250
 ) -> keyboard.Listener | None:
     """Démarre l'écouteur en tâche de fond. None si aucune touche valide dans
-    `push_to_talk` — la session résidente reste pilotable par la socket seule.
+    `push_to_talk` — la session persistante reste pilotable par la socket seule.
 
     `mode` (CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
     comportement historique — maintien = capture, relâche = transcription et

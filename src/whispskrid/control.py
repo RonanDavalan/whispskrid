@@ -1,11 +1,11 @@
-"""Socket de contrôle Unix — pilotage d'une session résidente en cours.
+"""Socket de contrôle Unix — pilotage d'une session persistante en cours.
 
 Protocole texte ligne à ligne, §3.3 CONCEPTION_WHISPSKRID.md : une commande
 par ligne, réponse préfixée `OK`/`ERR`.
-Le serveur tourne dans la session résidente (un fil par connexion, §3.1) ; le
+Le serveur tourne dans la session persistante (un fil par connexion, §3.1) ; le
 client est invoqué par `whispskrid --dictate`/`--status`/… (cli.py, mode
 client), ou par `session_running()` pour la vérification d'instance unique
-(§3.2) avant d'ouvrir une nouvelle session résidente.
+(§3.2) avant d'ouvrir une nouvelle session persistante.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ def socket_path() -> Path:
 # --------------------------------------------------------------------- #
 
 def send_control_command(command: str, timeout: float = _RECV_TIMEOUT) -> tuple[bool, str]:
-    """Envoie une commande à la session résidente en cours et attend sa
+    """Envoie une commande à la session persistante en cours et attend sa
     réponse d'une ligne. (ok, texte de réponse) — jamais d'exception remontée
     à l'appelant : une socket injoignable est un cas normal (aucune session)."""
     path = socket_path()
@@ -55,13 +55,13 @@ def send_control_command(command: str, timeout: float = _RECV_TIMEOUT) -> tuple[
 
 
 def session_running() -> bool:
-    """Vrai si une session résidente répond déjà (§3.2, instance unique)."""
+    """Vrai si une session persistante répond déjà (§3.2, instance unique)."""
     ok, _reply = send_control_command("status", timeout=_CONNECT_TIMEOUT)
     return ok
 
 
 # --------------------------------------------------------------------- #
-# Serveur (session résidente)                                           #
+# Serveur (session persistante)                                           #
 # --------------------------------------------------------------------- #
 
 def _dispatch(session: Session, command: str) -> str:

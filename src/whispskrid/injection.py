@@ -56,7 +56,7 @@ def configure(cfg: dict) -> None:
     """Enregistre la configuration effective (issue de load_config()).
 
     Réinitialise les capacités détectées : appelé une fois au démarrage de la
-    session résidente, avant tout appel à type_text()/play_sound().
+    session persistante, avant tout appel à type_text()/play_sound().
     """
     global _cfg, _caps
     _cfg = cfg
@@ -358,7 +358,7 @@ def flush_deferred_clipboard() -> None:
     """Restaure le presse-papiers mémorisé en mode `clipboard.defer_restore`.
 
     Idempotente : sans restauration en attente, ne fait rien. À appeler en fin
-    de session résidente, et couverte par `atexit` pour une sortie brutale.
+    de session persistante, et couverte par `atexit` pour une sortie brutale.
     """
     if not _deferred_clip["pending"]:
         return
