@@ -1,15 +1,15 @@
 """Écouteur de raccourci local — voie de déclenchement `pynput`.
 
-PHASE_EXECUTION, tranche 5 ; session E (mode `armed`, D9). Observe le serveur
-X (`pynput`) : sous Wayland il ne capte que les fenêtres passant par
-XWayland, jamais une fenêtre Wayland native — confort best-effort, §2.4
-CONCEPTION_WHISPSKRID.md et COMPATIBILITE_WAYLAND.md §5. `on_press` déclenche
+Observe le serveur X (`pynput`) : sous Wayland il ne capte que les
+fenêtres passant par XWayland, jamais une fenêtre Wayland native — confort
+best-effort, §2.4 CONCEPTION_WHISPSKRID.md et COMPATIBILITE_WAYLAND.md §5.
+`on_press` déclenche
 la capture, `on_release` l'arrête et l'injecte : `pynput` distingue
 nativement l'appui de la relâche, la sémantique maintien est donc native sur
 cette voie — contrairement à la voie socket (control.py) qui doit basculer
 faute de transmettre ce geste.
 
-Mode `armed` (D9) : la touche arme/désarme uniquement (`Session.arm()` /
+Mode `armed` : la touche arme/désarme uniquement (`Session.arm()` /
 `Session.disarm()`), jamais de capture directe — le début et la fin de
 chaque segment sont ensuite pilotés par la voix (voir session.py,
 `_run_armed_listener`).
@@ -67,21 +67,21 @@ def start_listener(
     """Démarre l'écouteur en tâche de fond. None si aucune touche valide dans
     `push_to_talk` — la session résidente reste pilotable par la socket seule.
 
-    `mode` (D8/D9, CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
+    `mode` (CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
     comportement historique — maintien = capture, relâche = transcription et
     injection. "toggle" appelle `Session.toggle()` (déjà exposée côté socket,
-    control.py) sur l'appui ; la relâche ne fait plus rien. "armed" (D9)
+    control.py) sur l'appui ; la relâche ne fait plus rien. "armed"
     arme/désarme l'écoute continue du mot vocal sur l'appui ; la relâche ne
     fait rien non plus.
 
-    `min_hold_ms` (D10, CONCEPTION_WHISPSKRID.md) : en mode "hold" seulement,
+    `min_hold_ms` (CONCEPTION_WHISPSKRID.md) : en mode "hold" seulement,
     un appui relâché avant ce délai (en millisecondes) annule la capture
     (`Session.cancel()`) au lieu de la transcrire et l'injecter — garde
     contre un tap bref (touche partagée avec un autre usage du bureau) qui
     ouvrirait une capture sur du bruit ou du quasi-silence, que Whisper
     hallucine.
 
-    Combinaison (D13, CONCEPTION_WHISPSKRID.md) : quand `push_to_talk`
+    Combinaison (CONCEPTION_WHISPSKRID.md) : quand `push_to_talk`
     contient plusieurs touches, elles forment une combinaison — toutes
     doivent être tenues simultanément pour engager l'action (peu importe
     l'ordre d'appui) ; en mode "hold", la relâche de n'importe laquelle

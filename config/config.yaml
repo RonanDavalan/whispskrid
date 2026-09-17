@@ -43,14 +43,14 @@ hotkeys:
   # sous-commandes CLI liées aux raccourcis du bureau.
   pynput_enabled: true
   # Touche d'appui-pour-parler. Maintien = capture ; relâche = transcription.
-  # Shift droit par défaut (D12) : Ctrl droit est partagé avec des raccourcis
+  # Shift droit par défaut : Ctrl droit est partagé avec des raccourcis
   # de bureau usuels (navigation d'onglets) et déclenchait des captures
   # parasites sur un tap bref, avant même la garde min_hold_ms ; Alt droit
   # écarté (AltGr, touche morte pour ~/#/¬ selon la disposition) ; Shift droit
   # seul n'a par défaut aucun raccourci global sous KDE Plasma.
   push_to_talk: ["shift_r"]
   # Durée minimale de maintien, en millisecondes, avant qu'un mode "hold" ne
-  # transcrive et injecte à la relâche (D10). En dessous, la capture est
+  # transcrive et injecte à la relâche. En dessous, la capture est
   # annulée sans transcription ni injection — garde contre un tap bref
   # (touche partagée avec un autre usage du bureau) qui ouvrirait une capture
   # sur du bruit ou du quasi-silence, que Whisper hallucine. Sans effet hors
@@ -60,17 +60,17 @@ hotkeys:
   # relâche = transcription et injection (comportement historique, inchangé).
   # "toggle" : un appui bref démarre la capture, un second appui bref
   # l'arrête et l'injecte ; la relâche ne fait plus rien.
-  # "armed" (D9) : un appui arme l'écoute continue du mot vocal (voir
+  # "armed" : un appui arme l'écoute continue du mot vocal (voir
   # wakeword.py, entraînement réel des modèles de phrase non encore fait —
   # armer échoue proprement tant qu'ils sont absents), un second appui
   # désarme ; entre les deux, le début et la fin de chaque segment sont
   # pilotés par la voix. Pendant l'armement, les commandes socket
   # dictate/dictate-stop/toggle/cancel répondent ERR armed-mode-active — le
-  # passage armé/désarmé reste exclusivement au clavier (D9).
+  # passage armé/désarmé reste exclusivement au clavier.
   mode: "hold"
 
 wakeword:
-  # Score minimal (0-1) avant de considérer une phrase franchie (D9 : seuil
+  # Score minimal (0-1) avant de considérer une phrase franchie (seuil
   # usuel openwakeword, 0.5). Sans effet tant que hotkeys.mode n'est pas
   # "armed".
   threshold: 0.5

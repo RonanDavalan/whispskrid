@@ -1,7 +1,6 @@
 """`--diagnose` — vérifie l'environnement et quitte.
 
-PHASE_EXECUTION, tranche distincte de l'assemblage cli.py (§7 conception) :
-voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §8 pour la liste des
+Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §8 pour la liste des
 points de contrôle et leur statut bloquant/informatif. Reprend la structure
 du moule (`diagnose.py`), adaptée au backend Whisper.
 
@@ -14,7 +13,7 @@ session sans affichage graphique (`DISPLAY`/`WAYLAND_DISPLAY` absents — un
 presse-papiers ne peut structurellement pas fonctionner sans compositeur
 X11/Wayland en cours d'exécution, cas courant d'une connexion SSH/tty pure).
 
-Catalogue gettext (§`ADDENDUM_2026-09-11_diagnose-i18n.md`) : seuls les
+Catalogue gettext : seuls les
 libellés et détails statiques passent par `_()` — chemins de fichiers,
 noms d'outils techniques (`xdotool`, `wl-clipboard`...) et messages
 d'exception Python/système ne sont jamais traduits, ils sont déjà en

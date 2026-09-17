@@ -1,8 +1,8 @@
 """Capture audio pendant l'appui — appui-pour-parler strict.
 
-PHASE_EXECUTION, tranche 3. Voir
-_CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §2.1-2.2 : la capture démarre à
-l'appui, s'accumule tant que la touche est tenue, s'arrête à la relâche (ou au
+Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §2.1-2.2 : la capture
+démarre à l'appui, s'accumule tant que la touche est tenue, s'arrête à la
+relâche (ou au
 garde-fou `capture.max_seconds`), et part en une seule passe vers l'adaptateur
 de backend — pas de flux ni de VAD, contrairement au moule vosk-cli-dictation
 (cœur d'interaction en continu, hors périmètre ici).
@@ -31,8 +31,8 @@ def _sans_bruit_alsa_jack():
     descripteur de fichier stderr (pas sur `sys.stderr` : un `redirect_stderr`
     Python ne les intercepte pas). Ce sondage produit un bruit non pertinent
     (« ALSA lib pcm.c:... », « Cannot connect to server socket » JACK) sur une
-    machine sans ces serveurs actifs, sans rapport avec un échec réel (relevé
-    testeur, 12/09/2026) : le flux s'ouvre correctement malgré ce bruit.
+    machine sans ces serveurs actifs, sans rapport avec un échec réel :
+    le flux s'ouvre correctement malgré ce bruit.
     """
     stderr_fd = 2
     saved_fd = os.dup(stderr_fd)
@@ -87,14 +87,14 @@ def _drain_stale_backlog(stream: pyaudio.Stream) -> None:
 
     Le flux reste ouvert en continu entre les dictées (voir docstring de
     module) mais n'est lu par personne tant qu'aucune capture n'est en
-    cours : le tampon interne continue de se remplir en silence. Défaut
-    trouvé en session de validation le 11/09/2026 : jusqu'à ~0,77 s d'audio
-    périmé (mesuré empiriquement, capacité fixe du tampon PortAudio, quelle
-    que soit la durée d'inactivité) se retrouvait en tête de chaque nouvelle
-    capture — assez pour faire dériver un petit modèle Whisper vers une
-    hallucination complète, avec une dégradation qui s'aggrave à mesure que
-    les cycles s'enchaînent dans une même session résidente. Sans effet sur
-    une capture qui démarre juste après l'ouverture du flux (rien à purger).
+    cours : le tampon interne continue de se remplir en silence. Jusqu'à
+    ~0,77 s d'audio périmé (mesuré empiriquement, capacité fixe du tampon
+    PortAudio, quelle que soit la durée d'inactivité) se retrouvait en tête
+    de chaque nouvelle capture — assez pour faire dériver un petit modèle
+    Whisper vers une hallucination complète, avec une dégradation qui
+    s'aggrave à mesure que les cycles s'enchaînent dans une même session
+    résidente. Sans effet sur une capture qui démarre juste après
+    l'ouverture du flux (rien à purger).
     """
     try:
         avail = stream.get_read_available()

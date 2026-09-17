@@ -1,6 +1,6 @@
 """Résolution du dossier de modèles Whisper et téléchargement explicite.
 
-Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §5.1/§5.2 (D4 — dossier de
+Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §5.1/§5.2 (dossier de
 modèles géré, cache Hugging Face en repli seulement pour faster-whisper
 lui-même, jamais le chemin nominal de WhispSkrid).
 """

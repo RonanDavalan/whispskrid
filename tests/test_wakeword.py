@@ -1,6 +1,6 @@
-# Guetteur de mots-clés vocaux (wakeword.py, D9) : module isolé, jamais
-# mélangé à hotkey.py/session.py (session D du chantier « Modes de
-# déclenchement étendus »). `openwakeword` n'est jamais réellement importé
+# Guetteur de mots-clés vocaux (wakeword.py) : module isolé, jamais
+# mélangé à hotkey.py/session.py (un seul guetteur par processus, voir
+# docstring de module). `openwakeword` n'est jamais réellement importé
 # ici — doublure du module `openwakeword.model`, sur le modèle de
 # test_models.py pour `huggingface_hub`/`faster_whisper`.
 

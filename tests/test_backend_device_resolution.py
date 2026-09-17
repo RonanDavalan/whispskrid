@@ -1,8 +1,7 @@
-# _resolve_device() (backend/__init__.py, décision D7 — voir
-# _CADRE/MEMOIRE/ADDENDUM_2026-09-11_correctif-libcublas-cuda12.md et
-# CONCEPTION_WHISPSKRID.md §4.4) : ne transmet jamais "auto" tel quel à
-# CTranslate2, sonde libcublas.so.12 par dlopen avant tout appel WhisperModel
-# pour éviter un échec tardif au premier transcribe().
+# _resolve_device() (backend/__init__.py, CONCEPTION_WHISPSKRID.md §4.4) :
+# ne transmet jamais "auto" tel quel à CTranslate2, sonde libcublas.so.12
+# par dlopen avant tout appel WhisperModel, pour éviter un échec tardif au
+# premier transcribe().
 
 from __future__ import annotations
 

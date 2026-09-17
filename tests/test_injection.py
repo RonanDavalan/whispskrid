@@ -2,17 +2,16 @@
 # (ctrl+shift+v) quand la fenêtre active est un terminal listé dans
 # injection.terminal_window_classes, et le combo générique (ctrl+v) sinon.
 #
-# Défaut trouvé en session de validation le 11/09/2026 : la détection de
-# classe reposait sur `xdotool getactivewindow getwindowclassname`, une
-# sous-commande absente de la version xdotool packagée Debian
-# (3.20160805.1) — la classe retournée était toujours vide, le combo
-# terminal n'était donc jamais choisi. Défaut invisible dans un bash (ctrl+v
-# y est lié à l'insertion verbatim, sans effet visible), démasqué par un
-# collage réel dans un terminal graphique. Corrigé par `xprop -id <id>
-# WM_CLASS`, régression couverte ici en doublant `_run` (aucun serveur X
-# nécessaire pour le test).
+# La détection de classe reposait sur `xdotool getactivewindow
+# getwindowclassname`, une sous-commande absente de la version xdotool
+# packagée Debian (3.20160805.1) — la classe retournée était toujours vide,
+# le combo terminal n'était donc jamais choisi. Défaut invisible dans un
+# bash (ctrl+v y est lié à l'insertion verbatim, sans effet visible),
+# démasqué par un collage réel dans un terminal graphique. Corrigé par
+# `xprop -id <id> WM_CLASS`, régression couverte ici en doublant `_run`
+# (aucun serveur X nécessaire pour le test).
 #
-# Second défaut trouvé le 11/09/2026 (validation sur machine de test ARM) : la détection
+# Second défaut : la détection
 # de fenêtre n'était tentée que si `key_backend == "xdotool"`, alors que
 # ydotool est prioritaire dès qu'il est présent (COMPATIBILITE_WAYLAND.md
 # §2) — sur toute machine avec ydotool ET xdotool/xprop disponibles (le cas

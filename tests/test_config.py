@@ -20,7 +20,7 @@ def _isolate(tmp_path, monkeypatch):
     réellement installé (`/usr/share/whispskrid/config.yaml` présent, voir
     TACHE_construire-paquet-debian.md) sans cette substitution faisait
     dépendre le résultat des tests de l'état d'installation de la machine qui
-    les exécute — découvert le 12/09/2026 en lançant la suite complète après
+    les exécute — découvert en lançant la suite complète après
     l'ajout de wakeword.py."""
     monkeypatch.delenv(config.ENV_OVERRIDE, raising=False)
     monkeypatch.setenv("HOME", str(tmp_path / "home"))

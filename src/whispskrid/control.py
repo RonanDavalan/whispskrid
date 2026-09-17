@@ -1,7 +1,7 @@
 """Socket de contrôle Unix — pilotage d'une session résidente en cours.
 
-PHASE_EXECUTION, tranche 5. Protocole texte ligne à ligne, §3.3
-CONCEPTION_WHISPSKRID.md : une commande par ligne, réponse préfixée `OK`/`ERR`.
+Protocole texte ligne à ligne, §3.3 CONCEPTION_WHISPSKRID.md : une commande
+par ligne, réponse préfixée `OK`/`ERR`.
 Le serveur tourne dans la session résidente (un fil par connexion, §3.1) ; le
 client est invoqué par `whispskrid --dictate`/`--status`/… (cli.py, mode
 client), ou par `session_running()` pour la vérification d'instance unique

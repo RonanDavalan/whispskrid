@@ -1,9 +1,7 @@
 # Machine d'état de Session (session.py) : distinction ERR <message> / OK
-# <texte> / OK (vide) / OK cancelled — corrige exactement le symptôme
-# remonté par Ronan (« --dictate-stop qui ne retourne aucun texte »), voir
-# _CADRE/MEMOIRE/ADDENDUM_2026-09-11_correctif-libcublas-cuda12.md. La
-# capture audio et le backend Whisper sont doublés : ces tests exercent la
-# machine d'état, pas le matériel réel.
+# <texte> / OK (vide) / OK cancelled — corrige le symptôme « --dictate-stop
+# qui ne retourne aucun texte ». La capture audio et le backend Whisper
+# sont doublés : ces tests exercent la machine d'état, pas le matériel réel.
 
 from __future__ import annotations
 
@@ -146,9 +144,9 @@ def test_stop_while_idle_is_rejected():
 
 
 # --------------------------------------------------------------------- #
-# Mode armé (D9) — fil unique _run_armed_listener, seul lecteur du flux  #
-# tant qu'armé (voir docstring de module : écart assumé à la lettre de   #
-# D9 pour éviter deux lecteurs concurrents sur le même flux PyAudio).    #
+# Mode armé — fil unique _run_armed_listener, seul lecteur du flux      #
+# tant qu'armé (voir docstring de module : un seul lecteur possible sur #
+# le même flux PyAudio).                                                #
 # --------------------------------------------------------------------- #
 
 class _FakeStream:

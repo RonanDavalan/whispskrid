@@ -1,7 +1,7 @@
 # models.download_model()/model_cached() (§5.2 CONCEPTION_WHISPSKRID.md) :
 # implémentation réelle de --download-model, corrigeant le stub qui répondait
-# « pas encore implémenté » (relevé testeur, 12/09/2026 — friction « aucun
-# service d'installation de modèle »). Le réseau n'est jamais sollicité ici :
+# « pas encore implémenté » (le stub ne proposait aucun service
+# d'installation de modèle). Le réseau n'est jamais sollicité ici :
 # huggingface_hub.snapshot_download et faster_whisper.WhisperModel sont
 # remplacés par des doublures.
 

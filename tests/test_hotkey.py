@@ -1,7 +1,7 @@
 # Écouteur pynput (hotkey.py) : couvre les deux valeurs de `hotkeys.mode`
-# introduites par la décision D8 (CONCEPTION_WHISPSKRID.md) — "hold" (défaut,
+# (CONCEPTION_WHISPSKRID.md) — "hold" (défaut,
 # comportement historique inchangé) et "toggle" (appui bref démarre, appui
-# bref suivant arrête et injecte) — ainsi que la garde de durée minimale D10
+# bref suivant arrête et injecte) — ainsi que la garde de durée minimale
 # (`hotkeys.min_hold_ms`) sur le mode "hold". `pynput.keyboard.Listener` n'est
 # jamais démarré ici : on appelle directement les callbacks
 # `on_press`/`on_release` construits par `start_listener`, en doublant

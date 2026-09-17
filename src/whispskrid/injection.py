@@ -1,7 +1,7 @@
 """Injection de texte dans la fenêtre active — presse-papiers + collage.
 
-Couche reprise du moule vosk-cli-dictation et réadaptée (PHASE_EXECUTION,
-tranche 3). Voir _CADRE/SPECIFICATIONS/COMPATIBILITE_WAYLAND.md et
+Couche reprise du moule vosk-cli-dictation et réadaptée.
+Voir _CADRE/SPECIFICATIONS/COMPATIBILITE_WAYLAND.md et
 _CADRE/SPECIFICATIONS/CORRECTIF_INJECTION_COLLAGE.md pour la conception et les
 raisons de chaque parade.
 
@@ -247,11 +247,11 @@ def _active_window_class_x11() -> str:
     """Classe WM de la fenêtre active, via `xprop` (`WM_CLASS`).
 
     `xdotool getwindowclassname` n'existe pas dans la version packagée Debian
-    (3.20160805.1, sans sous-commande de classe) — défaut trouvé en session de
-    validation le 11/09/2026 : la détection de terminal échouait toujours
-    silencieusement, et le combo de collage générique (`ctrl+v`) partait à la
-    place du combo terminal (`ctrl+shift+v`), invisible dans un shell (`ctrl+v`
-    y est lié à l'insertion verbatim). `xprop` fait partie du même paquet
+    (3.20160805.1, sans sous-commande de classe) : la détection de terminal
+    échouait toujours silencieusement, et le combo de collage générique
+    (`ctrl+v`) partait à la place du combo terminal (`ctrl+shift+v`),
+    invisible dans un shell (`ctrl+v` y est lié à l'insertion verbatim).
+    `xprop` fait partie du même paquet
     `x11-utils` que `xdotool` sur une machine X11.
     """
     wid = get_active_window_id()
@@ -275,8 +275,7 @@ def _paste_combo_for_target() -> str:
     une machine X11/XWayland où xdotool/xprop fonctionnent très bien pour la
     seule détection de fenêtre.
 
-    Défaut trouvé et corrigé le 11/09/2026 (validation sur machine de test ARM) : la
-    condition testait `key_backend == "xdotool"`, donc se désactivait
+    La condition testait `key_backend == "xdotool"`, donc se désactivait
     silencieusement sur toute machine où `ydotool`/`ydotoold` sont présents et
     prioritaires — le cas le plus courant sur une machine WhispSkrid pensée
     Wayland-first. Le combo générique (`ctrl+v`) partait alors systématiquement
@@ -336,9 +335,9 @@ def _send_paste(combo: str) -> bool:
 def _settle_before_restore(text: str, budget_s: float) -> bool:
     """Fenêtre de restauration adaptative et bornée (CORRECTIF_INJECTION_COLLAGE.md §2.1).
 
-    Attend jusqu'à `budget_s`, en tranches courtes, tant que le presse-papiers
-    contient toujours `text`. Retourne False (abandon de la restauration) dès
-    qu'un autre propriétaire l'a déjà remplacé.
+    Attend jusqu'à `budget_s`, par courtes attentes successives, tant que
+    le presse-papiers contient toujours `text`. Retourne False (abandon de
+    la restauration) dès qu'un autre propriétaire l'a déjà remplacé.
     """
     deadline = time.monotonic() + budget_s
     while time.monotonic() < deadline:

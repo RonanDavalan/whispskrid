@@ -1,11 +1,11 @@
 """État interne de la session résidente — capture, transcription, injection.
 
-PHASE_EXECUTION, tranche 5 ; session E du chantier « Modes de déclenchement
-étendus » pour la couche armée (D9). Machine à deux états (`idle` /
-`capturing`), pilotée symétriquement par l'écouteur `pynput` (hotkey.py) et
-par la socket de contrôle (control.py) — §2.4, §3.3 CONCEPTION_WHISPSKRID.md.
-Un verrou sérialise les transitions : les deux voies peuvent démarrer/
-arrêter/annuler la même capture sans se marcher dessus.
+Machine à deux états (`idle` / `capturing`), plus une couche armée au-dessus
+(mode armé par mot vocal), pilotée symétriquement par l'écouteur `pynput`
+(hotkey.py) et par la socket de contrôle (control.py) — §2.4, §3.3
+CONCEPTION_WHISPSKRID.md. Un verrou sérialise les transitions : les deux
+voies peuvent démarrer/arrêter/annuler la même capture sans se marcher
+dessus.
 
 La transcription et l'injection se font toujours dans le fil de capture
 lui-même, qu'il se termine par une relâche explicite (active_event effacé)
@@ -13,22 +13,22 @@ ou par le garde-fou `capture.max_seconds` (§2.2, boucle de audio.py qui sort
 d'elle-même) : ainsi une touche restée bloquée produit quand même une
 injection, sans qu'aucune commande externe n'ait besoin d'intervenir.
 
-**Couche armée (D9), en englobante au-dessus de idle/capturing.** `arm()` /
+**Couche armée, en englobante au-dessus de idle/capturing.** `arm()` /
 `disarm()` démarrent et arrêtent un fil unique et dédié
 (`_run_armed_listener`) qui est, tant qu'il tourne, le SEUL lecteur du flux
 micro : `audio.capture_episode()` (utilisé par `start_capture()`) fait des
 `stream.read()` bloquants dans sa propre boucle, incompatibles avec un second
 lecteur concurrent sur le même flux (l'API bloquante de PortAudio n'est pas
 conçue pour ça — deux lecteurs se partageraient les échantillons de façon
-imprévisible, corrompant guetteur et transcription à la fois). C'est un écart
-volontaire à la lettre de D9 (« `Session.start_capture()` est appelée telle
-quelle ») : `_run_armed_listener` réutilise directement `_transcribe_and_
-inject()` (déjà privée) au lieu de passer par `start_capture()`/
-`stop_capture_and_inject()`, pour obtenir le même effet observable (son de
-confirmation, transition idle/capturing, transcription et injection) sans
-ouvrir de second lecteur. Décidé avec Ronan le 12/09/2026 après que la
-lettre de D9 s'est révélée non exécutable telle quelle (voir ADDENDUM du
-jour) — les modes `hold`/`toggle` ne sont pas touchés par ce choix.
+imprévisible, corrompant guetteur et transcription à la fois). Écart
+volontaire à la conception initiale (« `Session.start_capture()` est appelée
+telle quelle », CONCEPTION_WHISPSKRID.md) : `_run_armed_listener` réutilise
+directement `_transcribe_and_inject()` (déjà privée) au lieu de passer par
+`start_capture()`/`stop_capture_and_inject()`, pour obtenir le même effet
+observable (son de confirmation, transition idle/capturing, transcription et
+injection) sans ouvrir de second lecteur — la conception initiale s'est
+révélée non exécutable telle quelle (deux lecteurs concurrents impossibles
+sur ce flux). Les modes `hold`/`toggle` ne sont pas touchés par ce choix.
 `start_capture()`/`stop_capture_and_inject()`/`cancel()` refusent
 (`ERR armed-mode-active`) tant que l'armement est engagé : la socket ne peut
 pas ouvrir un second lecteur pendant que `_run_armed_listener` tourne.
@@ -161,13 +161,13 @@ class Session:
         return self.start_capture()
 
     # --------------------------------------------------------------- #
-    # Mode armé (D9) — armement/désarmement, exclusivement au clavier   #
+    # Mode armé — armement/désarmement, exclusivement au clavier   #
     # --------------------------------------------------------------- #
 
     def arm(self) -> tuple[bool, str]:
         """Passe en armé-attente : charge les modèles de phrase de la langue
-        active (repli français si aucune langue explicite — D9 n'a pas de
-        notion de phrase « auto ») et démarre le fil unique qui lit le flux
+        active (repli français si aucune langue explicite — pas de notion
+        de phrase « auto ») et démarre le fil unique qui lit le flux
         micro en continu jusqu'au désarmement. Échoue proprement, sans rien
         démarrer, si les modèles de phrase de cette langue sont absents
         (entraînement réel non encore fait, voir wakeword.py)."""
@@ -197,7 +197,7 @@ class Session:
 
     def disarm(self) -> tuple[bool, str]:
         """Repasse en désarmé depuis n'importe lequel des deux états armés
-        (D9) : un segment en cours au moment du désarmement est jeté, jamais
+        : un segment en cours au moment du désarmement est jeté, jamais
         injecté à moitié — même principe que `cancel()`."""
         with self._lock:
             if not self._armed:
@@ -216,7 +216,7 @@ class Session:
         return True, "OK"
 
     # --------------------------------------------------------------- #
-    # Fil unique du mode armé (D9) — seul lecteur du flux tant qu'armé  #
+    # Fil unique du mode armé — seul lecteur du flux tant qu'armé  #
     # --------------------------------------------------------------- #
 
     def _run_armed_listener(self) -> None:

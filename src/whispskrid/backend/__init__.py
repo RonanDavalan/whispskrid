@@ -3,10 +3,10 @@
 Interface étroite à trois fonctions, pour qu'un second backend
 (whisper.cpp) puisse être ajouté plus tard sans toucher au reste du projet.
 Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §4. Seule implémentation
-livrée en v0.1.0 : `faster-whisper` (D3).
+livrée en v0.1.0 : `faster-whisper`.
 
 État chargé (modèle, paramètres effectifs) gardé au niveau du module : une
-session résidente n'appelle `load()` qu'une fois (D2), tout le reste du
+session résidente n'appelle `load()` qu'une fois, tout le reste du
 processus partage le même état.
 """
 

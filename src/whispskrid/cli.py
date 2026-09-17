@@ -1,6 +1,6 @@
 """Point d'entrée CLI de WhispSkrid.
 
-PHASE_EXECUTION, tranche 6 : assemblage complet de `config.py` + `backend/` +
+Assemblage complet de `config.py` + `backend/` +
 `models.py` + `injection.py` + `audio.py` + `session.py` + `control.py` +
 `hotkey.py` + `diagnose.py`. Surface CLI conforme à
 _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §7. `--download-model` réel
@@ -189,8 +189,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
             # non rattrapée sur une machine sans serveur X (SSH pur, conteneur,
             # ARM headless) et faisait planter toute la session résidente, alors
             # que ce chemin est documenté « best-effort » et que le pilotage par
-            # socket seul (control.py) est une voie complète à part entière —
-            # relevé lors d'une validation réelle ARM headless (12/09/2026).
+            # socket seul (control.py) est une voie complète à part entière.
             try:
                 from whispskrid import hotkey
                 listener = hotkey.start_listener(
@@ -291,7 +290,7 @@ def main() -> int:
         # GOUVERNANCE/PROTOCOLE_PUBLICATION.md n°1). Les deux désignent la
         # même version : les afficher ensemble évite qu'un utilisateur
         # comparant `dpkg -l whispskrid` et `whispskrid --version` ne les
-        # lise comme deux versions différentes (relevé testeur, 12/09/2026).
+        # lise comme deux versions différentes.
         print(f"whispskrid {__version__} (paquet Debian {version_debian()})")
         return 0
 
