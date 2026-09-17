@@ -24,7 +24,7 @@ whispskrid **\--version**
 
 Toute la reconnaissance vocale s'effectue localement : aucun audio ni aucun texte transcrit n'est jamais envoyé à un service distant.
 
-Une seule session s'exécute par utilisateur à la fois. Lancée sans indicateur de contrôle, elle démarre une session permanente : elle charge le modèle, ouvre une prise de contrôle Unix privée à `$XDG_RUNTIME_DIR/whispskrid.sock` (mode `0600`), et démarre un écouteur de raccourcis clavier `pynput` si celui-ci est activé. La même commande invoquée avec un indicateur de contrôle (voir GESTION D'UNE SESSION EN COURS) se connecte à cette prise au lieu de démarrer une nouvelle session.
+Une seule session s'exécute par utilisateur à la fois. Lancée sans indicateur de contrôle, elle démarre une session persistante : elle charge le modèle, ouvre une prise de contrôle Unix privée à `$XDG_RUNTIME_DIR/whispskrid.sock` (mode `0600`), et démarre un écouteur de raccourcis clavier `pynput` si celui-ci est activé. La même commande invoquée avec un indicateur de contrôle (voir GESTION D'UNE SESSION EN COURS) se connecte à cette prise au lieu de démarrer une nouvelle session.
 
 Le texte est injecté en le plaçant dans le presse-papiers et en simulant un collage, ce qui nécessite deux types d'outils : un simulateur de frappe et un outil de presse-papiers.
 Sous Wayland, il s'agit de **ydotool** (qui nécessite le démon `ydotoold` et un accès à `/dev/uinput`) ainsi que **wl-clipboard** ; sous X11, il s'agit de **xdotool** ainsi que **xclip**. Sans l'un ou l'autre de ces environnements, l'injection passe en mode dégradé.
@@ -49,7 +49,7 @@ les modèles proviennent des conversions officielles CTranslate2 disponibles sur
 whispskrid --download-model
 ```
 
-Omettre cette étape n'est pas critique : la session locale télécharge le modèle par défaut lors du premier lancement, et affiche un message pour l'annoncer, car le téléchargement de Hugging Face lui-même ne montre pas de barre de progression (il s'agit d'un transfert de plusieurs centaines de Mo sans aucune activité visible).
+Omettre cette étape n'est pas critique : la session persistante télécharge le modèle par défaut lors du premier lancement, et affiche un message pour l'annoncer, car le téléchargement de Hugging Face lui-même ne montre pas de barre de progression (il s'agit d'un transfert de plusieurs centaines de Mo sans aucune activité visible).
 
 Vérifiez ensuite l'environnement :
 
@@ -115,7 +115,7 @@ sont destinés à être associés à des raccourcis clavier du bureau.
     language=<lang|auto>`) sans le modifier.
 
 **\--stop**
-:   Fermer proprement la session active de l'utilisateur.
+:   Fermer proprement la session persistante en cours.
 
 # RACCORTS CLAVIER
 
@@ -146,7 +146,7 @@ touche `wakeword` dans **configuration.md** (CONFIGURATION ci-dessous).
 
 Pour modifier la ou les clés de limite ou le mode, éditez `hotkeys.push_to_talk` /
 `hotkeys.mode` dans le fichier de configuration (voir CONFIGURATION ci-dessous pour son
-chemin exact), puis redémarrez la session active pour que le changement prenne
+chemin exact), puis redémarrez la session persistante pour que le changement prenne
 effet :
 
 ```
@@ -229,7 +229,7 @@ Non nul
 
 # EXEMPLES
 
-Démarrez une session utilisateur en utilisant la langue par défaut spécifiée dans le fichier de configuration.
+Démarrez une session persistante en utilisant la langue par défaut spécifiée dans le fichier de configuration.
 
 ```
 whispskrid
