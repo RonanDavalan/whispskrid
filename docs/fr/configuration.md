@@ -14,7 +14,7 @@ Le fichier est localisé selon la première règle correspondante ci-dessous ; u
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (par défaut
    `~/.config/whispskrid/config.yaml`). Créé automatiquement lors de la première exécution
    en copiant le modèle de configuration, avec un message indiquant le nom du fichier créé.
-4. Le modèle de configuration : `/usr/share/whispskrid/config.yaml` (installation du paquet Debian), sinon le `config/config.yaml`
+4. Le modèle de configuration : `/usr/share/whispskrid/config.yaml` (installation du paquet natif), sinon le `config/config.yaml`
    intégré au projet (couvre l'exécution à partir d'une archive source sans un répertoire `.git`).
 
 Le fichier résolu peut être **partiel** : toute clé qui lui manque prend la valeur du modèle par défaut, et les clés sont fusionnées une par une (les sections imbriquées sont fusionnées de manière récursive : vous n'avez besoin de répéter que les éléments que vous souhaitez modifier, et non l'ensemble du bloc).

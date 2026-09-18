@@ -14,8 +14,8 @@ Die Datei wird anhand der ersten passenden Regel gefunden; sobald eine Regel zut
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (Standard:
    `~/.config/whispskrid/config.yaml`). Wird beim ersten Ausführen automatisch erstellt, indem die Factory-Vorlage
    kopiert wird, wobei eine Meldung angezeigt wird, die den Namen der erstellten Datei enthält.
-4. Die Factory-Vorlage: `/usr/share/whispskrid/config.yaml` (Debian
-   Paketinstallation), andernfalls die in das
+4. Die Factory-Vorlage: `/usr/share/whispskrid/config.yaml` (natives
+   Paket, Installation), andernfalls die in das
    Projekt eingebettete `config/config.yaml` (ermöglicht die Ausführung aus einem Quelltarball ohne ein `.git`
    Verzeichnis).
 

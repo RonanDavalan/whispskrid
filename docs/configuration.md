@@ -17,7 +17,7 @@ the remaining rules are not consulted.
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (default
    `~/.config/whispskrid/config.yaml`). Created automatically on first run
    by copying the factory template, with a message naming the file created.
-4. The factory template: `/usr/share/whispskrid/config.yaml` (Debian
+4. The factory template: `/usr/share/whispskrid/config.yaml` (native
    package install), otherwise the `config/config.yaml` embedded in the
    project (covers running from a source tarball without a `.git`
    directory).

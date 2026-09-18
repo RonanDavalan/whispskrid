@@ -52,12 +52,12 @@ clipboard access are present, then exits.
 
 Install the package for your distribution:
 
-Debian and derivatives:
+Debian 12 and 13, Ubuntu 22.04 and 24.04 and their derivatives:
 ```
 sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
-Fedora:
+Fedora 42:
 ```
 sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
@@ -245,7 +245,7 @@ rule matches, the remaining rules are not consulted.
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (default
    `~/.config/whispskrid/config.yaml`). Created automatically on first run,
    from the factory template.
-4. The factory template: `/usr/share/whispskrid/config.yaml` (Debian package
+4. The factory template: `/usr/share/whispskrid/config.yaml` (native package
    install), otherwise the `config/config.yaml` embedded in the project
    (covers running from a source tarball without a `.git` directory).
 
@@ -284,7 +284,7 @@ Then re-run **\--diagnose**; it exits `0` once every blocking check passes
 :   Per-user configuration file.
 
 `/usr/share/whispskrid/config.yaml`
-:   Factory configuration template (Debian package install), read-only.
+:   Factory configuration template (native package install), read-only.
 
 `~/.local/share/whispskrid/whisper-models/`
 :   Default managed directory for downloaded Whisper models.

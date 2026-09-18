@@ -14,7 +14,7 @@ El archivo se encuentra según la primera regla que coincida a continuación; un
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (por defecto
    `~/.config/whispskrid/config.yaml`). Se crea automáticamente en la primera ejecución
    copiando la plantilla de fábrica, con un mensaje que indica el nombre del archivo creado.
-4. La plantilla de fábrica: `/usr/share/whispskrid/config.yaml` (instalación de paquete Debian), de lo contrario, la `config/config.yaml`
+4. La plantilla de fábrica: `/usr/share/whispskrid/config.yaml` (instalación de paquete nativo), de lo contrario, la `config/config.yaml`
    incrustada en el proyecto (cubre la ejecución desde un archivo tarball de origen sin un directorio `.git`).
 
 El archivo resuelto puede ser **parcial**: cualquier clave que se omita tomará el valor de la plantilla predeterminada, y las claves se fusionarán una por una (las secciones anidadas se fusionan recursivamente; solo es necesario repetir los elementos que se desean modificar, nunca todo el bloque).

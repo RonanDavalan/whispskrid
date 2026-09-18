@@ -36,12 +36,12 @@ binario y demonio responden realmente, no comprobando directamente el tipo de se
 
 Instala el paquete correspondiente a tu distribución:
 
-Debian y derivadas:
+Debian 12 y 13, Ubuntu 22.04 y 24.04 y sus derivadas:
 ```
 sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
-Fedora:
+Fedora 42:
 ```
 sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
@@ -207,7 +207,7 @@ El archivo de configuración se encuentra mediante la primera regla que coincida
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (predeterminado
    `~/.config/whispskrid/config.yaml`). Se crea automáticamente en la primera ejecución,
    a partir de la plantilla predeterminada.
-4. La plantilla predeterminada: `/usr/share/whispskrid/config.yaml` (instalación de paquete Debian), de lo contrario, la `config/config.yaml` incluida en el proyecto
+4. La plantilla predeterminada: `/usr/share/whispskrid/config.yaml` (instalación de paquete nativo), de lo contrario, la `config/config.yaml` incluida en el proyecto
    (cubre la ejecución desde un archivo tarball de origen sin un directorio `.git`).
 
 El archivo resuelto puede ser parcial: cualquier clave que omita recurre al valor de la plantilla predeterminada, y las claves se combinan una por una.
@@ -241,7 +241,7 @@ Luego, ejecute **--diagnose**; este sale `0` una vez que todas las comprobacione
 :   Archivo de configuración por usuario.
 
 `/usr/share/whispskrid/config.yaml`
-:   Plantilla de configuración de fábrica (instalación de paquete Debian), solo lectura.
+:   Plantilla de configuración de fábrica (instalación de paquete nativo), solo lectura.
 
 `~/.local/share/whispskrid/whisper-models/`
 :   Directorio predeterminado para los modelos de Whisper descargados.

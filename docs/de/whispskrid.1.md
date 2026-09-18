@@ -40,12 +40,12 @@ Die Wahl zwischen den beiden Optionen wird einmalig beim Startvorgang getroffen,
 
 Installieren Sie das Paket für Ihre Distribution:
 
-Debian und Derivate:
+Debian 12 und 13, Ubuntu 22.04 und 24.04 und deren Derivate:
 ```
 sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
-Fedora:
+Fedora 42:
 ```
 sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
@@ -215,7 +215,7 @@ Die Konfigurationsdatei wird anhand der ersten passenden Regel gefunden; sobald 
 3. `$XDG_CONFIG_HOME/whispskrid/config.yaml` (Standard:
    `~/.config/whispskrid/config.yaml`). Wird beim ersten Ausführen automatisch erstellt,
    aus der Vorlage.
-4. Die Vorlage: `/usr/share/whispskrid/config.yaml` (Debian-Paket
+4. Die Vorlage: `/usr/share/whispskrid/config.yaml` (natives Paket
    Installation), andernfalls die `config/config.yaml` im Projekt
    eingebettet (deckt die Ausführung von einem Quell-Tarball ohne ein `.git` Verzeichnis ab).
 
@@ -253,7 +253,7 @@ Führen Sie dann **--diagnose** erneut aus; es beendet `0` jedes Mal, wenn eine 
 :   Konfigurationsdatei für jeden Benutzer.
 
 `/usr/share/whispskrid/config.yaml`
-:   Konfigurationsvorlage für die Fabrik (Installation des Debian-Pakets), schreibgeschützt.
+:   Konfigurationsvorlage für die Fabrik (Installation des nativen Pakets), schreibgeschützt.
 
 `~/.local/share/whispskrid/whisper-models/`
 :   Standardmäßiges Verzeichnis für heruntergeladene Whisper-Modelle.
