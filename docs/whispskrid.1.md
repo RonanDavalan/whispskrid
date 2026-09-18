@@ -50,18 +50,35 @@ clipboard access are present, then exits.
 
 # INSTALLATION
 
-Install the Debian package:
+Install the package for your distribution:
 
+Debian and derivatives:
 ```
 sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
-The postinst step installs **faster-whisper** via pip and reports its own
-progress; the package's `Recommends` cover the injection backend for your
-session type (**ydotool** + **wl-clipboard** under Wayland, **xdotool** +
-**xclip** under X11) — none of them is a hard dependency, so an incomplete
-environment still installs, at the cost of a degraded injection mode (see
-**\--diagnose** below).
+Fedora:
+```
+sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+```
+
+openSUSE Leap 15.6:
+```
+sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+```
+
+Arch Linux:
+```
+sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+```
+
+The post-install step installs **faster-whisper** via pip into a private
+virtual environment and reports its own progress; the package covers the
+injection backend for your session type (**ydotool** + **wl-clipboard** under
+Wayland, **xdotool** + **xclip** under X11) — none of them is a hard
+dependency on every distribution, so an incomplete environment still
+installs, at the cost of a degraded injection mode (see **\--diagnose**
+below).
 
 No Whisper model ships with the package. Download one before first use —
 models come from the official CTranslate2 conversions on Hugging Face

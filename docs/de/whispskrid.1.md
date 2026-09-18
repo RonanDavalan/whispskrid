@@ -38,18 +38,35 @@ Die Wahl zwischen den beiden Optionen wird einmalig beim Startvorgang getroffen,
 
 # INSTALLATION
 
-Installieren Sie das Debian-Paket:
+Installieren Sie das Paket für Ihre Distribution:
 
+Debian und Derivate:
 ```
 sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
-Der `postinst`-Schritt installiert **faster-whisper** über pip und meldet seinen eigenen
-Fortschritt; die Paket-Dateien `Recommends` enthalten das Backend für die Texteingabe, das für Ihren
-Session-Typ verwendet wird (**ydotool** + **wl-clipboard** unter Wayland, **xdotool** +
-**xclip** unter X11) – keines davon ist eine harte Abhängigkeit, sodass eine unvollständige
-Umgebung weiterhin installiert wird, jedoch mit einem eingeschränkten Eingabemodus (siehe
-**\--diagnose** unten).
+Fedora:
+```
+sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+```
+
+openSUSE Leap 15.6:
+```
+sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+```
+
+Arch Linux:
+```
+sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+```
+
+Der Nachinstallationsschritt installiert **faster-whisper** über pip in eine
+private virtuelle Umgebung und meldet seinen eigenen Fortschritt; das Paket
+deckt das Backend für die Texteingabe ab, das für Ihren Session-Typ verwendet
+wird (**ydotool** + **wl-clipboard** unter Wayland, **xdotool** + **xclip**
+unter X11) – keines davon ist auf jeder Distribution eine harte Abhängigkeit,
+sodass eine unvollständige Umgebung weiterhin installiert wird, jedoch mit
+einem eingeschränkten Eingabemodus (siehe **\--diagnose** unten).
 
 Kein Whisper-Modell wird mit dem Paket geliefert. Laden Sie eines herunter, bevor Sie es zum ersten Mal verwenden –
 die Modelle stammen aus den offiziellen CTranslate2-Konvertierungen auf Hugging Face

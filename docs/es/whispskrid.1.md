@@ -34,13 +34,35 @@ binario y demonio responden realmente, no comprobando directamente el tipo de se
 
 # INSTALACIÓN
 
-Instala el paquete de Debian:
+Instala el paquete correspondiente a tu distribución:
 
+Debian y derivadas:
 ```
 sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
-El paso `postinst` instala **faster-whisper** a través de pip e informa sobre su propio progreso; el paquete incluye `Recommends` que cubren el backend de inyección para tu tipo de sesión (**ydotool** + **wl-clipboard** en Wayland, **xdotool** + **xclip** en X11); ninguno de ellos es una dependencia obligatoria, por lo que un entorno incompleto aún se instala, pero a costa de un modo de inyección degradado (ver **--diagnose** a continuación).
+Fedora:
+```
+sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+```
+
+openSUSE Leap 15.6:
+```
+sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+```
+
+Arch Linux:
+```
+sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+```
+
+El paso de post-instalación instala **faster-whisper** a través de pip en un
+entorno virtual privado e informa sobre su propio progreso; el paquete cubre
+el backend de inyección para tu tipo de sesión (**ydotool** + **wl-clipboard**
+en Wayland, **xdotool** + **xclip** en X11); ninguno de ellos es una
+dependencia obligatoria en todas las distribuciones, por lo que un entorno
+incompleto aún se instala, pero a costa de un modo de inyección degradado
+(ver **--diagnose** a continuación).
 
 Ningún modelo de Whisper se incluye en el paquete. Descargue uno antes del primer uso;
 los modelos provienen de las conversiones oficiales de CTranslate2 en Hugging Face
