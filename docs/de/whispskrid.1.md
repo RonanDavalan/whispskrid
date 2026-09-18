@@ -8,7 +8,7 @@ whispskrid – Offline-Sprachsteuerung für die Kommandozeile, systemweit verfü
 
 # ZUSAMMENFASSUNG
 
-**whispskrid** [**-l** *LANG* | **--lang** *LANG*] [**--model** *NAME*]
+**whispskrid** [**-l** *LANG* | **\--lang** *LANG*] [**\--model** *NAME*]
 
 **whispskrid** **\--diagnose**
 
@@ -33,7 +33,7 @@ Es läuft jeweils nur eine Sitzung pro Benutzer gleichzeitig. Wird sie ohne Kont
 
 Text wird injiziert, indem er in die Zwischenablage kopiert und dann eingefügt wird, sodass
 zwei Arten von Tools benötigt werden: ein Tastendrucksimulator und ein Tool für die Zwischenablage.
-Unter Wayland sind dies **ydotool** (benötigt den `ydotoold` Daemon und Zugriff auf `/dev/uinput`) sowie **wl-clipboard»; unter X11 sind es **xdotool** und **xclip**. Ohne eines dieser Backends greift die Injektion auf einen eingeschränkten Modus zurück.
+Unter Wayland sind dies **ydotool** (benötigt den `ydotoold` Daemon und Zugriff auf `/dev/uinput`) sowie **wl-clipboard**; unter X11 sind es **xdotool** und **xclip**. Ohne eines dieser Backends greift die Injektion auf einen eingeschränkten Modus zurück.
 Die Wahl zwischen den beiden Optionen wird einmalig beim Startvorgang getroffen, indem geprüft wird, welche Binärdatei und welcher Daemon tatsächlich antworten – nicht indem der Sitzungstyp direkt überprüft wird. **whispskrid \--diagnose** gibt aus, welche Tools, Audiogeräte und Zwischenablagefunktionen verfügbar sind, und beendet dann das Programm.
 
 # INSTALLATION
@@ -41,7 +41,7 @@ Die Wahl zwischen den beiden Optionen wird einmalig beim Startvorgang getroffen,
 Installieren Sie das Debian-Paket:
 
 ```
-sudo dpkg -i whispskrid_<version>_all.deb
+sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
 Der `postinst`-Schritt installiert **faster-whisper** über pip und meldet seinen eigenen
@@ -99,7 +99,7 @@ eine Steuerung zu erhalten, die überall funktioniert.
 :   Laden Sie ein Whisper-Modell (`base` wenn *NAME* weggelassen wird; eines von `tiny`,
     `base`, `small`, `medium`, `large-v3`, oder deren `.en` Varianten) von
     Hugging Face in das verwaltete Modelldirzeichnis
-    (`~/.local/share/whispskrid/whisper-models/` standardmäßig – siehe FILES),
+     (`~/.local/share/whispskrid/whisper-models/` standardmäßig – siehe DATEIEN),
     und beenden Sie dann das Programm. Bereits heruntergeladene Modelle werden erkannt und übersprungen.
 
 **\--version**
@@ -114,20 +114,20 @@ Jede der folgenden Optionen verbindet sich mit dem Socket der laufenden Sitzung,
     läuft.
 
 **\--dictate-stop**
-:   Die aktuelle Aufnahme stoppen, transkribieren und das Ergebnis einfügen. Fehlgeschlagen, wenn keine Aufnahme läuft (Fehler `ERR not-capturing`).
+:   Die aktuelle Aufnahme stoppen, transkribieren und das Ergebnis einfügen. Schlägt mit `ERR not-capturing` fehl, wenn keine Aufnahme läuft.
 
 **\--toggle**
 :   **\--dictate** oder **\--dictate-stop**, abhängig vom aktuellen Zustand der Sitzung – eine einzelne Verknüpfung für eine Taste, die gedrückt werden muss, um zu starten/stoppen, bzw. für eine "Push-to-Talk"-Funktion, die auf Desktop-Ebene zugewiesen ist.
 
 **\--cancel**
-:   Die laufende Aufnahme ohne Transkription oder Injektion von etwas beenden.
+:   Verwirft die laufende Aufnahme, ohne etwas zu transkribieren oder einzufügen.
 
 **\--status**
 :   Gibt den aktuellen Sitzungsstatus (`state=idle|capturing model=<name>
     language=<lang|auto>`) aus, ohne ihn zu ändern.
 
 **\--stop**
-:   Die aktive Sitzung des Benutzers sauber beenden.
+:   Beendet die laufende residente Sitzung sauber.
 
 # TASTENBELEGUNGEN
 
@@ -156,8 +156,8 @@ häufig dem Tastaturlayout-Wechsel zugeordnet) — eine Funktionstaste wie
 `f4` vermeidet diese Art von Konflikt.
 
 `hotkeys.min_hold_ms` (Millisekunden, Standardwert: `250`) gilt nur für `mode: hold`:
-Ein vor dieser Verzögerung veröffentlichtes Protokoll bricht die Aufnahme ab anstelle der
-Transkription und Einfügung – ein Schutz vor einem kurzen, unbeabsichtigten Druck auf
+Ein Tastendruck, der vor Ablauf dieser Verzögerung losgelassen wird, bricht die Aufnahme ab anstelle sie zu
+transkribieren und einzufügen – ein Schutz vor einem kurzen, unbeabsichtigten Druck auf
 die zugewiesene Taste (z. B. eine Desktop-Tastenkombination, die dieselbe Taste verwendet),
 der andernfalls Hintergrundgeräusche oder fast vollständige Stille erfassen würde, was Whisper
 in zufälligen Text umwandeln könnte.
@@ -228,7 +228,7 @@ whispskrid --download-model
 ```
 
 Führen Sie dann **--diagnose** erneut aus; es beendet `0` jedes Mal, wenn eine Blockierungsprüfung erfolgreich ist
-(siehe EXIT STATUS).
+(siehe RÜCKGABEWERT).
 
 # DATEIEN
 
@@ -245,14 +245,15 @@ Führen Sie dann **--diagnose** erneut aus; es beendet `0` jedes Mal, wenn eine 
 :   Konfigurationsdatei, die verwendet wird, wenn von einem Git-Checkout ausgeführt wird.
 
 `whisper-models/`
-:   Standard-Suchpfad für Whisper-Modelle, wenn das Programm von einer Git-Version oder einer Quellcode-Datei ausgeführt wird.
+:   Standard-Suchpfad für Whisper-Modelle, wenn das Programm von einem Git-Checkout oder einem Quellcode-Tarball ausgeführt wird.
 
 `$XDG_RUNTIME_DIR/whispskrid.sock`
 :   Steuerungssocket der laufenden Sitzung (Modus `0600`).
 
 # RÜCKGABEWERT
 
-Das Programm wurde sauber beendet, oder ein Steuerbefehl wurde empfangen `OK`.
+**0**
+:   Das Programm wurde sauber beendet, oder ein Steuerbefehl wurde empfangen `OK`.
 
 Nicht Null
 :   Start fehlgeschlagen (kein Injektions-Backend, Modell oder Audiogerät verfügbar),
@@ -266,7 +267,7 @@ Starte eine Sitzung für einen Benutzer mit der Standardeinstellung für die Spr
 whispskrid
 ```
 
-Gerne.
+Erzwinge Englisch für diese Sitzung:
 
 ```
 whispskrid --lang en
@@ -279,7 +280,7 @@ whispskrid --dictate
 whispskrid --dictate-stop
 ```
 
-SIEHE AUCH
+# SIEHE AUCH
 
 faster-whisper: *https://github.com/SYSTRAN/faster-whisper*
 
@@ -294,4 +295,4 @@ Melden Sie Fehler im Fehlerverfolgungssystem des Projekts:
 
 # AUTOR
 
-Ronan Davalan und die in CONTRIBUTORS.md aufgeführten Mitwirkenden.
+Ronan Davalan.

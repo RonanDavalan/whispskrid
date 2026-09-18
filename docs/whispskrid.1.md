@@ -53,7 +53,7 @@ clipboard access are present, then exits.
 Install the Debian package:
 
 ```
-sudo dpkg -i whispskrid_<version>_all.deb
+sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
 The postinst step installs **faster-whisper** via pip and reports its own
@@ -328,4 +328,4 @@ Report bugs on the project's issue tracker:
 
 # AUTHOR
 
-Ronan Davalan, and contributors listed in CONTRIBUTORS.md.
+Ronan Davalan.

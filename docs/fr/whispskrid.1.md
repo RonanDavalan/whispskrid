@@ -35,7 +35,7 @@ Le choix entre les deux est effectué une seule fois, au démarrage, en vérifia
 Installez le paquet Debian :
 
 ```
-sudo dpkg -i whispskrid_<version>_all.deb
+sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
 L'étape `postinst` installe **faster-whisper** via pip et signale sa propre progression ; les `Recommends` du paquet couvrent le backend d'injection pour votre type de session (**ydotool** + **wl-clipboard** sous Wayland, **xdotool** + **xclip** sous X11) — aucun d'eux n'est une dépendance obligatoire, donc un environnement incomplet peut toujours être installé, mais au prix d'un mode d'injection dégradé (voir **--diagnose** ci-dessous).
@@ -64,7 +64,7 @@ Les raccourcis clavier globaux via `pynput` surveillent le serveur X : sous Wayl
 **-l** *LANG*, **\--lang** *LANG*
 :   Force la langue de l'interface et de la reconnaissance vocale pour cette session
     (`en`, `fr`, `de` ou `es`), en écrasant la valeur définie dans
-    le fichier de configuration (\`default_language`).  Sélectionne également la langue des propres messages de l'interface en ligne de commande
+     le fichier de configuration (`default_language`).  Sélectionne également la langue des propres messages de l'interface en ligne de commande
     (y compris le texte d'aide).
 
 **\--model** *NOM*
@@ -98,14 +98,14 @@ effectue l'action, affiche la réponse résultante (`OK`, `OK <text>` ou
 sont destinés à être associés à des raccourcis clavier du bureau.
 
 **\--dictate**
-:   Start capture. Fails with `ERR already-capturing` if a capture is
-    already in progress.
+:   Démarrer la capture. Échoue avec `ERR already-capturing` si une capture est
+    déjà en cours.
 
 **\--dictate-stop**
 :   Arrête la capture en cours, transcrit le résultat et l'injecte.  Échoue avec `ERR not-capturing` s'il n'y a pas de capture en cours.
 
 **\--toggle**
-:   **\--dictate** ou **\--dictate-stop**, selon l'état actuel de la session : un raccourci unique pour une touche "pousser pour parler" qui permet de démarrer/arrêter la communication et qui est configurée au niveau du bureau.
+:   **\--dictate** ou **\--dictate-stop**, selon l'état actuel de la session : un raccourci unique pour démarrer/arrêter par appui, configuré au niveau du bureau.
 
 **\--cancel**
 :   Annuler l'enregistrement en cours sans transcrire ni injecter quoi que ce soit.
@@ -117,7 +117,7 @@ sont destinés à être associés à des raccourcis clavier du bureau.
 **\--stop**
 :   Fermer proprement la session persistante en cours.
 
-# RACCORTS CLAVIER
+# RACCOURCIS CLAVIER
 
 `pynput` Les touches de raccourci globales sont activées chaque fois que `hotkeys.pynput_enabled` est
 vrai dans le fichier de configuration et qu'un serveur d'affichage est accessible
@@ -132,7 +132,7 @@ la fonction "push-to-talk" à :
 Les touches assignées sont configurables dans la section `hotkeys.push_to_talk` du
 fichier de configuration. Chaque nom ci-dessous désigne une seule touche physique : `ctrl_r` (Ctrl droit), `ctrl_l` (Ctrl gauche), `alt_r` (Alt droit), `alt_l` (Alt gauche), `shift_r` (Maj droit), `shift_l` (Maj gauche), `cmd`, `f1` à `f12` (touches de fonction). En lister plusieurs en fait une combinaison : toutes doivent être tenues ensemble, dans n'importe quel ordre, pour engager la fonction "push-to-talk" (par exemple `["alt_l", "shift_r"]`) ; en `mode: hold`, relâcher l'une d'entre elles arrête et injecte. Une combinaison de touches modificatrices peut entrer en conflit avec un raccourci du bureau (par exemple, Alt+Maj est couramment lié au changement de disposition clavier sous KDE Plasma et GNOME) — une touche de fonction comme `f4` évite ce type de conflit.
 
-`hotkeys.min_hold_ms` (millisecondes, par défaut `250`) s'applique à `mode: hold` uniquement : une touche pressée avant ce délai annule l'enregistrement au lieu de transcrire et d'injecter le son, ce qui permet d'éviter qu'une brève pression involontaire sur la touche assignée (par exemple, un raccourci clavier sur un ordinateur) n'enregistre du bruit de fond ou un silence, ce que Whisper pourrait interpréter à tort comme du texte.
+`hotkeys.min_hold_ms` (millisecondes, par défaut `250`) s'applique à `mode: hold` uniquement : une touche relâchée avant ce délai annule l'enregistrement au lieu de transcrire et d'injecter le son, ce qui permet d'éviter qu'une brève pression involontaire sur la touche assignée (par exemple, un raccourci clavier sur un ordinateur) n'enregistre du bruit de fond ou un silence, ce que Whisper pourrait interpréter à tort comme du texte.
 
 `hotkeys.mode` (`hold`, par défaut, `toggle`, ou `armed`) contrôle ce qui se passe
 lorsque la touche associée est pressée. `hold` est le comportement décrit ci-dessus,
@@ -144,7 +144,7 @@ premier appui ; une courte phrase ouvre un segment d'enregistrement, une autre l
 et l'insère, jusqu'à ce qu'un deuxième appui désactive cette fonction ; voir la
 touche `wakeword` dans **configuration.md** (CONFIGURATION ci-dessous).
 
-Pour modifier la ou les clés de limite ou le mode, éditez `hotkeys.push_to_talk` /
+Pour modifier la ou les touches assignées ou le mode, éditez `hotkeys.push_to_talk` /
 `hotkeys.mode` dans le fichier de configuration (voir CONFIGURATION ci-dessous pour son
 chemin exact), puis redémarrez la session persistante pour que le changement prenne
 effet :
@@ -154,7 +154,7 @@ whispskrid --stop
 whispskrid
 ```
 
-Pour lier **\--toggle** à un raccourci au niveau du bureau, plutôt qu'à un raccourci global, ce qui est la seule option sous Wayland pour les fenêtres qui ne passent pas par XWayland, ce que `pynput` ne peut pas atteindre, la plupart des environnements de bureau offrent un paramètre de raccourci personnalisé. Sur GNOME : *Paramètres → Clavier → Afficher et personnaliser les raccourcis → Raccourcis personnalisés → Ajouter un raccourci*, avec `whispskrid --toggle` comme commande et la combinaison de touches de votre choix. KDE Plasma offre l'équivalent sous *Paramètres système → Raccourcis → Raccourcis personnalisés*.
+Pour lier **\--toggle** à un raccourci au niveau du bureau, plutôt qu'à un raccourci global, ce qui est la seule option sous Wayland pour les fenêtres qui ne passent pas par XWayland, inaccessibles à `pynput`, la plupart des environnements de bureau offrent un paramètre de raccourci personnalisé. Sur GNOME : *Paramètres → Clavier → Afficher et personnaliser les raccourcis → Raccourcis personnalisés → Ajouter un raccourci*, avec `whispskrid --toggle` comme commande et la combinaison de touches de votre choix. KDE Plasma offre l'équivalent sous *Paramètres système → Raccourcis → Raccourcis personnalisés*.
 
 # CONFIGURATION
 
@@ -181,7 +181,7 @@ détection automatique par le module de reconnaissance.
 Consultez **configuration.md** dans la documentation du projet pour obtenir la référence complète
 de chaque clé de configuration.
 
-DÉPANNAGE
+# DÉPANNAGE
 
 **Modèle non trouvé.** Exécutez **--diagnose** et lisez sa ligne de résumé finale,
 qui indique le premier contrôle bloquant — ne devinez pas à partir de la sortie brute ci-dessus :
@@ -196,7 +196,7 @@ Si la ligne de résumé indique le nom du test du modèle, téléchargez-en un :
 whispskrid --download-model
 ```
 
-Ensuite, relancez **--diagnose**; il quitte `0` une fois que chaque vérification de blocage est réussie (voir ÉTAT DE SORTIE).
+Ensuite, relancez **--diagnose**; il quitte `0` une fois que chaque vérification de blocage est réussie (voir CODE DE SORTIE).
 
 # FICHIERS
 
@@ -221,6 +221,7 @@ Ensuite, relancez **--diagnose**; il quitte `0` une fois que chaque vérificatio
 
 # CODE DE SORTIE
 
+**0**
 :   Le programme s'est terminé correctement, ou une commande de contrôle a été reçue `OK`.
 
 Non nul
@@ -263,4 +264,4 @@ Signalez les erreurs sur le système de suivi des problèmes du projet :
 
 # AUTEUR
 
-Ronan Davalan, et les contributeurs listés dans CONTRIBUTORS.md.
+Ronan Davalan.

@@ -2,17 +2,17 @@
 % Ronan Davalan
 % 2026-09-18
 
-NOMBRE
+# NOMBRE
 
 whispskrid: Dictado "push-to-talk" sin conexión, a nivel de sistema, para la línea de comandos.
 
 # RESUMEN
 
-**whispskrid** [**-l** *LANG* | **--lang** *LANG*] [**--model** *NAME*]
+**whispskrid** [**-l** *LANG* | **\--lang** *LANG*] [**\--model** *NAME*]
 
 **whispskrid** **\--diagnose**
 
-whispskrid **\--download-model** [*NAME*]
+**whispskrid** **\--download-model** [*NAME*]
 
 **whispskrid** {**\--dictate** | **\--dictate-stop** | **\--toggle** | **\--cancel** | **\--status** | **\--stop**}
 
@@ -37,7 +37,7 @@ binario y demonio responden realmente, no comprobando directamente el tipo de se
 Instala el paquete de Debian:
 
 ```
-sudo dpkg -i whispskrid_<version>_all.deb
+sudo dpkg -i whispskrid_1.0.0_all.deb
 ```
 
 El paso `postinst` instala **faster-whisper** a través de pip e informa sobre su propio progreso; el paquete incluye `Recommends` que cubren el backend de inyección para tu tipo de sesión (**ydotool** + **wl-clipboard** en Wayland, **xdotool** + **xclip** en X11); ninguno de ellos es una dependencia obligatoria, por lo que un entorno incompleto aún se instala, pero a costa de un modo de inyección degradado (ver **--diagnose** a continuación).
@@ -45,7 +45,7 @@ El paso `postinst` instala **faster-whisper** a través de pip e informa sobre s
 Ningún modelo de Whisper se incluye en el paquete. Descargue uno antes del primer uso;
 los modelos provienen de las conversiones oficiales de CTranslate2 en Hugging Face
 (*https://huggingface.co/Systran*), y se descargan automáticamente en el directorio de modelos gestionado
-(consulte FILES a continuación):
+(consulte ARCHIVOS a continuación):
 
 ```
 whispskrid --download-model
@@ -63,7 +63,7 @@ Atajos globales a través de `pynput` monitorizando el servidor X: bajo Wayland,
 
 # OPCIONES
 
--l *LANG*, **\--lang** *LANG*
+**-l** *LANG*, **\--lang** *LANG*
 :   Fuerza el idioma de la interfaz y el reconocimiento de voz para esta sesión
     (`en`, `fr`, `de` o `es`), sobrescribiendo el valor de `default_language` del
     archivo de configuración. También selecciona el idioma de los propios mensajes de la
@@ -85,7 +85,7 @@ Atajos globales a través de `pynput` monitorizando el servidor X: bajo Wayland,
 :   Descargue un modelo Whisper (`base` cuando *NAME* se omite; uno de `tiny`,
     `base`, `small`, `medium`, `large-v3`, o sus variantes `.en`),
     desde Hugging Face en el directorio de modelos gestionados
-    (`~/.local/share/whispskrid/whisper-models/` por defecto; consulte FILES),
+     (`~/.local/share/whispskrid/whisper-models/` por defecto; consulte ARCHIVOS),
     y luego salga. Los modelos ya descargados se detectan y se omiten.
 
 **\--version**
@@ -119,14 +119,14 @@ diseñadas para ser asignadas a atajos de teclado del escritorio.
 **\--stop**
 :   Finalizar la sesión activa del usuario de forma limpia.
 
-TECLAS DE ACCESO RÁPIDO
+# TECLAS DE ACCESO RÁPIDO
 
-`pynput` global hotkeys are started whenever `hotkeys.pynput_enabled` is
-true in the configuration file and a display server is reachable
-(`DISPLAY` set) — on any session type, Wayland included, since `pynput`
-itself watches the X server. The listener does not consume the key
-event: the keystroke also reaches the focused window. The factory
-configuration binds push-to-talk to:
+Los atajos globales de `pynput` se activan siempre que `hotkeys.pynput_enabled` sea
+verdadero en el archivo de configuración y haya un servidor de visualización accesible
+(`DISPLAY` definido) — en cualquier tipo de sesión, Wayland incluido, ya que `pynput`
+observa el servidor X. El listener no consume el evento de tecla:
+la pulsación también llega a la ventana activa. La configuración de fábrica
+asigna push-to-talk a:
 
 **Mayús derecho**
 :   Mantener para grabar, soltar para detener; transcribe e inyecta: la semántica nativa de presionar/soltar de `pynput` implementa el "push-to-talk" directamente en esta ruta (a diferencia de la ruta del "control-socket" mencionada anteriormente, que solo ve comandos discretos y, por lo tanto, debe exponer **--toggle** en su lugar).
@@ -151,15 +151,15 @@ transcribirla e inyectarla; esto sirve como protección contra una breve y no in
 pulsación de la tecla asignada (por ejemplo, un acceso directo del escritorio que comparte la misma tecla) que, de lo contrario, capturaría ruido de fondo o casi silencio, lo que Whisper podría
 interpretar como texto incorrecto.
 
-`hotkeys.mode` (`hold`, the default, `toggle`, or `armed`) controls what
-pressing the bound key does. `hold` is the behavior described above,
-guarded by `hotkeys.min_hold_ms`. `toggle` starts capture on the first
-press and stops, transcribes and injects on the next press of the same
-key; releasing the key does nothing in this mode — useful to avoid holding
-a key down for a long dictation. `armed` arms continuous listening for a
-spoken phrase on the first press — a short phrase opens a capture segment,
-another closes and injects it, until a second press disarms; see the
-`wakeword` key in **configuration.md** (CONFIGURATION below).
+`hotkeys.mode` (`hold`, valor predeterminado, `toggle` o `armed`) controla lo que ocurre
+al pulsar la tecla asignada. `hold` es el comportamiento descrito arriba,
+protegido por `hotkeys.min_hold_ms`. `toggle` inicia la captura con la primera
+pulsación y la detiene, transcribe e inyecta con la siguiente pulsación de la misma
+tecla; soltar la tecla no hace nada en este modo — útil para no mantener
+una tecla pulsada durante un dictado largo. `armed` activa la escucha continua de una
+frase hablada con la primera pulsación — una frase corta abre un segmento de captura,
+otra lo cierra y lo inyecta, hasta que una segunda pulsación desactiva la función; consulte la
+clave `wakeword` en **configuration.md** (CONFIGURACIÓN a continuación).
 
 Para cambiar la(s) clave(s) de acceso o el modo, edite `hotkeys.push_to_talk` /
 `hotkeys.mode` en el archivo de configuración (consulte la sección CONFIGURACIÓN a continuación para su
@@ -170,7 +170,7 @@ whispskrid --stop
 whispskrid
 ```
 
-Para vincular **\--toggle** a un acceso directo a nivel de escritorio, en lugar de usar el menú de aplicaciones —la única opción en Wayland para ventanas que no pasan por XWayland, a la que `pynput` no puede acceder—, la mayoría de los entornos de escritorio ofrecen una configuración de acceso directo personalizada. En GNOME: *Configuración → Teclado → Ver y personalizar accesos directos → Accesos directos personalizados → Agregar acceso directo*, con `whispskrid --toggle` como el comando y la combinación de teclas de su elección. KDE Plasma ofrece lo equivalente en *Configuración del sistema → Accesos directos → Accesos directos personalizados*.
+Para vincular **\--toggle** a un atajo a nivel de escritorio —la única opción en Wayland para las ventanas que no pasan por XWayland, a las que `pynput` no puede llegar—, la mayoría de los entornos de escritorio ofrecen una configuración de atajo personalizado. En GNOME: *Configuración → Teclado → Ver y personalizar accesos directos → Accesos directos personalizados → Agregar acceso directo*, con `whispskrid --toggle` como el comando y la combinación de teclas de su elección. KDE Plasma ofrece lo equivalente en *Configuración del sistema → Accesos directos → Accesos directos personalizados*.
 
 # CONFIGURACIÓN
 
@@ -194,7 +194,7 @@ El idioma activo se elige, en el siguiente orden: la opción **\--lang**, si se 
 
 Consulte **configuration.md** en la documentación del proyecto para obtener la referencia completa de cada clave de configuración.
 
-SOLUCIÓN DE PROBLEMAS
+# SOLUCIÓN DE PROBLEMAS
 
 **Modelo no encontrado.** Ejecute **--diagnose** y lea su línea de resumen final,
 que indica la primera verificación que impide el proceso; no intente deducirla de la
@@ -234,9 +234,10 @@ Luego, ejecute **--diagnose**; este sale `0` una vez que todas las comprobacione
 `$XDG_RUNTIME_DIR/whispskrid.sock`
 :   Control socket de la sesión en ejecución (modo `0600`).
 
-ESTADO DE SALIDA
+# ESTADO DE SALIDA
 
-El programa finalizó correctamente, o se recibió un comando de control `OK`.
+**0**
+:   El programa finalizó correctamente, o se recibió un comando de control `OK`.
 
 No nulo
 :   El inicio falló (no se encontró un backend de inyección, modelo o dispositivo de audio),
@@ -278,4 +279,4 @@ Reporte los errores en el sistema de seguimiento de problemas del proyecto:
 
 # AUTOR
 
-Ronan Davalan, y los colaboradores mencionados en CONTRIBUTORS.md.
+Ronan Davalan.
