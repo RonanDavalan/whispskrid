@@ -10,9 +10,12 @@ gagne, les suivants ne sont jamais consultés.
 3. Fichier utilisateur XDG — `$XDG_CONFIG_HOME/whispskrid/config.yaml`
    (défaut `~/.config/whispskrid/config.yaml`), créé automatiquement au
    premier lancement par copie du modèle d'usine.
-4. Modèle d'usine — `/usr/share/whispskrid/config.yaml`, sinon
-   `<racine>/config/config.yaml` embarqué (couvre l'installation depuis un
-   tarball de sources sans `.git`).
+4. Modèle d'usine — `/usr/share/whispskrid/config.yaml` (paquet Debian),
+   sinon `<racine>/config/config.yaml` (checkout git sans `.git` déréférencé),
+   sinon la copie embarquée à côté du module `config.py` lui-même — seule
+   celle-ci survit à `pip install .` en mode non éditable, où le module est
+   copié dans `site-packages/` et perd son chemin relatif vers la racine du
+   dépôt (couvre l'installation depuis le tarball de sources).
 
 Le fichier résolu peut être partiel : les clés absentes sont complétées par
 les valeurs du modèle d'usine, fusion clé à clé (§6
@@ -45,12 +48,19 @@ def _system_template_path() -> Path:
     return Path("/usr/share/whispskrid/config.yaml")
 
 
+def _bundled_template_path() -> Path:
+    return Path(__file__).resolve().parent / "config.yaml"
+
+
 def _factory_template_path() -> Path | None:
     system = _system_template_path()
     if system.is_file():
         return system
     embedded = _dev_mode_path()
-    return embedded if embedded.is_file() else None
+    if embedded.is_file():
+        return embedded
+    bundled = _bundled_template_path()
+    return bundled if bundled.is_file() else None
 
 
 def _xdg_user_path() -> Path:
@@ -78,8 +88,8 @@ def resolve_config_path() -> Path:
     if template is None:
         raise RuntimeError(
             "aucun modèle d'usine de config.yaml trouvé "
-            "(/usr/share/whispskrid/config.yaml ni config/config.yaml embarqué) "
-            "— installation incomplète."
+            "(/usr/share/whispskrid/config.yaml, config/config.yaml ni "
+            "copie embarquée du package) — installation incomplète."
         )
     user_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(template, user_path)

@@ -34,4 +34,4 @@ whispskrid = "whispskrid.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-whispskrid = ["locales/*/LC_MESSAGES/*.mo"]
+whispskrid = ["locales/*/LC_MESSAGES/*.mo", "config.yaml"]

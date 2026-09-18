@@ -1,0 +1,113 @@
+# Langue forcée pour l'interface et la reconnaissance. Vide => interface dans la
+# langue du système, reconnaissance en autodétection Whisper.
+default_language: ""
+
+backend:
+  name: "faster-whisper"      # seule valeur acceptée en v1.0.0
+  beam_size: 5
+
+models:
+  # Modèle par défaut. Nom court résolu dans models.dir, ou chemin absolu.
+  default: "base"
+  # Dossier géré des modèles. Vide => emplacements standard selon le mode
+  # d'installation (paquet : /usr/share + ~/.local/share ; sources : ./whisper-models).
+  dir: ""
+  device: "auto"              # cpu | cuda | auto
+  compute_type: "auto"        # int8 | int8_float16 | float16 | auto
+
+capture:
+  # Garde-fou : au-delà, la capture s'arrête seule, transcrit ce qui est pris,
+  # journalise un avertissement. Protection contre une touche bloquée.
+  max_seconds: 300
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  frames_per_buffer: 4096
+
+vad:
+  # Réservé. Non implémenté en v1.0.0 : true émet un avertissement et poursuit
+  # en appui-pour-parler strict.
+  enabled: false
+  silence_ms: 800
+
+post_processing:
+  # Rogner les blancs de bord du texte transcrit.
+  trim: true
+  # Mettre une capitale à la première lettre du texte injecté.
+  capitalize_sentence_start: true
+
+hotkeys:
+  # Écouteur pynput local (best-effort ; sous Wayland, fenêtres XWayland
+  # seulement). false pour ne jamais le démarrer et piloter par les
+  # sous-commandes CLI liées aux raccourcis du bureau.
+  pynput_enabled: true
+  # Touche d'appui-pour-parler. Maintien = capture ; relâche = transcription.
+  # Shift droit par défaut : Ctrl droit est partagé avec des raccourcis
+  # de bureau usuels (navigation d'onglets) et déclenchait des captures
+  # parasites sur un tap bref, avant même la garde min_hold_ms ; Alt droit
+  # écarté (AltGr, touche morte pour ~/#/¬ selon la disposition) ; Shift droit
+  # seul n'a par défaut aucun raccourci global sous KDE Plasma.
+  push_to_talk: ["shift_r"]
+  # Durée minimale de maintien, en millisecondes, avant qu'un mode "hold" ne
+  # transcrive et injecte à la relâche. En dessous, la capture est
+  # annulée sans transcription ni injection — garde contre un tap bref
+  # (touche partagée avec un autre usage du bureau) qui ouvrirait une capture
+  # sur du bruit ou du quasi-silence, que Whisper hallucine. Sans effet hors
+  # mode "hold".
+  min_hold_ms: 250
+  # Comportement de la touche ci-dessus. "hold" (défaut) : maintien = capture,
+  # relâche = transcription et injection (comportement historique, inchangé).
+  # "toggle" : un appui bref démarre la capture, un second appui bref
+  # l'arrête et l'injecte ; la relâche ne fait plus rien.
+  # "armed" : un appui arme l'écoute continue du mot vocal (voir
+  # wakeword.py, entraînement réel des modèles de phrase non encore fait —
+  # armer échoue proprement tant qu'ils sont absents), un second appui
+  # désarme ; entre les deux, le début et la fin de chaque segment sont
+  # pilotés par la voix. Pendant l'armement, les commandes socket
+  # dictate/dictate-stop/toggle/cancel répondent ERR armed-mode-active — le
+  # passage armé/désarmé reste exclusivement au clavier.
+  mode: "hold"
+
+wakeword:
+  # Score minimal (0-1) avant de considérer une phrase franchie (seuil
+  # usuel openwakeword, 0.5). Sans effet tant que hotkeys.mode n'est pas
+  # "armed".
+  threshold: 0.5
+  # Dossier des modèles ONNX de phrase (<lang>_open.onnx / <lang>_close.onnx,
+  # un couple par langue). Vide => emplacement standard (paquet : /usr/share
+  # + ~/.local/share ; sources : ./wakeword-models), voir
+  # wakeword.resolve_wakeword_models_dir().
+  models_dir: ""
+
+control_socket: true
+
+clipboard:
+  restore: true
+  restore_delay_ms: 400
+  defer_restore: false
+  confirm_timeout_ms: 500
+
+injection:
+  paste_combo: "ctrl+v"
+  terminal_paste_combo: "ctrl+shift+v"
+  terminal_window_classes:
+    - "konsole"
+    - "gnome-terminal-server"
+    - "xterm"
+    - "st"
+    - "alacritty"
+    - "kitty"
+    - "foot"
+  ydotool_keycodes: {}
+
+sound_file: "/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"
+
+theme:
+  ready_message: "GREEN"
+  help_text: "RESET"
+  help_title: "CYAN"
+  info: "RESET"
+  success: "GREEN"
+  warning: "YELLOW"
+  error: "RED"
