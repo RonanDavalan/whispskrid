@@ -55,8 +55,8 @@ whispskrid
 
 Every package is installed, checked with `whispskrid --diagnose` and removed
 cleanly in a container of each version listed above. The Debian package has
-also been validated in real use on Debian 13, dictation included, on several
-physical machines; the other packages have not yet been exercised in a real
+also been validated in real use, dictation included, on several physical
+machines, one of them running Debian 13; the other packages have not yet been exercised in a real
 graphical session. Other systems are not covered — that is simply the
 perimeter that has been tested. See the site for what a package installs and
 how to verify the download (`SHA256SUMS`).
