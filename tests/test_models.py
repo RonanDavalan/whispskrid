@@ -1,4 +1,4 @@
-# models.download_model()/model_cached() (§5.2 CONCEPTION_WHISPSKRID.md) :
+# models.download_model()/model_cached()  :
 # implémentation réelle de --download-model, corrigeant le stub qui répondait
 # « pas encore implémenté » (le stub ne proposait aucun service
 # d'installation de modèle). Le réseau n'est jamais sollicité ici :

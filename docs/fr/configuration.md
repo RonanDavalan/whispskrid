@@ -50,7 +50,7 @@ default_language: ""
 
 ### `backend`
 
-Sélectionne le moteur de reconnaissance vocale. `faster-whisper` est la seule valeur acceptée dans la version 1.0.0 ; la clé est réservée pour un deuxième backend futur (`whisper.cpp`).
+Sélectionne le moteur de reconnaissance vocale. `faster-whisper` est la seule valeur acceptée dans la version 1.0.1 ; la clé est réservée pour un deuxième backend futur (`whisper.cpp`).
 
 - **`name`** (chaîne de caractères) : `"faster-whisper"`, la seule valeur acceptée.
 - **`beam_size`** (entier, valeur par défaut `5`) : largeur du faisceau passée à `WhisperModel.transcribe()`. Des valeurs plus élevées peuvent améliorer la précision, mais au prix d'une latence accrue.
@@ -120,7 +120,7 @@ audio:
 ### `vad`
 
 Réservé pour un arrêt automatique futur basé sur le silence. **Non implémenté dans
-la version 1.0.0**: `vad.enabled: true` affiche un avertissement indiquant que la fonctionnalité n'est pas encore implémentée, et l'outil continue de fonctionner comme un système "push-to-talk" strict (la seule action qui démarre et arrête l'enregistrement est celle que vous effectuez en maintenant la touche enfoncée).
+la version 1.0.1**: `vad.enabled: true` affiche un avertissement indiquant que la fonctionnalité n'est pas encore implémentée, et l'outil continue de fonctionner comme un système "push-to-talk" strict (la seule action qui démarre et arrête l'enregistrement est celle que vous effectuez en maintenant la touche enfoncée).
 
 ```yaml
 vad:

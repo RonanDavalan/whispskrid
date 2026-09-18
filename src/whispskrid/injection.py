@@ -1,20 +1,10 @@
 """Injection de texte dans la fenêtre active — presse-papiers + collage.
 
-Couche reprise du moule vosk-cli-dictation et réadaptée.
-Voir _CADRE/SPECIFICATIONS/COMPATIBILITE_WAYLAND.md et
-_CADRE/SPECIFICATIONS/CORRECTIF_INJECTION_COLLAGE.md pour la conception et les
-raisons de chaque parade.
+La cascade de frappe est `ydotool` -> `xdotool` -> mode dégradé, sans `wtype`.
+Le presse-papiers d'origine est restauré après le collage, au terme d'une
+fenêtre adaptative et bornée (voir `_settle_before_restore`).
 
-Écart assumé par rapport au code vosk actuel : la cascade de frappe retenue
-ici est `ydotool` -> `xdotool` -> mode dégradé (COMPATIBILITE_WAYLAND.md §2-3),
-sans `wtype` — décision figée dans la spécification WhispSkrid, que le fichier
-`system_control.py` de vosk a depuis fait évoluer (ajout de `wtype`) sans que
-cela ait été reporté ici. La spécification fait foi (Instruction n°4 du
-protocole de démarrage).
-
-Le cœur d'interaction vosk (bascule DICTÉE/ÉCOUTE, commandes vocales,
-`press_key`/BackSpace) est retiré : WhispSkrid n'injecte que le texte
-transcrit et joue un signal sonore court.
+WhispSkrid n'injecte que le texte transcrit et joue un signal sonore court.
 """
 
 from __future__ import annotations
@@ -41,7 +31,7 @@ _last_warn = 0.0
 
 # Restauration différée du presse-papiers (clipboard.defer_restore) : on
 # mémorise le presse-papiers d'origine (celui d'avant la première dictée de la
-# session) et on le restaure une seule fois — voir CORRECTIF_INJECTION_COLLAGE.md §2.
+# session) et on le restaure une seule fois.
 _deferred_clip = {"pending": False, "value": None}
 _deferred_atexit_registered = False
 
@@ -101,7 +91,7 @@ def _detect_caps() -> dict:
         "xclip": check_command_exists("xclip"),
         "ydotool": _ydotool_ready(),
     }
-    # Cascade retenue (COMPATIBILITE_WAYLAND.md §2) : ydotool -> xdotool -> aucun.
+    # Cascade retenue : ydotool -> xdotool -> aucun.
     if caps["ydotool"]:
         caps["key_backend"] = "ydotool"
     elif caps["xdotool"]:
@@ -118,7 +108,7 @@ def injection_backend_available() -> bool:
 
 
 def detect_capabilities() -> dict:
-    """Point d'entrée public de `_detect_caps()`, pour `--diagnose` (§8) : ne
+    """Point d'entrée public de `_detect_caps()`, pour `--diagnose` : ne
     nécessite pas `configure()` au préalable, aucune de ces sondes ne lit
     `_cfg`."""
     return _detect_caps()
@@ -268,10 +258,10 @@ def _paste_combo_for_target() -> str:
     """Combo de collage : Ctrl+Shift+V si la fenêtre active est un terminal.
 
     Résolution de fenêtre disponible seulement côté xdotool/xprop (paquet
-    x11-utils) — ydotool n'a aucune notion de fenêtre ciblée
-    (COMPATIBILITE_WAYLAND.md §1). Mais cette disponibilité est indépendante
+    x11-utils) — ydotool n'a aucune notion de fenêtre ciblée.
+    Mais cette disponibilité est indépendante
     du backend *retenu pour l'envoi des touches* : `key_backend` favorise
-    ydotool dès qu'il est présent (COMPATIBILITE_WAYLAND.md §2), y compris sur
+    ydotool dès qu'il est présent, y compris sur
     une machine X11/XWayland où xdotool/xprop fonctionnent très bien pour la
     seule détection de fenêtre.
 
@@ -333,7 +323,7 @@ def _send_paste(combo: str) -> bool:
 # --------------------------------------------------------------------------- #
 
 def _settle_before_restore(text: str, budget_s: float) -> bool:
-    """Fenêtre de restauration adaptative et bornée (CORRECTIF_INJECTION_COLLAGE.md §2.1).
+    """Fenêtre de restauration adaptative et bornée.
 
     Attend jusqu'à `budget_s`, par courtes attentes successives, tant que
     le presse-papiers contient toujours `text`. Retourne False (abandon de
@@ -376,7 +366,7 @@ def flush_deferred_clipboard() -> None:
 def type_text(text: str) -> bool:
     """Injecte `text` via presse-papiers + collage. False -> mode dégradé.
 
-    Mécanisme et parades : CORRECTIF_INJECTION_COLLAGE.md §2. Appelée une fois
+    Appelée une fois
     par transcription livrée (une par relâche de la touche appui-pour-parler).
     """
     if not text:
@@ -435,7 +425,7 @@ def type_text(text: str) -> bool:
 
 
 def play_sound() -> None:
-    """Signal sonore court confirmant le début d'une capture (§2.1 conception)."""
+    """Signal sonore court confirmant le début d'une capture."""
     sound_file = _cfg.get("sound_file")
     if not sound_file or not check_command_exists("paplay"):
         return

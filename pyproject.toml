@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "whispskrid"
-version = "1.0.0"
+version = "1.0.1"
 description = "Outil CLI de dictée appui-pour-parler adossé à Whisper (faster-whisper)"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -21,7 +21,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest"]
-# Réservé (D9) — mode armé par mot vocal. Non listé dans `dependencies` :
+# Réservé — mode armé par mot vocal. Non listé dans `dependencies` :
 # aucune dépendance à openwakeword tant que hotkeys.mode: armed n'est pas
 # câblé (session.py ne l'importe qu'à l'usage, jamais au chargement du
 # paquet), et le paquet doit rester installable sans elle.

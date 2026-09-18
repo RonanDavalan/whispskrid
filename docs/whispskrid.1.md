@@ -32,7 +32,7 @@ All speech recognition runs locally: no audio or transcribed text is ever
 sent to a remote service.
 
 Only one session runs per user at a time. Launched with no control flag, it
-starts a resident session: it loads the model, opens a private Unix control
+starts a persistent session: it loads the model, opens a private Unix control
 socket at `$XDG_RUNTIME_DIR/whispskrid.sock` (mode `0600`), and starts a
 `pynput` hotkey listener if enabled. The same command invoked with a control
 flag (see CONTROLLING A RUNNING SESSION) connects to that socket instead of
@@ -54,22 +54,22 @@ Install the package for your distribution:
 
 Debian and derivatives:
 ```
-sudo dpkg -i whispskrid_1.0.0_all.deb
+sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
 Fedora:
 ```
-sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
 
 openSUSE Leap 15.6:
 ```
-sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+sudo zypper install ./whispskrid-1.0.1-1.leap156.noarch.rpm
 ```
 
 Arch Linux:
 ```
-sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+sudo pacman -U whispskrid-1.0.1-1-any.pkg.tar.zst
 ```
 
 The post-install step installs **faster-whisper** via pip into a private
@@ -89,7 +89,7 @@ model directory (see FILES below):
 whispskrid --download-model
 ```
 
-Skipping this step is not fatal: the resident session downloads the default
+Skipping this step is not fatal: the persistent session downloads the default
 model itself on first launch, announcing it first since Hugging Face's own
 download shows no progress bar (a multi-hundred-MB transfer with no visible
 activity otherwise).
@@ -165,7 +165,7 @@ meant to be bound to desktop keyboard shortcuts.
     language=<lang|auto>`) without changing it.
 
 **\--stop**
-:   Shut the running resident session down cleanly.
+:   Shut the running persistent session down cleanly.
 
 # HOTKEYS
 
@@ -213,7 +213,7 @@ another closes and injects it, until a second press disarms; see the
 
 To change the bound key(s) or the mode, edit `hotkeys.push_to_talk` /
 `hotkeys.mode` in the configuration file (see CONFIGURATION below for its
-exact path), then restart the resident session for the change to take
+exact path), then restart the persistent session for the change to take
 effect:
 
 ```
@@ -310,7 +310,7 @@ Non-zero
 
 # EXAMPLES
 
-Start a resident session with the default language from the configuration
+Start a persistent session with the default language from the configuration
 file:
 
 ```

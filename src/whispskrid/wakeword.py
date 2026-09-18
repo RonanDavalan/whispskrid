@@ -1,17 +1,16 @@
 """Guetteur de mots-clés vocaux — moteur `openwakeword`.
 
-Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md (mode armé par mot
-vocal). Module isolé,
+Mode armé par mot vocal. Module isolé,
 jamais importé par hotkey.py ni session.py tant que `hotkeys.mode: armed`
 n'est pas actif : aucune dépendance à `openwakeword` chargée sinon — même
-principe que `backend/__init__.py` pour `faster-whisper` (§4.4).
+principe que `backend/__init__.py` pour `faster-whisper`.
 
 Interface étroite à quatre fonctions (état de module, comme `backend/`) :
 `load()` charge les deux modèles de phrase (ouverture/clôture) d'une langue,
 `feed()` pousse un bloc d'audio brut et renvoie la phrase détectée ou None,
 `reset()` efface le tampon glissant interne entre deux segments, `unload()`
 libère tout. Un seul guetteur par processus : la session persistante n'arme
-qu'une langue à la fois (§7, -l/--lang).
+qu'une langue à la fois (`-l`/`--lang`).
 
 Convention de nommage des modèles, un couple par langue supportée
 (fr/en/de/es) : `<lang>_open.onnx` (phrase d'ouverture de segment) et
@@ -38,7 +37,7 @@ _state: dict = {}
 
 _PHRASES = ("open", "close")
 
-# Vocabulaire de déclenchement (CONCEPTION_WHISPSKRID.md) : une
+# Vocabulaire de déclenchement : une
 # phrase à deux mots par langue, jamais un mot isolé (réduit le risque de
 # faux positif face à un mot courant qui apparaîtrait par hasard dans une
 # conversation). Purement déclaratif ici — sert à informer l'utilisateur
@@ -55,7 +54,7 @@ PHRASES_PAR_LANGUE: dict[str, dict[str, str]] = {
 
 def resolve_wakeword_models_dir() -> Path:
     """Dossier des modèles ONNX de phrase — même cascade que
-    `models.resolve_models_dir()` (§5.1 CONCEPTION_WHISPSKRID.md), transposée
+    `models.resolve_models_dir()`, transposée
     au wakeword avec son propre dossier dédié : surcharge explicite, dossier
     utilisateur, dossier système (paquet), dossier des sources (clone Git) —
     le premier qui existe et contient au moins un fichier gagne ; à défaut le
@@ -163,7 +162,7 @@ def unload() -> None:
 
 
 def info() -> dict:
-    """Dictionnaire lisible par un futur --diagnose (§8) : langue chargée,
+    """Dictionnaire lisible par un futur --diagnose : langue chargée,
     dossier de modèles, seuil effectif — sur le modèle de `backend.info()`."""
     if _model is None:
         return {"loaded": False}

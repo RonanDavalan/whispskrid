@@ -7,7 +7,7 @@ pas à la racine du dépôt — pour qu'il voyage avec le paquet installé sans
 du code sont déjà en français, aucun catalogue `fr.po` n'est donc nécessaire
 — seuls `en`, `de`, `es` ont un `.po`/`.mo`.
 
-`-l`/`--lang` (§7 CONCEPTION_WHISPSKRID.md) force la langue de l'interface ET
+`-l`/`--lang` force la langue de l'interface ET
 de la reconnaissance pour la session — la même valeur sert aux deux. Sans
 `-l`, repli sur `LANG` de l'environnement, puis français par défaut.
 """

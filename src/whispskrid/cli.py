@@ -2,9 +2,8 @@
 
 Assemblage complet de `config.py` + `backend/` +
 `models.py` + `injection.py` + `audio.py` + `session.py` + `control.py` +
-`hotkey.py` + `diagnose.py`. Surface CLI conforme à
-_CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §7. `--download-model` réel
-(§5.2, `whispskrid.models.download_model()`).
+`hotkey.py` + `diagnose.py`. Surface CLI décrite dans `docs/whispskrid.1.md`.
+`--download-model` télécharge réellement (`whispskrid.models.download_model()`).
 """
 
 from __future__ import annotations
@@ -22,7 +21,7 @@ from whispskrid.session import Session
 def _peek_lang(argv: list[str]) -> str | None:
     """Lit `-l`/`--lang` dans `argv` sans dépendre d'`argparse` — la langue
     doit être connue avant de construire le parseur, pour que l'aide
-    (`--help`) elle-même s'affiche dans la bonne langue (§7 conception)."""
+    (`--help`) elle-même s'affiche dans la bonne langue."""
     for i, arg in enumerate(argv):
         if arg in ("-l", "--lang") and i + 1 < len(argv):
             return argv[i + 1]
@@ -73,7 +72,7 @@ def _build_usage(prog: str, group_actions: list[argparse.Action]) -> str:
     return "\n".join([first_line] + [indent + line for line in wrapped])
 
 
-# Association attribut argparse -> commande socket (§3.3).
+# Association attribut argparse -> commande socket.
 _CLIENT_COMMANDS = {
     "dictate": "dictate",
     "dictate_stop": "dictate-stop",
@@ -121,7 +120,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
     if control.session_running():
         print(
             _("whispskrid : une session persistante tourne déjà — "
-              "arrêtez-la (--stop) avant d'en ouvrir une seconde (§3.2)."),
+              "arrêtez-la (--stop) avant d'en ouvrir une seconde."),
             file=sys.stderr,
         )
         return 1
@@ -139,7 +138,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
     if cfg.get("vad", {}).get("enabled", False):
         print(
             _("whispskrid : vad.enabled=true non encore implémenté — "
-              "poursuite en appui-pour-parler strict (§2.3)."),
+              "poursuite en appui-pour-parler strict."),
             file=sys.stderr,
         )
 
@@ -148,7 +147,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
 
     if model_name in MODEL_CATALOG and not model_cached(model_name, resolve_models_dir()):
         # `WhisperModel()` télécharge automatiquement un modèle absent (repli
-        # déjà existant, §5.1) mais faster-whisper désactive sa barre de
+        # déjà existant) mais faster-whisper désactive sa barre de
         # progression (voir models.download_model()) : sans cette annonce,
         # un premier lancement sans modèle ressemble à un blocage silencieux
         # de plusieurs dizaines de secondes à plusieurs minutes (relevé
@@ -210,7 +209,7 @@ def _run_resident(args: argparse.Namespace, _) -> int:
             if listener is None:
                 print(
                     _("whispskrid : hotkeys.mode: armed exige l'écouteur pynput "
-                      "(armement/désarmement exclusivement au clavier, D9) — "
+                      "(armement/désarmement exclusivement au clavier) — "
                       "indisponible ici, le mode armé ne peut pas être utilisé."),
                     file=sys.stderr,
                 )
@@ -285,7 +284,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.version:
-        # __version__ (ex. "1.0.0") est la forme technique du paquet Python ;
+        # __version__ (ex. "1.0.1") est la forme technique du paquet Python ;
         # le paquet Debian porte la même forme (invariant
         # GOUVERNANCE/PROTOCOLE_PUBLICATION.md n°1). Les deux désignent la
         # même version : les afficher ensemble évite qu'un utilisateur

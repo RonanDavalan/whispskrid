@@ -1,4 +1,4 @@
-# diagnose.run() (§8 CONCEPTION_WHISPSKRID.md) : code de sortie 0 si tout ce
+# diagnose.run() : code de sortie 0 si tout ce
 # qui est bloquant passe, non nul sinon — trois exceptions explicites dans la
 # spec (GPU détecté mais libcublas.so.12 introuvable ; ydotool/xdotool absent
 # isolément ; presse-papiers en échec sans session graphique), toutes

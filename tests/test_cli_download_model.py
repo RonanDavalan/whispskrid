@@ -1,4 +1,4 @@
-# cli._run_download_model() (§5.2 CONCEPTION_WHISPSKRID.md) : implémentation
+# cli._run_download_model() : implémentation
 # réelle de --download-model, remplaçant le stub qui répondait « pas encore
 # implémenté ». Identité : ces tests exercent la
 # validation du nom et le report des issues de models.download_model(), pas

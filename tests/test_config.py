@@ -1,6 +1,5 @@
-# Cascade de résolution de config.yaml et fusion clé à clé (config.py, voir
-# _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §6 et son docstring de
-# module) : premier niveau qui résout un fichier existant gagne, les
+# Cascade de résolution de config.yaml et fusion clé à clé (config.py, voir son
+# docstring de module) : premier niveau qui résout un fichier existant gagne, les
 # suivants ne sont jamais consultés ; le fichier résolu peut être partiel,
 # complété clé à clé par le modèle d'usine.
 

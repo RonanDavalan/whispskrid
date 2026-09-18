@@ -13,8 +13,8 @@
 #
 # Second défaut : la détection
 # de fenêtre n'était tentée que si `key_backend == "xdotool"`, alors que
-# ydotool est prioritaire dès qu'il est présent (COMPATIBILITE_WAYLAND.md
-# §2) — sur toute machine avec ydotool ET xdotool/xprop disponibles (le cas
+# ydotool est prioritaire dès qu'il est présent — sur toute machine avec
+# ydotool ET xdotool/xprop disponibles (le cas
 # courant), le combo terminal n'était donc jamais choisi non plus, silencieux
 # pour la même raison. Corrigé en testant `caps["xdotool"]` (présence de
 # l'outillage de détection) au lieu du backend d'envoi retenu.
@@ -80,7 +80,7 @@ def test_no_active_window_falls_back_to_default_combo(monkeypatch):
 
 
 def test_terminal_detection_used_even_when_ydotool_is_the_key_backend(monkeypatch):
-    # ydotool prioritaire (COMPATIBILITE_WAYLAND.md §2) mais xdotool/xprop
+    # ydotool prioritaire mais xdotool/xprop
     # présents : la détection de fenêtre doit quand même se faire, elle ne
     # dépend pas du backend retenu pour l'envoi des touches.
     injection.configure(_cfg())

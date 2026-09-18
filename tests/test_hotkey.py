@@ -1,5 +1,5 @@
 # Écouteur pynput (hotkey.py) : couvre les deux valeurs de `hotkeys.mode`
-# (CONCEPTION_WHISPSKRID.md) — "hold" (défaut,
+# — "hold" (défaut,
 # comportement historique inchangé) et "toggle" (appui bref démarre, appui
 # bref suivant arrête et injecte) — ainsi que la garde de durée minimale
 # (`hotkeys.min_hold_ms`) sur le mode "hold". `pynput.keyboard.Listener` n'est

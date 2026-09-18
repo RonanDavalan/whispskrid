@@ -3,7 +3,7 @@
 # début de chaque dictée contient de l'audio périmé (voir la docstring de
 # _drain_stale_backlog() dans audio.py pour l'incident qui a motivé ce
 # correctif : dégradation progressive de la transcription en session
-# résidente longue).
+# persistante longue).
 
 from __future__ import annotations
 

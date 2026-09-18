@@ -2,7 +2,7 @@
 
 Observe le serveur X (`pynput`) : sous Wayland il ne capte que les
 fenêtres passant par XWayland, jamais une fenêtre Wayland native — confort
-best-effort, §2.4 CONCEPTION_WHISPSKRID.md et COMPATIBILITE_WAYLAND.md §5.
+best-effort.
 `on_press` déclenche
 la capture, `on_release` l'arrête et l'injecte : `pynput` distingue
 nativement l'appui de la relâche, la sémantique maintien est donc native sur
@@ -67,21 +67,21 @@ def start_listener(
     """Démarre l'écouteur en tâche de fond. None si aucune touche valide dans
     `push_to_talk` — la session persistante reste pilotable par la socket seule.
 
-    `mode` (CONCEPTION_WHISPSKRID.md) : "hold" (défaut) conserve le
+    `mode` : "hold" (défaut) conserve le
     comportement historique — maintien = capture, relâche = transcription et
     injection. "toggle" appelle `Session.toggle()` (déjà exposée côté socket,
     control.py) sur l'appui ; la relâche ne fait plus rien. "armed"
     arme/désarme l'écoute continue du mot vocal sur l'appui ; la relâche ne
     fait rien non plus.
 
-    `min_hold_ms` (CONCEPTION_WHISPSKRID.md) : en mode "hold" seulement,
+    `min_hold_ms` : en mode "hold" seulement,
     un appui relâché avant ce délai (en millisecondes) annule la capture
     (`Session.cancel()`) au lieu de la transcrire et l'injecter — garde
     contre un tap bref (touche partagée avec un autre usage du bureau) qui
     ouvrirait une capture sur du bruit ou du quasi-silence, que Whisper
     hallucine.
 
-    Combinaison (CONCEPTION_WHISPSKRID.md) : quand `push_to_talk`
+    Combinaison : quand `push_to_talk`
     contient plusieurs touches, elles forment une combinaison — toutes
     doivent être tenues simultanément pour engager l'action (peu importe
     l'ordre d'appui) ; en mode "hold", la relâche de n'importe laquelle

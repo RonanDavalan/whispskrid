@@ -1,8 +1,7 @@
 """Résolution du dossier de modèles Whisper et téléchargement explicite.
 
-Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §5.1/§5.2 (dossier de
-modèles géré, cache Hugging Face en repli seulement pour faster-whisper
-lui-même, jamais le chemin nominal de WhispSkrid).
+Dossier de modèles géré par WhispSkrid ; le cache Hugging Face ne sert
+qu'en repli à faster-whisper lui-même, jamais de chemin nominal.
 """
 
 from __future__ import annotations
@@ -12,9 +11,9 @@ from pathlib import Path
 
 # Sous-ensemble figé du catalogue interne `faster_whisper.utils._MODELS`
 # (dépôts CTranslate2 officiels, organisation Systran sur Hugging Face) :
-# seuls les noms documentés en §5.2 sont proposés, jamais les variantes
-# `distil-*`/`turbo` upstream, non couvertes par cette conception. Taille
-# approximative en Mo reprise de §5.3 (ordre de grandeur, non remesurée).
+# seuls les noms documentés (manpage, `--download-model`) sont proposés, jamais les variantes
+# `distil-*`/`turbo` upstream, non couvertes. Taille
+# approximative en Mo (ordre de grandeur, non remesurée).
 MODEL_CATALOG: dict[str, tuple[str, int]] = {
     "tiny": ("Systran/faster-whisper-tiny", 75),
     "tiny.en": ("Systran/faster-whisper-tiny.en", 75),
@@ -51,7 +50,7 @@ def resolve_models_dir() -> Path:
     4. dossier des sources `whisper-models/` à la racine du dépôt de code
        (mode clone Git) s'il existe et contient au moins un modèle ;
     5. à défaut, le dossier utilisateur est créé et renvoyé : c'est
-       l'emplacement nominal utilisé par `--download-model` (§5.2).
+       l'emplacement nominal utilisé par `--download-model`.
     """
     override = os.environ.get("WHISPSKRID_MODELS_DIR")
     if override:
@@ -76,7 +75,7 @@ def model_cached(name: str, models_dir: Path) -> bool:
     (`models--<org>--<repo>/`) — utilisé pour annoncer un téléchargement
     automatique avant qu'il ne démarre, plutôt que de laisser l'utilisateur
     face à un silence de plusieurs dizaines de secondes à plusieurs minutes
-    sans explication (§5.2 ; faster-whisper désactive sa propre barre de
+    sans explication (faster-whisper désactive sa propre barre de
     progression, voir `download_model()` ci-dessous)."""
     repo_id, _taille = MODEL_CATALOG.get(name, (None, 0))
     if repo_id is None:

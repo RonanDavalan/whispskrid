@@ -1,11 +1,7 @@
 """`--diagnose` — vérifie l'environnement et quitte.
 
-Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §8 pour la liste des
-points de contrôle et leur statut bloquant/informatif. Reprend la structure
-du moule (`diagnose.py`), adaptée au backend Whisper.
-
 Chaque point de contrôle est rendu en une ligne `ok` / `!!`. Code de sortie
-0 si tout passe, non nul sinon — trois exceptions explicites (§8), toutes
+0 si tout passe, non nul sinon — trois exceptions explicites, toutes
 `blocking=False` : GPU détecté mais `libcublas.so.12` introuvable
 (`device: cpu` reste utilisable) ; `ydotool`/`xdotool` absent isolément (seul
 le backend d'injection retenu compte) ; presse-papiers en échec dans une

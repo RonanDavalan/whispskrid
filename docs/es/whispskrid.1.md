@@ -24,7 +24,7 @@ whispskrid: Dictado "push-to-talk" sin conexión, a nivel de sistema, para la l�
 
 Todo el reconocimiento de voz se realiza localmente: ni el audio ni el texto transcrito se envían nunca a un servicio remoto.
 
-Solo una sesión se ejecuta por usuario a la vez. Cuando se inicia sin una bandera de control, se inicia una sesión residente: carga el modelo, abre un socket de control Unix privado en `$XDG_RUNTIME_DIR/whispskrid.sock` (modo `0600`), y inicia un listener de teclas de acceso rápido `pynput` si está habilitado. El mismo comando invocado con una bandera de control (ver CONTROLANDO UNA SESIÓN EN EJECUCIÓN) se conecta a ese socket en lugar de iniciar una nueva sesión.
+Solo una sesión se ejecuta por usuario a la vez. Cuando se inicia sin una bandera de control, se inicia una sesión persistente: carga el modelo, abre un socket de control Unix privado en `$XDG_RUNTIME_DIR/whispskrid.sock` (modo `0600`), y inicia un listener de teclas de acceso rápido `pynput` si está habilitado. El mismo comando invocado con una bandera de control (ver CONTROLANDO UNA SESIÓN EN EJECUCIÓN) se conecta a ese socket en lugar de iniciar una nueva sesión.
 
 Se inyecta el texto colocándolo en el portapapeles y simulando un pegado, por lo que
 se necesitan dos tipos de herramientas: un simulador de pulsaciones de teclas y una herramienta de portapapeles.
@@ -38,22 +38,22 @@ Instala el paquete correspondiente a tu distribución:
 
 Debian y derivadas:
 ```
-sudo dpkg -i whispskrid_1.0.0_all.deb
+sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
 Fedora:
 ```
-sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
 
 openSUSE Leap 15.6:
 ```
-sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+sudo zypper install ./whispskrid-1.0.1-1.leap156.noarch.rpm
 ```
 
 Arch Linux:
 ```
-sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+sudo pacman -U whispskrid-1.0.1-1-any.pkg.tar.zst
 ```
 
 El paso de post-instalación instala **faster-whisper** a través de pip en un
@@ -73,7 +73,7 @@ los modelos provienen de las conversiones oficiales de CTranslate2 en Hugging Fa
 whispskrid --download-model
 ```
 
-Omitir este paso no es crítico: la sesión residente descarga el modelo predeterminado por sí misma al iniciarse por primera vez, avisando previamente de ello, ya que la descarga de Hugging Face no muestra una barra de progreso (una transferencia de varios cientos de MB sin ninguna actividad visible).
+Omitir este paso no es crítico: la sesión persistente descarga el modelo predeterminado por sí misma al iniciarse por primera vez, avisando previamente de ello, ya que la descarga de Hugging Face no muestra una barra de progreso (una transferencia de varios cientos de MB sin ninguna actividad visible).
 
 Luego, verifica el entorno:
 

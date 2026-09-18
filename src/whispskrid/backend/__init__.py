@@ -2,8 +2,7 @@
 
 Interface étroite à trois fonctions, pour qu'un second backend
 (whisper.cpp) puisse être ajouté plus tard sans toucher au reste du projet.
-Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §4. Seule implémentation
-livrée en v1.0.0 : `faster-whisper`.
+Seule implémentation livrée en v1.0.1 : `faster-whisper`.
 
 État chargé (modèle, paramètres effectifs) gardé au niveau du module : une
 session persistante n'appelle `load()` qu'une fois, tout le reste du
@@ -32,7 +31,7 @@ def _gpu_detected() -> bool:
 
 def _cublas_loadable() -> bool:
     """Sonde directe de `libcublas.so.12`, indépendante de la résolution
-    interne de CTranslate2 (§4.4 CONCEPTION_WHISPSKRID.md) : CTranslate2 ne
+    interne de CTranslate2 : CTranslate2 ne
     vérifie que la présence d'un GPU pour `device="auto"`, pas le chargement
     réel de cette lib, qui n'est fait par `dlopen` qu'au premier
     `transcribe()` — d'où un échec tardif si elle manque."""
@@ -46,7 +45,7 @@ def _cublas_loadable() -> bool:
 
 
 def _resolve_device(requested: str) -> str:
-    """Résout `device` avant l'appel à `WhisperModel` — voir §4.4. Ne
+    """Résout `device` avant l'appel à `WhisperModel`. Ne
     transmet jamais `"auto"` tel quel à CTranslate2."""
     if requested == "cpu":
         return "cpu"
@@ -83,7 +82,7 @@ def load(
     """Charge le modèle en mémoire. Appelé une fois au démarrage de la
     session persistante. Lève une exception claire si le modèle est absent, si
     l'import CTranslate2 échoue, ou si `device: cuda` est demandé
-    explicitement sans que CUDA soit réellement utilisable (§4.1, §4.4)."""
+    explicitement sans que CUDA soit réellement utilisable."""
     global _model, _state
 
     from whispskrid.models import resolve_models_dir
@@ -125,7 +124,7 @@ def load(
 def transcribe(audio, language: str | None) -> str:
     """Transcrit un tampon audio mono 16 kHz float32. `language` est un code
     (« fr », « en »…) ou None pour autodétection. Retourne le texte brut,
-    sans post-traitement (§4.2, §9 — le post-traitement est fait ailleurs)."""
+    sans post-traitement (le post-traitement est fait ailleurs)."""
     if _model is None:
         raise RuntimeError("backend non chargé : appeler load() avant transcribe()")
 
@@ -141,7 +140,7 @@ def transcribe(audio, language: str | None) -> str:
 def info() -> dict:
     """Dictionnaire lisible par --diagnose : nom du backend, chemin du
     modèle, device, compute_type, GPU détecté et `libcublas.so.12`
-    chargeable ou non (§4.4, §8)."""
+    chargeable ou non."""
     if _model is None:
         return {"backend": "faster-whisper", "loaded": False}
 

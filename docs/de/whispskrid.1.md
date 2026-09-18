@@ -29,7 +29,7 @@ sodass es systemweit funktioniert und nicht nur innerhalb eines einzelnen Progra
 
 Die gesamte Spracherkennung läuft lokal: Audio- oder transkribierter Text werden niemals an einen externen Dienst gesendet.
 
-Es läuft jeweils nur eine Sitzung pro Benutzer gleichzeitig. Wird sie ohne Kontrollflag gestartet, beginnt sie eine residente Sitzung: Sie lädt das Modell, öffnet eine private Unix-Kontroll-Socket unter `$XDG_RUNTIME_DIR/whispskrid.sock` (Modus `0600`) und startet einen `pynput` Hotkey-Listener, falls aktiviert. Derselbe Befehl, der mit einem Kontrollflag aufgerufen wird (siehe "EINE LAUFENDE SITZUNG STEUERN"), verbindet sich mit dieser Socket anstatt eine neue Sitzung zu starten.
+Es läuft jeweils nur eine Sitzung pro Benutzer gleichzeitig. Wird sie ohne Kontrollflag gestartet, beginnt sie eine persistente Sitzung: Sie lädt das Modell, öffnet eine private Unix-Kontroll-Socket unter `$XDG_RUNTIME_DIR/whispskrid.sock` (Modus `0600`) und startet einen `pynput` Hotkey-Listener, falls aktiviert. Derselbe Befehl, der mit einem Kontrollflag aufgerufen wird (siehe "EINE LAUFENDE SITZUNG STEUERN"), verbindet sich mit dieser Socket anstatt eine neue Sitzung zu starten.
 
 Text wird injiziert, indem er in die Zwischenablage kopiert und dann eingefügt wird, sodass
 zwei Arten von Tools benötigt werden: ein Tastendrucksimulator und ein Tool für die Zwischenablage.
@@ -42,22 +42,22 @@ Installieren Sie das Paket für Ihre Distribution:
 
 Debian und Derivate:
 ```
-sudo dpkg -i whispskrid_1.0.0_all.deb
+sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
 Fedora:
 ```
-sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
 
 openSUSE Leap 15.6:
 ```
-sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+sudo zypper install ./whispskrid-1.0.1-1.leap156.noarch.rpm
 ```
 
 Arch Linux:
 ```
-sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+sudo pacman -U whispskrid-1.0.1-1-any.pkg.tar.zst
 ```
 
 Der Nachinstallationsschritt installiert **faster-whisper** über pip in eine
@@ -144,7 +144,7 @@ Jede der folgenden Optionen verbindet sich mit dem Socket der laufenden Sitzung,
     language=<lang|auto>`) aus, ohne ihn zu ändern.
 
 **\--stop**
-:   Beendet die laufende residente Sitzung sauber.
+:   Beendet die laufende persistente Sitzung sauber.
 
 # TASTENBELEGUNGEN
 

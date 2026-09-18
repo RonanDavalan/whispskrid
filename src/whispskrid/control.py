@@ -1,11 +1,11 @@
 """Socket de contrôle Unix — pilotage d'une session persistante en cours.
 
-Protocole texte ligne à ligne, §3.3 CONCEPTION_WHISPSKRID.md : une commande
+Protocole texte ligne à ligne : une commande
 par ligne, réponse préfixée `OK`/`ERR`.
-Le serveur tourne dans la session persistante (un fil par connexion, §3.1) ; le
+Le serveur tourne dans la session persistante (un fil par connexion) ; le
 client est invoqué par `whispskrid --dictate`/`--status`/… (cli.py, mode
 client), ou par `session_running()` pour la vérification d'instance unique
-(§3.2) avant d'ouvrir une nouvelle session persistante.
+avant d'ouvrir une nouvelle session persistante.
 """
 
 from __future__ import annotations
@@ -55,7 +55,7 @@ def send_control_command(command: str, timeout: float = _RECV_TIMEOUT) -> tuple[
 
 
 def session_running() -> bool:
-    """Vrai si une session persistante répond déjà (§3.2, instance unique)."""
+    """Vrai si une session persistante répond déjà (instance unique)."""
     ok, _reply = send_control_command("status", timeout=_CONNECT_TIMEOUT)
     return ok
 

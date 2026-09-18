@@ -1,4 +1,4 @@
-# Socket de contrôle Unix (control.py, §3.3 CONCEPTION_WHISPSKRID.md) :
+# Socket de contrôle Unix (control.py) :
 # protocole texte ligne à ligne, une commande par ligne, réponse préfixée
 # OK/ERR. Le serveur tourne réellement (vrai socket AF_UNIX dans tmp_path),
 # la Session est un double minimal — ces tests exercent le protocole, pas la
@@ -65,7 +65,7 @@ def test_unknown_command_is_rejected(running_server):
 
 
 def test_no_session_running_is_reported_cleanly(tmp_path, monkeypatch):
-    # Aucun serveur démarré sur cette socket : cas normal (§3.2), jamais une
+    # Aucun serveur démarré sur cette socket : cas normal, jamais une
     # exception qui remonte à l'appelant.
     monkeypatch.setenv("XDG_RUNTIME_DIR", str(tmp_path))
     ok, reply = control.send_control_command("status", timeout=0.5)

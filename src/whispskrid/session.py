@@ -2,14 +2,13 @@
 
 Machine à deux états (`idle` / `capturing`), plus une couche armée au-dessus
 (mode armé par mot vocal), pilotée symétriquement par l'écouteur `pynput`
-(hotkey.py) et par la socket de contrôle (control.py) — §2.4, §3.3
-CONCEPTION_WHISPSKRID.md. Un verrou sérialise les transitions : les deux
-voies peuvent démarrer/arrêter/annuler la même capture sans se marcher
-dessus.
+(hotkey.py) et par la socket de contrôle (control.py). Un verrou sérialise
+les transitions : les deux voies peuvent démarrer/arrêter/annuler la même
+capture sans se marcher dessus.
 
 La transcription et l'injection se font toujours dans le fil de capture
 lui-même, qu'il se termine par une relâche explicite (active_event effacé)
-ou par le garde-fou `capture.max_seconds` (§2.2, boucle de audio.py qui sort
+ou par le garde-fou `capture.max_seconds` (boucle de audio.py qui sort
 d'elle-même) : ainsi une touche restée bloquée produit quand même une
 injection, sans qu'aucune commande externe n'ait besoin d'intervenir.
 
@@ -22,7 +21,7 @@ lecteur concurrent sur le même flux (l'API bloquante de PortAudio n'est pas
 conçue pour ça — deux lecteurs se partageraient les échantillons de façon
 imprévisible, corrompant guetteur et transcription à la fois). Écart
 volontaire à la conception initiale (« `Session.start_capture()` est appelée
-telle quelle », CONCEPTION_WHISPSKRID.md) : `_run_armed_listener` réutilise
+telle quelle ») : `_run_armed_listener` réutilise
 directement `_transcribe_and_inject()` (déjà privée) au lieu de passer par
 `start_capture()`/`stop_capture_and_inject()`, pour obtenir le même effet
 observable (son de confirmation, transition idle/capturing, transcription et
@@ -322,7 +321,7 @@ class Session:
             # indéfiniment stop_capture_and_inject()/cancel() (qui attendent
             # _finished_event) : l'épisode est perdu, journalisé, l'état revient
             # à idle comme pour une capture vide. L'échec remonte au client par
-            # ERR (§3.3 CONCEPTION_WHISPSKRID.md) — jamais un OK sans texte qui
+            # ERR — jamais un OK sans texte qui
             # masquerait la différence avec une capture simplement vide.
             error = str(exc)
             print(f"whispskrid : échec de la transcription ou de l'injection : {exc}", file=sys.stderr)

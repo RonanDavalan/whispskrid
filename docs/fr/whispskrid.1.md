@@ -36,22 +36,22 @@ Installez le paquet correspondant à votre distribution :
 
 Debian et dérivées :
 ```
-sudo dpkg -i whispskrid_1.0.0_all.deb
+sudo dpkg -i whispskrid_1.0.1_all.deb
 ```
 
 Fedora :
 ```
-sudo dnf install ./whispskrid-1.0.0-1.fc42.noarch.rpm
+sudo dnf install ./whispskrid-1.0.1-1.fc42.noarch.rpm
 ```
 
 openSUSE Leap 15.6 :
 ```
-sudo zypper install ./whispskrid-1.0.0-1.leap156.noarch.rpm
+sudo zypper install ./whispskrid-1.0.1-1.leap156.noarch.rpm
 ```
 
 Arch Linux :
 ```
-sudo pacman -U whispskrid-1.0.0-1-any.pkg.tar.zst
+sudo pacman -U whispskrid-1.0.1-1-any.pkg.tar.zst
 ```
 
 L'étape de post-installation installe **faster-whisper** via pip dans un environnement virtuel privé et signale sa propre progression ; le paquet couvre le backend d'injection pour votre type de session (**ydotool** + **wl-clipboard** sous Wayland, **xdotool** + **xclip** sous X11) — aucun d'eux n'est une dépendance obligatoire sur toutes les distributions, donc un environnement incomplet peut toujours être installé, mais au prix d'un mode d'injection dégradé (voir **--diagnose** ci-dessous).

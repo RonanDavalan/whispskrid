@@ -1,14 +1,12 @@
 """Capture audio pendant l'appui — appui-pour-parler strict.
 
-Voir _CADRE/SPECIFICATIONS/CONCEPTION_WHISPSKRID.md §2.1-2.2 : la capture
-démarre à l'appui, s'accumule tant que la touche est tenue, s'arrête à la
-relâche (ou au
-garde-fou `capture.max_seconds`), et part en une seule passe vers l'adaptateur
-de backend — pas de flux ni de VAD, contrairement au moule vosk-cli-dictation
-(cœur d'interaction en continu, hors périmètre ici).
+La capture démarre à l'appui, s'accumule tant que la touche est tenue,
+s'arrête à la relâche (ou au garde-fou `capture.max_seconds`), et part en une
+seule passe vers l'adaptateur de backend — ni flux continu ni détection
+d'activité vocale (VAD).
 
 Le périphérique est ouvert une fois par `open_stream()` au démarrage de la
-session persistante (§3.1) et reste ouvert entre les dictées ; `capture_episode()`
+session persistante et reste ouvert entre les dictées ; `capture_episode()`
 lit dessus le temps d'un seul épisode d'appui.
 """
 
@@ -47,7 +45,8 @@ def _sans_bruit_alsa_jack():
 
 
 def open_stream(cfg: dict) -> tuple[pyaudio.PyAudio, pyaudio.Stream]:
-    """Ouvre le périphérique de capture au format attendu (§6 audio.*).
+    """Ouvre le périphérique de capture au format attendu (clés `audio.*` de
+    la configuration).
 
     Lève l'exception PyAudio telle quelle si aucun périphérique d'entrée
     n'est disponible — à l'appelant (session persistante, --diagnose) de la
@@ -112,10 +111,10 @@ def capture_episode(
     on_max_seconds: Callable[[], None] | None = None,
 ) -> np.ndarray:
     """Accumule l'audio tant que `is_active()` rend vrai (touche tenue), et au
-    plus `capture.max_seconds` (§2.2, garde-fou contre une touche bloquée).
+    plus `capture.max_seconds` (garde-fou contre une touche bloquée).
 
     Retourne un tableau mono float32 normalisé dans [-1, 1], au format attendu
-    par `backend.transcribe(audio, language)` (§4.1). Tableau vide si aucune
+    par `backend.transcribe(audio, language)`. Tableau vide si aucune
     trame n'a été capturée (relâche immédiate).
     """
     audio_cfg = cfg.get("audio", {})

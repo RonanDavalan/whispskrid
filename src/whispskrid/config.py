@@ -1,7 +1,6 @@
 """Chargement de `config.yaml` — cascade XDG et fusion clé à clé.
 
-Cascade de résolution du fichier (§10.2 `DOCUMENTATION_MULTILINGUE.md`,
-brique reprise du moule) : le premier niveau qui résout un fichier existant
+Cascade de résolution du fichier : le premier niveau qui résout un fichier existant
 gagne, les suivants ne sont jamais consultés.
 
 1. `$WHISPSKRID_CONFIG` — surcharge explicite, aucune création automatique.
@@ -18,9 +17,8 @@ gagne, les suivants ne sont jamais consultés.
    dépôt (couvre l'installation depuis le tarball de sources).
 
 Le fichier résolu peut être partiel : les clés absentes sont complétées par
-les valeurs du modèle d'usine, fusion clé à clé (§6
-`CONCEPTION_WHISPSKRID.md` : « la cascade XDG permet à l'utilisateur de
-surcharger clé à clé »), jamais un remplacement de bloc entier.
+les valeurs du modèle d'usine, fusion clé à clé (la cascade XDG permet à l'utilisateur de
+surcharger clé à clé), jamais un remplacement de bloc entier.
 """
 
 from __future__ import annotations

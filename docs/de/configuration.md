@@ -54,7 +54,7 @@ default_language: ""
 
 ### `backend`
 
-Wählt die Spracherkennungs-Engine aus. `faster-whisper` ist der einzige akzeptierte Wert in Version 1.0.0; der Schlüssel ist für einen zukünftigen zweiten Backend-Typ (`whisper.cpp`) reserviert.
+Wählt die Spracherkennungs-Engine aus. `faster-whisper` ist der einzige akzeptierte Wert in Version 1.0.1; der Schlüssel ist für einen zukünftigen zweiten Backend-Typ (`whisper.cpp`) reserviert.
 
 - **`name`** (String): `"faster-whisper"`, der einzige akzeptierte Wert.
 - **`beam_size`** (Integer, Standardwert: `5`): Die Beam-Breite, die an `WhisperModel.transcribe()` übergeben wird. Höhere Werte können die Genauigkeit verbessern, allerdings auf Kosten der Latenz.
@@ -127,7 +127,7 @@ audio:
 ### `vad`
 
 Für eine zukünftige, geräuschbasierte automatische Stoppfunktion reserviert. **Nicht in
-v1.0.0 implementiert**: `vad.enabled: true` protokolliert eine Warnung "noch nicht implementiert" und
+v1.0.1 implementiert**: `vad.enabled: true` protokolliert eine Warnung "noch nicht implementiert" und
 das Tool verhält sich weiterhin wie ein striktes Push-to-Talk-System (der gedrückte Knopf ist das einzige Element, das eine Aufnahme startet und stoppt).
 
 ```yaml

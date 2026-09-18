@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/RonanDavalan/whispskrid/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/version-v1.0.0-brightgreen.svg" alt="Version v1.0.0"></a>
+  <a href="https://github.com/RonanDavalan/whispskrid/releases/tag/v1.0.1"><img src="https://img.shields.io/badge/version-v1.0.1-brightgreen.svg" alt="Version v1.0.1"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="#"><img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+"></a>
   <a href="#"><img src="https://img.shields.io/badge/OS-Debian_13-D70A53.svg" alt="Tested on Debian 13"></a>
@@ -19,14 +19,14 @@ source, also in `fr`/`de`/`es`) for the full command reference, and
 
 ## Status
 
-First stable release (`v1.0.0`): dictation, injection, the control socket,
+First stable release (`v1.0.1`): dictation, injection, the control socket,
 `pynput` push-to-talk, `--diagnose`, and a four-language CLI interface
 (`en`/`fr`/`de`/`es`) are implemented and covered by the test suite.
 
 ## Install the Debian package
 
 ```bash
-sudo apt install ./whispskrid_1.0.0_all.deb
+sudo apt install ./whispskrid_1.0.1_all.deb
 ```
 
 Download the package from
