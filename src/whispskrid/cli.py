@@ -285,12 +285,16 @@ def main() -> int:
 
     if args.version:
         # __version__ (ex. "1.0.1") est la forme technique du paquet Python ;
-        # le paquet Debian porte la même forme (invariant
-        # GOUVERNANCE/PROTOCOLE_PUBLICATION.md n°1). Les deux désignent la
-        # même version : les afficher ensemble évite qu'un utilisateur
-        # comparant `dpkg -l whispskrid` et `whispskrid --version` ne les
-        # lise comme deux versions différentes.
-        print(f"whispskrid {__version__} (paquet Debian {version_debian()})")
+        # Debian écrit une préversion avec un tilde (`1.0.1~alpha`). Quand les
+        # deux formes diffèrent, les afficher ensemble évite qu'un utilisateur
+        # comparant `dpkg -l whispskrid` et `whispskrid --version` ne les lise
+        # comme deux versions différentes. Sur une version finale elles sont
+        # identiques : une seule s'affiche, sur toute distribution.
+        forme_debian = version_debian(__version__)
+        if forme_debian == __version__:
+            print(f"whispskrid {__version__}")
+        else:
+            print(f"whispskrid {__version__} (paquet Debian {forme_debian})")
         return 0
 
     if args.download_model is not None:

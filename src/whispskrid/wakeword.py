@@ -16,8 +16,7 @@ Convention de nommage des modèles, un couple par langue supportée
 (fr/en/de/es) : `<lang>_open.onnx` (phrase d'ouverture de segment) et
 `<lang>_close.onnx` (phrase de clôture). Aucun de ces huit fichiers n'est
 fourni par `openwakeword` (aucun modèle pré-entraîné fr/de/es n'existe) —
-leur entraînement réel n'est pas couvert ici
-(voir 10_ROADMAP.md, « Modes de déclenchement étendus »).
+leur entraînement réel n'est pas couvert ici.
 
 API `openwakeword` 0.4.0 vérifiée directement sur le paquet (`Model.__init__`
 attend `wakeword_model_paths`, dérive le nom de chaque modèle du nom de
@@ -86,7 +85,7 @@ def load(language: str, models_dir: Path | str | None = None, threshold: float =
     Lève `RuntimeError` si `openwakeword` n'est pas installé, ou si l'un des
     deux fichiers attendus est absent dans `models_dir` (par défaut
     `resolve_wakeword_models_dir()`) — l'entraînement réel des phrases
-    n'est pas couvert ici (10_ROADMAP.md), ce guetteur ne fabrique aucun modèle
+    n'est pas couvert ici, ce guetteur ne fabrique aucun modèle
     de secours et ne tente aucun repli silencieux."""
     global _model, _state
 
@@ -97,7 +96,7 @@ def load(language: str, models_dir: Path | str | None = None, threshold: float =
         raise RuntimeError(
             f"modèles de phrase wakeword introuvables pour la langue « {language} » "
             f"dans {resolved_dir} : {', '.join(missing)} — entraînement réel non "
-            "encore fait (voir 10_ROADMAP.md « Modes de déclenchement étendus »)."
+            "encore fait."
         )
 
     try:

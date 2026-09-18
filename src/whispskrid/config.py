@@ -9,7 +9,7 @@ gagne, les suivants ne sont jamais consultés.
 3. Fichier utilisateur XDG — `$XDG_CONFIG_HOME/whispskrid/config.yaml`
    (défaut `~/.config/whispskrid/config.yaml`), créé automatiquement au
    premier lancement par copie du modèle d'usine.
-4. Modèle d'usine — `/usr/share/whispskrid/config.yaml` (paquet Debian),
+4. Modèle d'usine — `/usr/share/whispskrid/config.yaml` (paquet natif),
    sinon `<racine>/config/config.yaml` (checkout git sans `.git` déréférencé),
    sinon la copie embarquée à côté du module `config.py` lui-même — seule
    celle-ci survit à `pip install .` en mode non éditable, où le module est

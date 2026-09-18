@@ -16,8 +16,8 @@ def _isolate(tmp_path, monkeypatch):
     réel — sans ça, un test qui tourne sur une machine de développement (mode
     .git actif) donnerait un résultat différent en CI. Le modèle d'usine
     système est également substitué : une machine où le paquet `.deb` est
-    réellement installé (`/usr/share/whispskrid/config.yaml` présent, voir
-    TACHE_construire-paquet-debian.md) sans cette substitution faisait
+    réellement installé (`/usr/share/whispskrid/config.yaml` présent) sans
+    cette substitution faisait
     dépendre le résultat des tests de l'état d'installation de la machine qui
     les exécute — découvert en lançant la suite complète après
     l'ajout de wakeword.py."""

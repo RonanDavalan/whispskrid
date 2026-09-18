@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: whispskrid\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-18 18:35+0200\n"
+"POT-Creation-Date: 2026-09-18 19:03+0200\n"
 "PO-Revision-Date: 2026-09-11 13:00+0200\n"
 "Last-Translator: Ronan Davalan\n"
 "Language-Team: English\n"
@@ -64,10 +64,10 @@ msgid ""
 "whispskrid : une session persistante tourne déjà — arrêtez-la (--stop) avant "
 "d'en ouvrir une seconde."
 msgstr ""
-"whispskrid: a persistent session is already running — stop it (--stop) before "
-"opening a second one."
+"whispskrid: a persistent session is already running — stop it (--stop) "
+"before opening a second one."
 
-#: cli.py:131 cli.py:170 cli.py:305
+#: cli.py:131 cli.py:170 cli.py:309
 #, python-brace-format
 msgid "whispskrid : {erreur}"
 msgstr "whispskrid: {erreur}"
