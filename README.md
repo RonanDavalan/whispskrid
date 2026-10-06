@@ -81,6 +81,20 @@ backend, audio input, a downloaded model) before you run a real dictation.
 .venv/bin/pytest
 ```
 
+## Credits
+
+WhispSkrid is the result of a human-LLM collaboration, with the roles written
+down as they were actually played. The full list, with thanks to the open-source
+projects it stands on, is in [CONTRIBUTORS.md](CONTRIBUTORS.md).
+
+*   **Ronan Davalan** — Architect and arbiter: product vision, decisions, validation and testing. Sole git author.
+*   **Claude Code (Anthropic)** — Systems engineer and lead developer: principal author of the source code, the packaging, the tooling, the documentation and the website.
+*   **Gemini (Google)** — Synthesizer and strategic advisor: architectural analysis and cross-validation of decisions.
+*   **Muse Spark 1.3** — Usage tester: command-line trials, `.deb` installation, reading of the documentation in four languages.
+*   **DeepSeek V4 Flash** — Tester and reviewer: installation on a Raspberry Pi, review of documentation and website.
+*   **Grok (xAI)** — External validator: critical review, editorial audit of the PDF manuals.
+*   **Speech engine** — [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (CTranslate2) running OpenAI Whisper models.
+
 ## License
 
 This project is licensed under the **MIT License**. See the
